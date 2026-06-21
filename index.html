@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#C8232A;--ink:#222;--sub:#666;--bg:#f5f3ef;
+  --line:#e4e0d8;--shadow:0 2px 10px rgba(0,0,0,.08);
+  --todo:#78909c;--prog:#1e88e5;--done:#43a047;--od:#c62828;
+}
+body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+
+/* ヘッダー */
+header{background:var(--red);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header h1{font-size:1.08rem;font-weight:800;white-space:nowrap}
+header .sub{font-size:.7rem;opacity:.8}
+.hbtns{display:flex;gap:6px}
+.btn{padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-size:.82rem;font-weight:700;transition:opacity .15s;white-space:nowrap}
+.btn:hover{opacity:.8}
+.btn-w{background:#fff;color:var(--red)}
+.btn-r{background:var(--red);color:#fff}
+.btn-ol{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.6)}
+.btn-gray{background:#eee;color:#555}
+
+/* タブナビ */
+.tabnav{background:#fff;border-bottom:2px solid var(--line);overflow-x:auto;white-space:nowrap;padding:0 12px;display:flex;-webkit-overflow-scrolling:touch}
+.tabnav::-webkit-scrollbar{height:3px}
+.tabnav::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+.tnb{display:inline-flex;align-items:center;padding:11px 13px;font-size:.83rem;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--sub);gap:4px;transition:color .15s;white-space:nowrap}
+.tnb.active{border-bottom-color:var(--red);color:var(--red)}
+.tnb:hover:not(.active){color:var(--ink)}
+
+/* ページ */
+.page{display:none;max-width:1100px;margin:0 auto;padding:20px 16px}
+.page.show{display:block}
+
+/* 共通カード・セクション */
+.card{background:#fff;border-radius:12px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:12px}
+.sect-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.sect-head h2{font-size:1.02rem;font-weight:800;color:var(--red)}
+
+/* 統計バー */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#fff;border-radius:10px;padding:12px 10px;box-shadow:var(--shadow);border:1px solid var(--line);text-align:center}
+.stat .num{font-size:1.7rem;font-weight:800;line-height:1}
+.stat .lbl{font-size:.7rem;color:var(--sub);margin-top:3px}
+.c-todo{color:#546e7a}.c-prog{color:var(--prog)}.c-done{color:var(--done)}.c-od{color:var(--od)}
+
+/* フィルターピル */
+.fpills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.fpill{padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--sub);transition:all .15s}
+.fpill:hover{border-color:#aaa}
+.fpill.active[data-st=""]{background:#555;color:#fff;border-color:#555}
+.fpill.active[data-st="todo"]{background:var(--todo);color:#fff;border-color:var(--todo)}
+.fpill.active[data-st="prog"]{background:var(--prog);color:#fff;border-color:var(--prog)}
+.fpill.active[data-st="done"]{background:var(--done);color:#fff;border-color:var(--done)}
+.fpill.active[data-st="od"]{background:var(--od);color:#fff;border-color:var(--od)}
+.fbar2{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.fbar2 select{padding:6px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:.83rem;background:#fff;color:var(--ink)}
+
+/* タスクカード */
+.tcard{background:#fff;border-radius:11px;padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--line);border-left:5px solid var(--todo);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:9px;transition:opacity .2s}
+.tcard.prog{border-left-color:var(--prog)}
+.tcard.done{border-left-color:var(--done);opacity:.65}
+.tcard.overdue{border-left-color:var(--od);background:#fff9f9}
+.tc-info{flex:1;min-width:180px}
+.tc-title{font-weight:700;font-size:.95rem;margin-bottom:5px;line-height:1.4}
+.tc-title .od-badge{display:inline-block;background:var(--od);color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+.tc-dates{display:flex;gap:10px;font-size:.76rem;margin-bottom:4px;flex-wrap:wrap}
+.tc-dates .due-od{color:var(--od);font-weight:700}
+.tc-meta{font-size:.77rem;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px}
+.tc-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.status-btns{display:flex;gap:4px}
+.sbtn{padding:4px 9px;border-radius:6px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:.72rem;font-weight:700;color:var(--sub);transition:all .12s}
+.sbtn:hover{opacity:.8}
+.sbtn.active.s-todo{background:var(--todo);color:#fff;border-color:var(--todo)}
+.sbtn.active.s-prog{background:var(--prog);color:#fff;border-color:var(--prog)}
+.sbtn.active.s-done{background:var(--done);color:#fff;border-color:var(--done)}
+.tc-act2{display:flex;gap:4px}
+.bsm{padding:4px 9px;border-radius:6px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:.74rem;font-weight:700;color:var(--sub)}
+.bsm:hover{background:var(--bg)}.bsm.r{border-color:var(--red);color:var(--red)}
+
+/* ガントチャート */
+.gantt-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.gtbl{min-width:900px;border-collapse:collapse;width:100%}
+.gtbl th,.gtbl td{border:1px solid #e8e8e8;padding:0;font-size:.74rem}
+.ghr-month th{background:var(--red);color:#fff;font-weight:700;text-align:center;padding:7px 2px;white-space:nowrap}
+.ghr-day th{background:#f5f5f5;color:#444;font-weight:700;text-align:center;padding:5px 2px;font-size:.7rem}
+.ghr-day th.is-today{background:#ff6b00;color:#fff}
+.ghr-day th.is-wk{background:#efefef;color:#aaa}
+.gc0{width:200px;min-width:160px}
+.glbl{padding:7px 10px;font-size:.8rem;line-height:1.3;border-right:2px solid var(--line)}
+.glbl .ga{font-size:.68rem;color:var(--sub);margin-top:2px}
+.gcell{height:38px;position:relative;min-width:18px}
+.gcell.wk{background:#f9f9f9}
+.gcell.is-today{background:rgba(255,107,0,.06)}
+.gbar{position:absolute;top:6px;height:26px;border-radius:5px;left:2px;right:2px;display:flex;align-items:center;padding:0 5px;font-size:.62rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.gbar.todo{background:var(--todo)}.gbar.prog{background:var(--prog)}.gbar.done{background:var(--done)}.gbar.overdue{background:var(--od)}
+.tdl{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#ff6b00;opacity:.8;z-index:2}
+
+/* 掲示板 */
+.bpost{background:#fff;border-radius:11px;padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:10px}
+.bpost-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:7px}
+.bpost-name{font-weight:700;font-size:.88rem}
+.bpost-date{font-size:.74rem;color:var(--sub)}
+.bpost-body{font-size:.88rem;line-height:1.75;white-space:pre-wrap}
+.bpost-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700;margin-bottom:5px}
+.tag-info{background:#e3f2fd;color:#1565c0}.tag-ask{background:#fff3e0;color:#e65100}
+.tag-done{background:#e8f5e9;color:#2e7d32}.tag-warn{background:#fce4ec;color:#c62828}
+.cw-sync{font-size:.76rem;color:var(--sub);margin-bottom:10px;padding:6px 10px;background:#fff;border-radius:8px;border:1px solid var(--line)}
+
+/* テーブル */
+.dtbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.dtbl th{background:#f5f5f5;padding:8px 10px;text-align:left;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+.dtbl td{padding:7px 10px;border:1px solid var(--line);vertical-align:top}
+.dtbl tr:hover td{background:#fafafa}
+.num-cell{text-align:right;font-variant-numeric:tabular-nums}
+.diff-p{color:var(--done)}.diff-n{color:var(--od)}
+
+/* 予算・領収書 */
+.receipt-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.receipt-thumb{width:48px;height:48px;border-radius:5px;object-fit:cover;border:1px solid var(--line);cursor:pointer}
+.receipt-add{width:48px;height:48px;border-radius:5px;border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:var(--sub);background:#fafafa}
+.receipt-add:hover{border-color:var(--red);color:var(--red)}
+
+/* 会場情報 */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.info-item label{font-size:.8rem;font-weight:700;margin-bottom:4px;display:block;color:var(--sub)}
+.info-item input,.info-item textarea{width:100%;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:.88rem;font-family:inherit}
+.info-item textarea{min-height:70px;resize:vertical}
+.slide-box{background:#fff3f3;border:1.5px solid #f8c6c6;border-radius:10px;padding:14px;margin-bottom:14px}
+.slide-box h3{font-size:.9rem;font-weight:800;color:var(--red);margin-bottom:10px}
+.slide-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.slide-row label{font-size:.8rem;font-weight:700;width:120px;flex-shrink:0}
+.slide-row input{flex:1;min-width:160px;padding:7px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:.86rem}
+.slide-row a{font-size:.8rem;white-space:nowrap}
+
+/* 議事録 */
+.min-card{background:#fff;border-radius:11px;border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:10px}
+.min-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-radius:11px}
+.min-head:hover{background:#fafafa}
+.min-title{font-weight:700;font-size:.9rem}
+.min-date{font-size:.78rem;color:var(--sub)}
+.min-body{padding:12px 14px;border-top:1px solid var(--line);font-size:.86rem;white-space:pre-wrap;line-height:1.8;display:none}
+.min-body.open{display:block}
+
+/* メンバー */
+.member-card{background:#fff;border-radius:11px;padding:13px 15px;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.lk-group{margin-bottom:18px}
+.lk-cat{font-size:.78rem;font-weight:800;color:var(--red);letter-spacing:.04em;margin-bottom:6px;padding-left:4px}
+.lk-card{background:#fff;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow);padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.lk-title{font-size:.9rem;font-weight:700;color:var(--text)}
+.lk-note{font-size:.75rem;color:var(--sub);margin-top:2px}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;flex-shrink:0}
+.member-info .mname{font-weight:700;font-size:.93rem}
+.member-info .mrole{font-size:.78rem;color:var(--sub)}
+.member-acts{margin-left:auto;display:flex;gap:5px}
+
+/* モーダル */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.moverlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:22px;width:92%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal h2{font-size:1rem;margin-bottom:14px;color:var(--red);font-weight:800}
+.frow{margin-bottom:12px}
+.frow label{display:block;font-size:.8rem;font-weight:700;margin-bottom:4px}
+.frow input,.frow select,.frow textarea{width:100%;padding:7px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:.88rem;font-family:inherit}
+.frow textarea{min-height:80px;resize:vertical}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+/* 設定 */
+.setting-box{background:#fff;border-radius:12px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:12px}
+.setting-box h3{font-size:.93rem;margin-bottom:10px;color:var(--red);font-weight:800}
+.srow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.srow input{flex:1;min-width:160px;padding:7px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:.84rem}
+#syncst{margin-top:8px;font-size:.82rem;color:var(--sub)}
+
+.empty{text-align:center;padding:36px;color:var(--sub);font-size:.9rem}
+a{color:var(--red)}
+@media(max-width:600px){
+  header h1{font-size:.93rem}
+  .tnb{padding:10px 10px;font-size:.78rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .tcard{flex-direction:column}
+  .tc-right{align-items:flex-start;flex-direction:row;flex-wrap:wrap}
+}
+
+/* 画像ライトボックス */
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;cursor:pointer}
+.lb.open{display:flex}
+.lb img{max-width:90vw;max-height:90vh;border-radius:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sub">株式会社LIFEFUND ／ 2026年7月28日（火）クリエート浜松2階 大ホール</div>
+    <h1>🎤 経営方針発表会 2026</h1>
+  </div>
+  <div class="hbtns">
+    <button class="btn btn-w" id="add-btn" onclick="onAddBtn()">＋ 追加</button>
+    <button class="btn btn-ol" onclick="goTab('settings')">⚙</button>
+  </div>
+</header>
+
+<nav class="tabnav">
+  <div class="tnb active" data-tab="board"    onclick="goTab('board')">   📌 掲示板</div>
+  <div class="tnb"        data-tab="tasks"    onclick="goTab('tasks')">   ② タスク</div>
+  <div class="tnb"        data-tab="gantt"    onclick="goTab('gantt')">   ③ ガントチャート</div>
+  <div class="tnb"        data-tab="budget"   onclick="goTab('budget')">  ④ 予算管理</div>
+  <div class="tnb"        data-tab="venue"    onclick="goTab('venue')">   ⑤ 会場情報</div>
+  <div class="tnb"        data-tab="layout"   onclick="goTab('layout')">  ⑥ レイアウト</div>
+  <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑦ タイムテーブル</div>
+  <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑧ 当日役割・備品</div>
+  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑨ 議事録</div>
+  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑩ メンバー</div>
+  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑪ リンク集</div>
+  <div class="tnb"        data-tab="settings" onclick="goTab('settings')">⚙ 設定</div>
+</nav>
+
+<!-- 掲示板 -->
+<div class="page show" id="page-board">
+  <div class="sect-head"><h2>📌 掲示板・お知らせ</h2></div>
+  <div id="cw-sync-bar"></div>
+  <div id="board-list"></div>
+</div>
+
+<!-- タスク -->
+<div class="page" id="page-tasks">
+  <div class="sect-head"><h2>② タスク管理</h2><button class="btn btn-r" onclick="openTaskModal()">＋ タスクを追加</button></div>
+  <div class="stats">
+    <div class="stat"><div class="num c-todo" id="cn-todo">-</div><div class="lbl">未着手</div></div>
+    <div class="stat"><div class="num c-prog" id="cn-prog">-</div><div class="lbl">進行中</div></div>
+    <div class="stat"><div class="num c-done" id="cn-done">-</div><div class="lbl">完了</div></div>
+    <div class="stat"><div class="num c-od"   id="cn-od">-</div><div class="lbl">⚠ 期限超過</div></div>
+  </div>
+  <div class="fpills">
+    <button class="fpill active" data-st="" onclick="setTaskFilter('')">すべて</button>
+    <button class="fpill" data-st="todo" onclick="setTaskFilter('todo')">📋 未着手</button>
+    <button class="fpill" data-st="prog" onclick="setTaskFilter('prog')">🔄 進行中</button>
+    <button class="fpill" data-st="done" onclick="setTaskFilter('done')">✅ 完了</button>
+    <button class="fpill" data-st="od" onclick="setTaskFilter('od')">⚠ 期限超過</button>
+  </div>
+  <div class="fbar2">
+    <select id="f-as" onchange="renderTasks()"><option value="">すべての担当者</option></select>
+    <select id="f-ca" onchange="renderTasks()"><option value="">すべてのカテゴリ</option></select>
+  </div>
+  <div id="task-list"></div>
+</div>
+
+<!-- ガントチャート -->
+<div class="page" id="page-gantt">
+  <div class="sect-head"><h2>③ ガントチャート（2026年6〜7月）</h2></div>
+  <div class="gantt-wrap"><table class="gtbl" id="gtbl"></table></div>
+</div>
+
+<!-- 予算管理 -->
+<div class="page" id="page-budget">
+  <div class="sect-head"><h2>④ 予算管理</h2><button class="btn btn-r" onclick="openBudgetModal()">＋ 費目追加</button></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="dtbl">
+      <thead><tr><th>費目</th><th>内容・参考URL</th><th style="width:100px">予算（円）</th><th style="width:80px">単価（円）</th><th style="width:60px">数量</th><th style="width:110px">実績（円）</th><th style="width:80px">差額</th><th style="width:90px">領収書</th><th style="width:56px"></th></tr></thead>
+      <tbody id="budget-body"></tbody>
+      <tfoot><tr style="background:#f9f9f9"><td colspan="2" style="font-weight:700;padding:8px 10px">合計</td><td class="num-cell" id="bud-tot" style="padding:8px 10px;font-weight:700"></td><td colspan="2"></td><td class="num-cell" id="bud-act" style="padding:8px 10px;font-weight:700"></td><td class="num-cell" id="bud-dif" style="padding:8px 10px;font-weight:700"></td><td colspan="2"></td></tr></tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- 会場情報 -->
+<div class="page" id="page-venue">
+  <div class="sect-head"><h2>⑤ 会場情報</h2><button class="btn btn-gray" onclick="openVenueEditModal()">✏️ 編集</button></div>
+
+  <!-- 会場カード -->
+  <div class="card" id="venue-display-card"></div>
+
+  <!-- 関連リンク -->
+  <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <span style="font-weight:800;font-size:.92rem;color:var(--red)">🔗 関連リンク</span>
+    <a href="https://www.hcf.or.jp/facilities/create/" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">🏛 クリエート浜松 公式サイト</a>
+    <a href="https://yoyacool.e-harp.jp/hamamatsu" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">📅 会場予約システム（松ぼっくり）</a>
+    <a href="https://snoweecafe.owst.jp/" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">🍽 スノーウィーカフェ（懇親会）</a>
+  </div>
+
+  <!-- イベント会場情報 -->
+  <div class="card" style="background:#fff8f8;border-color:#f8c6c6">
+    <div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🎉 懇親会 LIFEFUND VISION DAY 会場</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+      <div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">会場名</div><div style="font-weight:700;font-size:.95rem;margin-top:2px">スノーウィーカフェ　メイワン7F</div></div>
+      <div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">開催日時</div><div style="font-size:.9rem;margin-top:2px">2026年7月28日（火）18:15〜　※参加費無料</div></div>
+      <div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--sub)">住所</div>
+        <a href="https://www.google.com/maps/search/?api=1&query=静岡県浜松市中央区砂山町6-1+メイワン7F" target="_blank" style="font-size:.9rem;font-weight:700;display:block;margin-top:2px">📍 静岡県浜松市中央区砂山町6-1 メイワン7F</a>
+        <span style="font-size:.75rem;color:var(--sub)">タップでGoogleマップを開く</span>
+      </div>
+      <div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--sub)">公式サイト</div>
+        <a href="https://snoweecafe.owst.jp/" target="_blank" style="font-size:.9rem;font-weight:700;display:block;margin-top:2px">🔗 snoweecafe.owst.jp</a>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:10px;background:#fff;border-radius:8px;border:1px solid #f8c6c6;font-size:.84rem;line-height:1.7;color:#555">
+      💡 「一度帰宅したあとの途中参加」も大歓迎です。出欠登録は調整さんフォームから必ず回答ください（不参加の場合もコメント欄に理由の記載をお願いします）。
+    </div>
+  </div>
+
+  <!-- アクセスガイド -->
+  <div class="card">
+    <div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🚌 クリエート浜松 アクセスガイド</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+      <div style="background:#f0f4ff;border-radius:10px;padding:12px">
+        <div style="font-weight:700;margin-bottom:6px">🚃 電車の場合</div>
+        <div style="font-size:.85rem;line-height:1.8">JR浜松駅 北口から<br>徒歩 約15〜17分<br><span style="color:var(--sub);font-size:.78rem">東方向へ直進（遠州鉄道沿い）</span></div>
+        <a href="https://www.google.com/maps/dir/JR浜松駅/静岡県浜松市中央区早馬町2-1" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:12px">
+        <div style="font-weight:700;margin-bottom:6px">🚌 バスの場合</div>
+        <div style="font-size:.85rem;line-height:1.8">遠鉄バス 浜松駅バスターミナルから<br>「市役所南」バス停 下車<br>徒歩 約3分<br><span style="color:var(--sub);font-size:.78rem">系統：市内循環バス等</span></div>
+        <a href="https://maps.google.com/?q=遠鉄バス+市役所南+浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 バス停を地図で見る</a>
+      </div>
+      <div style="background:#fff8f0;border-radius:10px;padding:12px">
+        <div style="font-weight:700;margin-bottom:6px">🚗 車の場合</div>
+        <div style="font-size:.85rem;line-height:1.8">東名浜松IC から約20分<br>浜松西ICから約25分<br><span style="color:var(--sub);font-size:.78rem">駐車場は提携先をご利用ください</span></div>
+        <a href="https://www.google.com/maps/dir//静岡県浜松市中央区早馬町2-1+クリエート浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提携駐車場 -->
+  <div class="card">
+    <div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🅿 提携駐車場</div>
+    <div id="parking-list"></div>
+  </div>
+</div>
+
+<!-- レイアウト -->
+<div class="page" id="page-layout">
+  <div class="sect-head"><h2>⑥ レイアウト</h2><button class="btn btn-r" onclick="saveLayout()">保存</button></div>
+  <div class="card">
+    <div class="frow"><label>レイアウト図のURL（画像リンクがあれば）</label><input type="url" id="layout-url" placeholder="https://..."></div>
+    <div id="layout-img-preview" style="margin-bottom:12px"></div>
+    <div class="frow"><label>レイアウトメモ・備考</label><textarea id="layout-memo" style="min-height:200px"></textarea></div>
+  </div>
+</div>
+
+<!-- タイムテーブル -->
+<div class="page" id="page-programs">
+  <div class="sect-head">
+    <h2>⑦ タイムテーブル</h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <a class="btn btn-r" style="text-decoration:none" href="https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/edit?gid=1861154966" target="_blank">📊 スプレッドシートを開く</a>
+      <button class="btn btn-gray" onclick="downloadSchedulePDF()">🖨 スケジュール印刷用PDF</button>
+      <button class="btn btn-gray" onclick="openProgModal()">＋ 追加</button>
+    </div>
+  </div>
+  <!-- 日程・着座情報 -->
+  <div class="card" style="border-left:4px solid var(--red);padding:14px 16px;margin-bottom:12px">
+    <div style="font-weight:800;color:var(--red);font-size:1rem;margin-bottom:8px">📅 2026年7月28日（火）クリエート浜松 2階 大ホール</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem">
+      <span>⏰ <b>発表会：9:30〜15:05</b></span>
+      <span>🚪 <b>来場者着座：11:30まで</b></span>
+      <span>👥 <b>委員集合：8:00</b></span>
+    </div>
+  </div>
+  <!-- スプレッドシート埋め込み -->
+  <div class="card" style="padding:10px;overflow:hidden;margin-bottom:12px">
+    <div style="font-size:.78rem;color:var(--sub);margin-bottom:6px;font-weight:700">📊 7月タイムテーブル（スプレッドシート・最新版）</div>
+    <iframe src="https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/htmlview?gid=1148430505" style="width:100%;height:500px;border:none;border-radius:6px" title="7月タイムテーブル"></iframe>
+  </div>
+  <!-- 種目リスト（手動管理） -->
+  <details>
+    <summary style="cursor:pointer;padding:10px 14px;background:#fff;border-radius:10px;box-shadow:var(--shadow);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--sub);list-style:none">▶ 種目リスト（手動管理・編集可）</summary>
+    <div class="card" style="margin-top:6px;overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th style="width:40px">No</th><th style="width:90px">時刻</th><th>種目名</th><th>発表者・担当</th><th style="width:60px">分</th><th>担当委員</th><th style="width:56px"></th></tr></thead>
+        <tbody id="prog-body"></tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<!-- 当日役割 -->
+<div class="page" id="page-teams">
+  <div class="sect-head"><h2>⑧ 当日役割・担当一覧</h2><button class="btn btn-r" onclick="openTeamModal()">＋ 役割追加</button></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="dtbl">
+      <thead><tr><th>役割・担当業務</th><th>担当者</th><th>期限</th><th>進捗</th><th>メモ</th><th style="width:56px"></th></tr></thead>
+      <tbody id="teams-body"></tbody>
+    </table>
+  </div>
+  <!-- 備品リスト -->
+  <div class="sect-head" style="margin-top:20px"><h2>📦 備品リスト</h2><button class="btn btn-r" onclick="openSupplyModal()">＋ 追加</button></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="dtbl">
+      <thead><tr><th style="width:80px;text-align:center">持参確認 ✓</th><th>カテゴリ</th><th>品名</th><th>数量</th><th>担当者</th><th>状態</th><th>メモ</th><th style="width:56px"></th></tr></thead>
+      <tbody id="supply-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 議事録 -->
+<div class="page" id="page-minutes">
+  <div class="sect-head"><h2>⑨ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
+  <div id="min-list"></div>
+</div>
+
+<!-- メンバー -->
+<div class="page" id="page-members">
+  <div class="sect-head"><h2>⑩ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
+  <div id="member-list"></div>
+</div>
+
+<!-- リンク集 -->
+<div class="page" id="page-links">
+  <div class="sect-head"><h2>⑪ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
+  <div id="links-list"></div>
+</div>
+
+<!-- 設定 -->
+<div class="page" id="page-settings">
+  <div class="setting-box">
+    <h3>🌐 クラウド共有設定（jsonbin.io）</h3>
+    <p style="font-size:.83rem;color:#666;margin-bottom:10px"><a href="https://jsonbin.io" target="_blank">jsonbin.io</a> で無料アカウント作成 → APIキーとBin IDを入力すると委員全員でリアルタイム共有できます</p>
+    <div class="srow">
+      <input type="text" id="s-ak" placeholder="X-Access-Key（APIキー）">
+      <input type="text" id="s-bi" placeholder="Bin ID">
+      <button class="btn btn-r" onclick="saveCfg()">保存</button>
+    </div>
+    <div class="srow" style="margin-top:8px">
+      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="syncDown()">↓ クラウドから読込</button>
+      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="syncUp()">↑ クラウドへ保存</button>
+    </div>
+    <div id="syncst"></div>
+  </div>
+  <div class="setting-box">
+    <h3>📥 データ管理</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="expJSON()">JSONエクスポート</button>
+      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="impJSON()">JSONインポート</button>
+      <button class="btn btn-ol" style="color:#c62828;border-color:#c62828" onclick="resetAll()">初期データにリセット</button>
+    </div>
+  </div>
+</div>
+
+<!-- モーダル -->
+<div class="moverlay" id="moverlay" onclick="if(event.target===this)cm()">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<!-- ライトボックス（領収書画像） -->
+<div class="lb" id="lb" onclick="this.classList.remove('open')">
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script>
+// ===== 初期データ =====
+const INIT = {
+tasks:[
+  {id:'t1',title:'看板見積取得（鈴木工芸）',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-06-30',status:'prog',memo:'展示物サイズ・組み立てやすさを考慮'},
+  {id:'t2',title:'360°FBアンケート叩き台作成',assignee:'岡さん・髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-06-21',status:'todo',memo:'今週中に提出目標'},
+  {id:'t3',title:'デジタルアンケートフォーム作成',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-10',status:'todo',memo:'Googleフォーム'},
+  {id:'t4',title:'360°FBスライド作成',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-10',status:'todo',memo:''},
+  {id:'t5',title:'回答者リスト作成（360°FB）',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'対象者の案をまとめる'},
+  {id:'t6',title:'タイムテーブル再調整・確定',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'12時開始に合わせて再調整'},
+  {id:'t7',title:'パートタイム従業員参加可否確認',assignee:'松下さん',category:'その他',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'社長へ確認'},
+  {id:'t8',title:'会場飲食規約確認',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'コーヒー等の持ち込み可否'},
+  {id:'t9',title:'天龍コーヒー発注内容決定',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'紅茶の提供有無・数量を決定'},
+  {id:'t10',title:'会場下見',assignee:'秀之さん',category:'会場・備品',start:'2026-06-23',due:'2026-06-23',status:'todo',memo:'全体確認15分＋機材打合せ30〜60分'},
+  {id:'t11',title:'第6回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-06-26',due:'2026-06-26',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
+  {id:'t12',title:'第1回リハーサル',assignee:'委員会＋発表者',category:'MTG・リハーサル',start:'2026-07-01',due:'2026-07-01',status:'todo',memo:'9:00〜13:00 PGハウス曳馬'},
+  {id:'t13',title:'予算承認会議',assignee:'松下さん',category:'その他',start:'2026-07-10',due:'2026-07-10',status:'todo',memo:'15:30 社長への再提案・最終承認'},
+  {id:'t14',title:'第2回リハーサル',assignee:'委員会＋発表者',category:'MTG・リハーサル',start:'2026-07-13',due:'2026-07-13',status:'todo',memo:'9:00〜13:00 PGハウス曳馬'},
+  {id:'t15',title:'第7回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-07-16',due:'2026-07-16',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
+  {id:'t16',title:'第8回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-07-23',due:'2026-07-23',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
+  {id:'t17',title:'発表スライド提出期限',assignee:'全発表者',category:'タイムテーブル・スライド',start:'2026-07-24',due:'2026-07-24',status:'todo',memo:'最終版 昼12:00まで提出（松下さんへ）'},
+  {id:'t18',title:'🎉 経営方針発表会 本番',assignee:'全社員',category:'MTG・リハーサル',start:'2026-07-28',due:'2026-07-28',status:'todo',memo:'8:00委員集合 クリエート浜松ホール'},
+  {id:'t19',title:'ロールアップバナー ラクスル発注',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-07-20',status:'todo',memo:'巻き取り式 ¥25,887/本・発注本数・仕様を確定次第発注'},
+  {id:'t20',title:'クリエート浜松 会場打合せ',assignee:'松下さん・秀之さん・山本さん',category:'会場・備品',start:'2026-07-08',due:'2026-07-08',status:'todo',memo:'9:30〜11:00 クリエート浜松 レイアウト・PA・飲食持込確認'},
+  {id:'t21',title:'360°FBフォーム 全員へ配布',assignee:'髙松さん・岡さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'委員会メンバー各自がチームへ個別チャットで送付'},
+  {id:'t22',title:'表彰アンケート 回収・集計',assignee:'グループ',category:'その他',start:'2026-06-17',due:'2026-06-30',status:'todo',memo:'6月末締め切り'},
+],
+board:[
+  {id:'b1',name:'委員会事務局',tag:'info',text:'このページは経営方針発表会’26委員会の情報共有ページです。タスク・予算・会場情報・議事録をまとめて管理します。気づいたことや連絡事項はここに投稿してください。',date:'2026-06-17'},
+  {id:'b2',name:'委員会事務局',tag:'info',text:'【次回MTG】\n第6回 委員会MTG\n📅 2026年6月26日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n\n議題予定：\n・タイムテーブル確定\n・看板見積確認\n・予算承認\n・360°FB進捗確認\n・コーヒー発注内容決定',date:'2026-06-17'},
+  {id:'b3',name:'委員会事務局',tag:'info',text:'【リハーサル日程】\n■ 第1回リハーサル\n　7月1日（水）9:00〜13:00　PGハウス曳馬\n\n■ 第2回リハーサル\n　7月13日（月）9:00〜13:00　PGハウス曳馬\n\n発表者・委員全員が参加。スライド確認・時間調整を行います。',date:'2026-06-17'},
+  {id:'b4',name:'委員会事務局',tag:'ask',text:'【確認事項】\n以下2点を至急確認お願いします。\n\n① 会場（クリエート浜松）の飲食持ち込み規約\n　→ コーヒー・お弁当の提供が可能かどうか\n　→ 秀之さん、会場下見時に確認をお願いします\n\n② パートタイム従業員の参加可否\n　→ 松下さんから社長へ確認',date:'2026-06-17'},
+  {id:'b5',name:'森下 秀之',tag:'info',text:'【ロールアップバナー 検討報告】\nラクスルで巻き取り式バナーを確認しました。\n\n・ラクスル 巻き取り式：1本 ¥25,887（税込）\n・安価版（組立やや手間）：¥9,000台〜\n・デザインはChatGPTで作成済み（PPTXあり）\n\n松下さんより「これが良いですね」と承認いただきました。\n発注本数・仕様を確定次第、発注します。',date:'2026-06-17'},
+  {id:'b6',name:'髙松 柚子',tag:'info',text:'【360°フィードバック 対象者ペア確定】\n\n■ 相互FBペア\n美香さん ↔ 見野さん\n水野さん ↔ 松田さん\n秀之さん ↔ 神谷さん\n佐藤さん（エクステリア）↔ 永井さん\n\n■ 管理職向け別フォーム対象（松下さん承認済み）\n社長・川島さん・宇田さん・石澤さん・鵜飼さん\n添田さん・望月さん・青島さん・森下課長\n倉田さん・加藤さん・岡田さん\n→ 上記の方々が藤平さん他8名にFBするフォーム\n\n■ 配布方法\n委員会メンバーが各自チームへ個別チャットで送付\n\nGoogleフォーム作成済み（岡さんと共有）',date:'2026-06-17'},
+  {id:'b7',name:'波多野 恵梨',tag:'info',text:'【リハーサル参加者 ラクモ登録完了】\n\n■ 発表者・司会（ラクモ登録済み）\n社長・三山さん・宇田さん・藤平さん・川島さん\n袴田さん・鵜飼さん・水野さん・青島さん・山本さん\n大峰さん・周太郎さん（青島さんと2人発表）・倉田さん\n\n■ 委員会メンバー全員も参加\n\n■ 削除対応済み\n磯口さん・石野さん・望月さん（発表なしのため）\n※周太郎さんは再追加済み（松下さんより指示）',date:'2026-06-17'},
+  {id:'b8',name:'松下 雄紀',tag:'info',text:'【6/26 MTGについて】\n次回6/26（金）10:00〜のMTGは、各自タスクを進める時間とします。\n\nタスクの進め方がわからなかった方も多いと思います。\n次回までに「わからないこと」を項目にあげておいてください。\n前期メンバー（松下・髙松・森下）が対応します。\n\n出来る人はそのまま進めてもOKです。',date:'2026-06-17'},
+  {id:'b9',name:'イベント委員会',tag:'info',text:'🔴 イベント委員会からのお知らせです 🔴\n\n皆さん、お疲れ様です！全体会議でご案内した\n💡 LIFEFUND VISION DAY ～つながる下期決起集会～ 💡\nの出欠登録をお願いします。\n\n急拡大するLIFEFUNDの壁をなくし、下期に向けて全員で「事業のスピードと質」を高める最強のチームを作るためのキックオフです。当日は豪華景品が当たるお楽しみ企画も準備中です。\nご家庭の事情等がある方もいらっしゃるかと思いますが、「一度帰宅したあとの途中参加」も大歓迎です！ぜひお気軽にご参加ください。\n\n◆ 開催日：7月28日（火）経営方針発表会 終了後\n◆ 時　間：18:15〜\n◆ 場　所：スノーウィーカフェ\n　　静岡県浜松市中央区砂山町6-1　メイワン7F\n　　https://snoweecafe.owst.jp/\n◆ 参加費：無料\n\n会場手配・人数確定の兼ね合いがあるため、社員・パートの皆さんも含め全員必ず以下のフォームから回答をお願いいたします。\n\n※「不参加」となる場合は、社員・パートの皆さん共通で、調整さんコメント欄に理由のご記載（例：家庭の事情、先約あり等）をお願いいたします。\n※なお、社員の方で「不参加」とされる場合は、業務調整や今後のフォローのため、個別に詳細をご相談させていただく場合がございます。予めご了承ください。',date:'2026-06-20'},
+  {id:'b11',name:'白都 卓磨（コンセプト方針書 2026-06-06）',tag:'warn',text:'【📋 経営方針発表会 コンセプト方針書】\n発行：白都 卓磨　2026年6月6日\n\n■ 今回の生産物\n「グループに参加した人々」\n\n▶ 参加とは会場にいることではない。LIFEFUNDのビジョンに合意し、自分もグループを作る側（起因者）として本当の意味で参加している状態のこと。\n\n■ なぜこの生産物が必要か\n・これからLIFEFUNDに130人以上が入ってきて200人規模になる\n・200人規模のとき、過半数（101人以上）の合意が最低デッドライン\n・今いる既存社員70〜80人は全員が合意・起因者でなければならない\n\n■ 社長一人では作れない\n・既存メンバーの2倍以上が新規入社→文化・価値観が希釈される\n・今のうちに3倍以上に濃くする必要がある\n・一人ひとりが起因者として参加することでしか作れない\n\n■ 発表者の方へ（重要）\n発表は部署の報告ではない。スライドを作り時間通りに話して終わりでもない。\n問われるのは「発表後にグループに参加した人々は作れたか」。\nこの生産物から逆算して準備してください。\n\n■ 発表内容を作る時の前提チェック\n□ この発表で社員にどんな合意を作るか\n□ 社員を傍観者でなく起因者にするために何を伝えるか\n□ 自部署の成果・課題がLIFEFUND全体のビジョンと接続されているか\n□ 決定事項だけでなく動機・意図・目的まで伝わるか\n□ 聞いた社員が「自分もグループを作る側だ」と受け取れる言葉か\n\nFor youとは優しくすることではなく、相手がより良い決定と生産物を作れる状態にすること。',date:'2026-06-20'},
+  {id:'b10',name:'松下 雄紀（Chatwork全体チャットより）',tag:'warn',text:'【⚠️ 発表者の方へ 重要連絡】\n\n■ 発表会概要\n・日時：2026年7月28日（火）11:30〜17:05予定（※時間変更の可能性あり）\n・会場：クリエート浜松 2階ホール\n・昼食：お弁当の配布はありません。集合前に済ませてご参加ください。\n\n■ 発表者スケジュール\n・リハーサル1回目：7月1日（水）9:00〜13:00\n・リハーサル2回目：7月13日（月）9:00〜13:00\n・最終版スライド提出期限：7月24日（金）昼12:00まで\n\n■ 発表の必須観点（4点）\n1. 上期で進んだこと・成果\n2. 今、部署として向き合うべき課題\n3. 下期に必ずやり切ること\n4. 全社・他部署に協力してほしいこと\n（AI活用・2027年以降の展望・変えること/やめること/強化することがあれば上記に交えて）\n\n■ 資料作成ルール\n・Googleスライド使用・フォント：BIZ UDP Gothic\n・タイトル：24pt / 本文：18pt以上 / 強調：24pt以上\n・カラー：グレーベース、強調はオレンジ・暗い赤（全体3色以内）\n・1スライド1メッセージ、グラフ文字も18pt以上\n\n⚠️ まず「コンセプト方針書（260606_白都発行）」を必ずお読みください。\n→ Chatwork委員会ルームの添付ファイルからダウンロード\n→ 内容を他者に誤解なく伝えられる状態にしてください',date:'2026-06-20'},
+],
+budget:[
+  {id:'g1',name:'会場費（クリエート浜松 8時〜17時）',detail:'クリエート浜松 大ホール 8:00〜17:00',budget:77620,unitPrice:77620,qty:1,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g2',name:'駐車場代（1,200円×85名分）',detail:'OGURI等周辺駐車場 1,200円×85名',budget:102000,unitPrice:1200,qty:85,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g4',name:'飲み物（お茶・水・箸・おしぼり）',detail:'',budget:9112,unitPrice:0,qty:0,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g5',name:'スタッフ表彰（ADVMVP・選挙型賞・社長賞・祝儀袋）',detail:'',budget:50880,unitPrice:0,qty:0,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g6',name:'アイスコーヒーケータリング＋紅茶＋コースター＋菓子',detail:'天竜コーヒー等',budget:61813,unitPrice:0,qty:0,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g7',name:'レーザーポインター',detail:'委員会予算で購入済み',budget:11145,unitPrice:0,qty:0,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g8',name:'Wi-Fiホームルーター・HDMIコード',detail:'',budget:5470,unitPrice:0,qty:0,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g9',name:'クギスケ 映像制作一式',detail:'',budget:200000,unitPrice:200000,qty:1,actual:0,url:'',receipts:[],section:'7月',spSync:true},
+  {id:'g10',name:'ロールアップバナー（ラクスル）',detail:'W600×H1800mm 巻き取り式 3本',budget:60000,unitPrice:20000,qty:3,actual:0,url:'https://raksul.com/banner-stand/rollup-banner/',receipts:[],section:'7月',spSync:false},
+],
+venue:{
+  name:'クリエート浜松 大ホール',
+  datetime:'2026年7月28日（火） 12:00〜17:00（委員8:00集合）',
+  address:'〒430-0916 静岡県浜松市中区早馬町2-1',
+  tel:'053-453-5311',
+  capacity:'約500名',
+  parking:'有（周辺有料駐車場）',
+  access:'JR浜松駅から徒歩約15分、またはバス',
+  note:'搬入は当日8:00から可。PA・映像設備は会場設備を利用。',
+},
+slideLinks:[
+  {id:'sl1',year:'今年（2026年）',label:'経営方針発表会 メインスライド',url:''},
+  {id:'sl2',year:'昨年（2025年）',label:'経営方針発表会 メインスライド',url:''},
+  {id:'sl3',year:'昨年（2025年）',label:'360°フィードバック スライド',url:''},
+  {id:'sl4',year:'動画アーカイブ',label:'📹 2025年7月29日（第54期下期）動画フォルダ',url:'https://drive.google.com/drive/folders/199v4olS6jw2-ysaMA43LBM2mLHmOPHNQ'},
+  {id:'sl5',year:'動画アーカイブ',label:'📹 2026年1月26日（第55期上期）動画・資料フォルダ',url:'https://drive.google.com/drive/folders/1RH81Llm94q6h412I8ks-DqrsobaRGmx2'},
+],
+parking:[
+  {id:'pk1',name:'OGURIパーキング1',address:'浜松市中央区早馬町（クリエート浜松北側付近）',mapUrl:'https://www.google.com/maps/search/?api=1&query=OGURIパーキング1+浜松市中央区早馬町',note:'割引あり：1階事務室の認証機に駐車券を通すと200円引き（40分無料）。最大12h 1,200円。Tel:053-456-1212'},
+  {id:'pk2',name:'OGURIパーキング2',address:'浜松市中央区早馬町（クリエート浜松北側付近）',mapUrl:'https://www.google.com/maps/search/?api=1&query=OGURIパーキング2+浜松市中央区早馬町',note:'割引あり：1階事務室の認証機に駐車券を通すと200円引き（40分無料）。高さ2.1m以下・幅1.9m以下・全長5.0m以下。Pチケット不可。'},
+],
+layout:{url:'',memo:'【会場レイアウトメモ】\n\n・ステージ：正面（北側）\n・客席：約300席（フォールディングチェア）\n・スクリーン：ステージ中央 大型1面\n・PA卓：客席後方右\n・受付：エントランス入口\n・コーヒーコーナー：ロビー（右側）\n・展示コーナー：ロビー（左側）\n\n※詳細は会場下見後に更新予定'},
+programs:[
+  {id:'p0',no:0,title:'来場者着座・前説',presenter:'',startTime:'11:30',endTime:'12:00',time:30,staff:'BGM',type:'pre'},
+  {id:'p1',no:1,title:'① 開会挨拶・会場説明・注意事項・オープニング動画',presenter:'',startTime:'12:00',endTime:'12:05',time:5,staff:'大峰係長'},
+  {id:'pt1',no:0,title:'（入れ替わり）',presenter:'',startTime:'12:05',endTime:'12:06',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p2',no:2,title:'② 社長 方針発表',presenter:'社長',startTime:'12:06',endTime:'13:06',time:60,staff:''},
+  {id:'pb1',no:0,title:'── 休憩 ──',presenter:'',startTime:'13:06',endTime:'13:16',time:10,staff:'大峰係長',type:'break'},
+  {id:'p3',no:3,title:'③ 上場に向けて、全社で変える基準',presenter:'藤平管理本部長',startTime:'13:16',endTime:'13:26',time:10,staff:''},
+  {id:'pt2',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:26',endTime:'13:27',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p5',no:5,title:'⑤ マーケティング課（マーケティングチーム・CXデザインチーム）',presenter:'宇田課長',startTime:'13:27',endTime:'13:42',time:15,staff:''},
+  {id:'pt3',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:42',endTime:'13:43',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p6',no:6,title:'⑥ ARRCHアドバイザー課',presenter:'三山課長',startTime:'13:43',endTime:'13:53',time:10,staff:''},
+  {id:'pt4',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:53',endTime:'13:54',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p7',no:7,title:'⑦ PGHOUSEアドバイザー課',presenter:'袴田課長',startTime:'13:54',endTime:'14:04',time:10,staff:''},
+  {id:'pt5',no:0,title:'（入れ替わり）※ケータリング提供開始',presenter:'',startTime:'14:04',endTime:'14:05',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p8',no:8,title:'⑧ 設計課（設計チーム・スタイリストチーム）',presenter:'鵜飼係長・水野係長',startTime:'14:05',endTime:'14:20',time:15,staff:''},
+  {id:'pb2',no:0,title:'── 中休憩・軽いストレッチ ──',presenter:'',startTime:'14:20',endTime:'14:35',time:15,staff:'大峰係長',type:'break'},
+  {id:'p9',no:9,title:'⑨ 建設課（監督チーム・アフターチーム共）',presenter:'青島係長',startTime:'14:35',endTime:'14:45',time:10,staff:''},
+  {id:'pt6',no:0,title:'（入れ替わり）',presenter:'',startTime:'14:45',endTime:'14:46',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p10',no:10,title:'⑩ 物件王国・買取再販・相続・戸建て賃貸',presenter:'山本マネージャー',startTime:'14:46',endTime:'15:06',time:20,staff:''},
+  {id:'pt7',no:0,title:'（入れ替わり）',presenter:'',startTime:'15:06',endTime:'15:07',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p11',no:11,title:'⑪ AI事業',presenter:'三山課長',startTime:'15:07',endTime:'15:17',time:10,staff:''},
+  {id:'pt8',no:0,title:'（入れ替わり）',presenter:'',startTime:'15:17',endTime:'15:18',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p12',no:12,title:'⑫ 組織人事課',presenter:'川島課長',startTime:'15:18',endTime:'15:28',time:10,staff:''},
+  {id:'pb3',no:0,title:'── 休憩 ──',presenter:'',startTime:'15:28',endTime:'15:38',time:10,staff:'大峰係長',type:'break'},
+  {id:'p13',no:13,title:'⑬ 全社員フィードバック動画（360°FB） ※2',presenter:'',startTime:'15:38',endTime:'15:46',time:8,staff:'大峰係長'},
+  {id:'p14',no:14,title:'⑭ スタッフ表彰',presenter:'',startTime:'15:46',endTime:'16:06',time:20,staff:'大峰係長'},
+  {id:'p15',no:15,title:'⑮ 終了後アンケート記入',presenter:'',startTime:'16:06',endTime:'16:13',time:7,staff:'大峰係長'},
+  {id:'p16',no:16,title:'⑯ 閉会挨拶',presenter:'',startTime:'16:13',endTime:'16:18',time:5,staff:'大峰係長'},
+  {id:'p17',no:17,title:'⑰ 写真撮影準備・撮影',presenter:'',startTime:'16:18',endTime:'16:35',time:17,staff:'委員'},
+  {id:'p18',no:18,title:'⑱ 採用プロモーション用 個別インタビュー撮影候補',presenter:'',startTime:'16:35',endTime:'17:05',time:30,staff:'委員・川島課長'},
+  {id:'p19',no:19,title:'⑲ 完全撤収',presenter:'',startTime:'17:05',endTime:'17:15',time:10,staff:'委員'},
+  {id:'pend',no:0,title:'→ 決起集会へ移動',presenter:'',startTime:'17:15',endTime:'',time:0,staff:'',type:'end'},
+],
+teams:[
+  {id:'r1',role:'全体統括・司会進行',assignee:'松下さん',due:'2026-07-28',status:'todo',memo:''},
+  {id:'r2',role:'会場・設備担当',assignee:'秀之さん',due:'2026-07-28',status:'todo',memo:'看板・機材・レイアウト'},
+  {id:'r3',role:'360°FBコンテンツ担当',assignee:'髙松さん・岡さん',due:'2026-07-10',status:'todo',memo:'アンケート・スライド'},
+  {id:'r4',role:'タイムテーブル・スライド収集',assignee:'松下さん',due:'2026-07-24',status:'todo',memo:''},
+  {id:'r5',role:'コーヒー・ケータリング手配',assignee:'グループ',due:'2026-07-20',status:'todo',memo:'天龍コーヒー'},
+  {id:'r6',role:'表彰・賞品準備',assignee:'未定',due:'2026-07-20',status:'todo',memo:''},
+  {id:'r7',role:'受付・案内スタッフ調整',assignee:'未定',due:'2026-07-20',status:'todo',memo:''},
+  {id:'r8',role:'当日PA・映像オペ確認',assignee:'秀之さん',due:'2026-07-01',status:'todo',memo:'会場スタッフと事前打合せ'},
+],
+supplies:[
+  {id:'s1',cat:'映像・音響',name:'HDMI ケーブル（発表者用）',qty:'3本',assignee:'秀之さん',status:'todo',memo:'外部/Mac対応変換アダプタも持参'},
+  {id:'s2',cat:'映像・音響',name:'Wi-Fiルーター',qty:'1台',assignee:'秀之さん',status:'todo',memo:'当日使用後に返却（酒井くん）'},
+  {id:'s3',cat:'映像・音響',name:'レーザーポインター',qty:'2台',assignee:'秀之さん',status:'done',memo:'委員会予算で購入済み'},
+  {id:'s4',cat:'映像・音響',name:'延長ケーブル・電源タップ',qty:'2本',assignee:'秀之さん',status:'todo',memo:''},
+  {id:'s5',cat:'ケータリング',name:'天龍コーヒー',qty:'1セット',assignee:'松下さん',status:'todo',memo:'約80杯。ショップカード有無確認中'},
+  {id:'s6',cat:'ケータリング',name:'コーヒーポット（電気式）',qty:'1台',assignee:'松下さん',status:'todo',memo:'PGハウスのポット使用可否確認済み'},
+  {id:'s7',cat:'ケータリング',name:'紙コップ・スターラー',qty:'適宜',assignee:'松下さん',status:'todo',memo:''},
+  {id:'s8',cat:'ケータリング',name:'お菓子（チョコレート等）',qty:'適宜',assignee:'松下さん',status:'todo',memo:'予算計上・社長承認済み'},
+  {id:'s9',cat:'受付・案内',name:'受付名簿（社員名簿印刷）',qty:'1部',assignee:'未定',status:'todo',memo:''},
+  {id:'s10',cat:'受付・案内',name:'駐車場案内図',qty:'必要部数',assignee:'未定',status:'todo',memo:'7月8日頃までに作成'},
+  {id:'s11',cat:'受付・案内',name:'記名台・ペン',qty:'1式',assignee:'未定',status:'todo',memo:''},
+  {id:'s12',cat:'表彰・賞品',name:'表彰状・賞品',qty:'要確認',assignee:'未定',status:'todo',memo:'7月10日までにアンケート集計'},
+  {id:'s13',cat:'撮影・記録',name:'カメラ（写真・動画）',qty:'最大4台',assignee:'委員',status:'todo',memo:'採用プロモーション用インタビュー撮影あり'},
+  {id:'s14',cat:'撮影・記録',name:'三脚',qty:'1〜2本',assignee:'委員',status:'todo',memo:''},
+  {id:'s15',cat:'会場設営',name:'ロールアップバナー',qty:'1本',assignee:'秀之さん',status:'todo',memo:'ラクスル検討中（¥25,887〜）'},
+  {id:'s16',cat:'会場設営',name:'アンケート用紙（印刷）',qty:'参加者分',assignee:'未定',status:'todo',memo:'終了後アンケート記入用'},
+  {id:'s17',cat:'会場設営',name:'ボールペン（アンケート用）',qty:'参加者分',assignee:'未定',status:'todo',memo:''},
+  {id:'s18',cat:'その他',name:'委員会メンバー名札',qty:'8枚',assignee:'委員',status:'todo',memo:''},
+],
+minutes:[
+  {id:'m0',date:'2026-06-06',title:'📋 コンセプト方針書（白都 卓磨・全文）',body:'発行日：2026年6月6日　発行：白都 卓磨\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ 今回の生産物\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n今回の経営方針発表会の生産物は明確に決めています。\n\n　　生産物は「グループに参加した人々」です。\n\nここでいう参加とは、会場にいること、話を聞くこと、発表を見ることではありません。\n\nLIFEFUNDというグループのビジョンに合意し、自分もこのグループを作る側だと受け取り、グループの生産活動に本当の意味で参加している状態のことです。\n\n傍観者でも、視聴者でも、ただの参加者でもなく、一人ひとりがLIFEFUNDグループの起因者として、前進をつくる側にいること。\n\nそれが、今回の経営方針発表会で作りたい状態です。\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ なぜこの生産物が必要なのか\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n130人以上の新しい人が入ってくる → グループ全体が200人規模になる\n→ 過半数の合意（101人以上）が最低デッドライン\n→ 今いる既存社員70・80人は全員が合意・参加でなければならない\n\nこれからLIFEFUNDには、130人以上の新しい人が入ってきます。その結果、グループ全体は200人規模になっていきます。\n\nその時に、グループの現実性を決めるのは、合意の数です。グループは、最終的には多数決です。合意している人の数が足りなければ、グループ全体の現実性は同じ方向を向きません。\n\n200人規模になった時、最低でも過半数である101人以上が、我々のビジョンに本当に合意し、LIFEFUNDグループの生産活動に参加していなければ、グループとしての現実性は同じ方向に向きません。\n\nだから、101人以上が合意している状態は、最低デッドラインです。\n\nそう考えると、7月の経営方針発表会に参加する既存の70人・80人の社員は、当然ながら全員が合意し、本当の意味でグループに参加している状態でなければなりません。\n\n今回の経営方針発表会は、その状態を作る場です。\n\nこれは、プレッシャーをかけたいという話ではありません。LIFEFUNDがこれから大きくなっていく時に、今いる一人ひとりが、会社の未来を自分のこととして受け取れる状態を作りたい、という話です。\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ 社長一人では、もう作れない\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n社長である私が一人で起因に立っていても、もう限界があります。一部の人だけが起因に立っている状態でも、これからのLIFEFUNDグループは作れません。\n\n今の既存メンバーの2倍以上の人が新しく入ってくるということは、何もしなければ、今の文化・価値観・基準・責任レベル・大事にしているものが薄まるということです。下手をすれば、3分の1まで希釈されます。\n\nだからこそ、我々が保たなければいけないものは、今のうちに3倍以上に濃くしていく必要があります。その濃度は、社長一人では作れません。部長だけでも、課長だけでも、発表者だけでも作れません。\n\nここにいる一人ひとりが起因に立ち、LIFEFUNDグループを作る側になることでしか作れません。その状態になった人々こそが、「グループに参加した人々」です。\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ 発表者の人へ\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n発表者、スライド作成者、各課長、部長、運営に関わる全員へ伝えたいことがあります。\n\n今回作る生産物は、「グループに参加した人々」です。\n\n発表は、部署ごとの報告ではありません。スライドを作り、時間通りに話して終わるものでもありません。\n\n問われるのは、発表後に「グループに参加した人々は作れたか」です。\n\n各自、この生産物から逆算して準備してください。\n\n発表内容を設計するときに問う7つの問い：\n・この発表で、社員にどんな合意を作るのか\n・この発表で、社員の責任レベルをどこまで上げるのか\n・この発表で、社員を傍観者ではなく起因者にするために何を伝えるのか\n・このスライドは、単なる説明資料ではなく、グループに参加した人々を作るためのものになっているか\n・自部署の成果や課題が、LIFEFUNDグループ全体のビジョンと接続されているか\n・決定事項だけでなく、動機・意図・目的まで伝わる内容になっているか\n・聞いた社員が「自分もこのグループを作る側だ」と受け取れる言葉になっているか\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ 発表内容を作る時の前提\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n単に発表内容を整えるのではなく、「この発表によって、LIFEFUNDグループに本当の意味で参加した人を作る」という意図で、発表内容、スライド、話す順番、伝える背景、込める意図を決めてください。\n\n決定事項だけを伝えても、人は本当の意味では参加できません。なぜそれを決めたのか、何を実現したいのか、どんな未来に合意してほしいのか。そこまで伝えて、初めて人は決定に参加できます。\n\nFor youとは、優しくすることではありません。相手がより良い決定と生産物を作れる状態にすることです。\n\n今回の発表会では、全員がその観点で、自分の発表や準備を設計してください。\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n■ 最後に\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n今回の経営方針発表会は、70人・80人の既存社員全員を、これから200人規模になるLIFEFUNDグループの起因者にするための場です。\n\n私は、今回の発表会を、ただ方針を伝える場にはしたくありません。一人ひとりが、LIFEFUNDの未来を自分の仕事とつなげて、自分もこのグループを作っていく側なんだと受け取れる場にしたいです。\n\nそのために、発表者も、スライド作成者も、各課長も、部長も、運営に関わる人も、全員がこの生産物から逆算して準備してください。\n\n今回作るものは、資料でも、発表でも、イベントでもありません。\nグループに参加した人々です。\n\n　　　　　　　　　　　　LIFEFUND Corporation　白都 卓磨'},
+  {id:'m1',date:'2026-04-10',title:'第1回 委員会MTG（キックオフ）',body:'📅 2026年4月10日（木）10:30〜12:00\n📍 アーチ鴨江事務所\n\n【主な内容】\n・委員会メンバー顔合わせ・役割確認\n・発表会の目的・コンセプト確認\n・今期の委員：松下雄紀・森下秀之・髙松柚子・岡真弥子・君塚菜穂・波多野恵梨・清水洋希・角谷啓佳\n・髙松さんは3期連続参加\n\n【決定事項】\n・会議スケジュール全体を確認\n・各自の担当領域を仮決め'},
+  {id:'m2',date:'2026-04-16',title:'第2回 委員会MTG',docUrl:'https://docs.google.com/document/d/1iwyMr23aCwFHi3tBd2gNALSThh_6Sf83IasvCTgOSmo/edit',body:'📅 2026年4月16日（木）10:00〜12:09\n📍 Google Meet（オンライン）\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n【概要】\n委員会はイベントのテーマやリハーサル日程を策定し、公平な評価制度として殿堂入り制度の導入を決定した。\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n■ イベント計画と日程調整\n・7月および1月のイベントテーマを策定\n・資料修正期間を確保するためリハーサル日程を調整\n・発表スライドの提出期限を7月24日（正午）に設定\n\n■ 評価制度の改善検討\n・特定社員が評価に偏る現状を鑑み、殿堂入り制度の導入を決定\n・モチベーション向上のため評価対象から殿堂入りさせる新制度を創設\n・部署ごとの表彰は見送り\n\n■ フィードバック手法の策定\n・全社員が互いを称える360度フィードバックの導入を検討\n・AIを活用した感謝メッセージの集計および要約で公平な評価環境を目指す\n・感謝メッセージを収集するGoogleフォームを設定し、AIで集計する仕組みを構築\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n【推奨される次のステップ（Geminiメモより）】\n━━━━━━━━━━━━━━━━━━━━━━━━━\n▶ [髙松柚子] スプシ作成：2026年度のスプレッドシート（ガントチャート含む）を新規作成する\n▶ [松下雄紀] 概要欄更新：6月15日打ち合わせの概要欄に、1月発表会向けスケジュール入力を追記\n▶ [髙松柚子] リハ予定登録：7月1日（1回目）と7月13日（2回目）のリハーサル予定を仮でカレンダー登録\n▶ [岡真弥子, 角谷啓佳] テーマ検討：社員のやる気を高めるテーマやアプローチを話し合い、ブラッシュアップ案を作成\n▶ [松下雄紀] スライド期限登録：最終提出期限（7月24日正午）をカレンダー登録\n▶ [髙松柚子] メンバーリスト送付：リハーサルメンバー一覧のスクリーンショットを松下雄紀に送付\n▶ [松下雄紀] 飲料検討：高品質で選べる飲料（コーヒー、ほうじ茶など）を用意できるか検討\n▶ [グループ] 殿堂入り：みかさんを対象から除外するため殿堂入りの賞を創設\n▶ [グループ] 感謝システム：GoogleフォームとAI集計の仕組みを構築\n▶ [グループ] スプシ更新：2026年版に向けて既存スプレッドシートの内容を順次更新\n▶ [グループ] 概要欄追加：今後の委員会活動に関するアイデアを概要欄に追加'},
+  {id:'m3',date:'2026-04-24',title:'第3回 委員会MTG',body:'📅 2026年4月24日（金）12:00〜14:00\n📍 アーチ鴨江事務所\n\n【主な内容・決定事項】\n・予算決め（前回からの継続）\n・ガントチャート作成\n・担当割り振り決定\n\n【担当割り振り概要】\n・会場・設備：森下秀之さん\n・ケータリング：髙松さん・波多野さん\n・360°FB：髙松さん・岡さん\n・全体統括・司会：松下さん'},
+  {id:'m4',date:'2026-05-18',title:'第4回 委員会MTG',body:'📅 2026年5月18日（金）10:00〜12:00\n📍 アーチ鴨江事務所\n\n【主な内容・決定事項】\n・ガントチャート担当者を正式決定\n・予算書の形式を決定・作成開始\n\n【ケータリング検討状況】\n・天竜コーヒー：¥45,000（税抜）80杯程度\n・タリーズ：¥25,600（80杯分）で比較検討\n・紅茶も提供予定（KO Mart等で調達検討）\n\n【参加人数概算】\n・社長・三山さん・正社員57名・パート15名\n・カメラマン最大4名・業務委託10名・人事枠5名\n・合計 最大93名'},
+  {id:'m5',date:'2026-06-04',title:'第5回 委員会MTG（Geminiメモ）',docUrl:'https://docs.google.com/document/d/1Y_oDSZuRbnGyGetBqTX8MGynVTh_r6NH-Tyv0m7Iats/edit',body:'📅 2026年6月4日（木）9:58〜（録音2時間13分）\n📍 Google Meet（オンライン）\n欠席：山本さん\n\n【概要】\nイベント開催に向けた全体調整および予算承認と360°フィードバックの運用計画が策定されました。\n\n【イベント運営と予算調整】\n・開催時間を12時開始に変更（社長指示）。発表時間を10分に短縮検討。\n・コーヒーのみを提供する運用方針に確立（紅茶は提供しない）\n・レーザーポインター：1台→2台に変更（委員会予算で購入済み）\n・昼食のお弁当配布はなし。中休憩15〜20分を設定。\n\n【会場準備と資材検討】\n・看板・展示物は鈴木工芸に見積もりを依頼\n・横断幕の作成は見送り\n・駐車場・懇親会の費用については引き続き検討\n\n【懇親会（業者さん向け）】\n・コンコルド浜松で開催（藤原さんが交渉・値引き実現）\n・社員＋業者さん 約150人想定。パートさんは不参加でよい。\n・料理プラン：1人6,600円程度（野沢担当者に確認中）\n・席入れ替え（スクール→円卓）1時間可能と確認済み\n\n【360°フィードバック 運用計画】\n・全社員を対象とする\n・7月10日の期限に向けてアンケート集計・スライド作成体制を整備\n\n【ガントチャート・タスク期限】\nタイムテーブル確定：今月中（山岸さん）\n社員名簿入手：完了（高野さん）\n座席レイアウト決定：7月10日（岡さん）\n駐車場案内図作成：7月8日頃\n表彰アンケート：7月10日\n司会者台本：6月26日\n\n【次のアクション（Gemini抽出）】\n・[松下雄紀] タイムテーブル再調整・社長承認後に各発表者へスライド依頼\n・[松下雄紀] 天龍コーヒーにショップカードの有無を確認\n・[松下雄紀] パートタイム従業員の発表会参加可否を社長に確認\n・[松下雄紀] 懇親会の料理・ドリンク詳細を確認\n・[松下雄紀] 1月スケジュール修正・共有\n・[秀之さん] 鈴木工芸に看板見積もりを依頼\n・[グループ] 会場飲食規約を再確認（コーヒー等の持ち込み可否）\n・[グループ] ケータリング方針決定（紅茶の有無・天龍コーヒー発注内容）\n・[角谷啓佳] 酒井くんに会場レイアウトデータがあるか確認\n・[髙松柚子] 360°FBアンケートフォーム（デジタル）作成\n・[髙松柚子] 360°FBスライド作成（2週間程度）\n・[岡真弥子・髙松柚子] 360°FBアンケート叩き台作成（今週中）\n・[髙松柚子] 回答者リストの叩き台作成\n・[チーム全体] ガントチャート確認・進捗確認\n\n参照：Gemini自動メモ https://docs.google.com/document/d/1Y_oDSZuRbnGyGetBqTX8MGynVTh_r6NH-Tyv0m7Iats/edit'},
+  {id:'m6',date:'2026-06-17',title:'Chatwork決定事項まとめ（2026-06-17）',body:'【360°フィードバック 対象者ペア確定】\n担当：髙松柚子さん・岡真弥子さん\n\n■ チーム間FB（上長管理職向け特別フォーム）\n対象者プルダウン：藤平さん・美香さん・水野さん・松田さん・秀之さん・神谷さん・佐藤さん（エクステリア）・永井さん\n→ このフォームは社長・川島さん・宇田さん・石澤さん・鵜飼さん・添田さん・望月さん・青島さん・森下課長・倉田さん・加藤さん・岡田さんに別途共有\n\n■ 相互FBペア確定\n美香さん ↔ 見野さん\n水野さん ↔ 松田さん\n秀之さん ↔ 神谷さん\n佐藤さん ↔ 永井さん\n\n■ 社長のFB対象：藤平さん・石野さん・業務管理・管理職\n■ 社長へFBする人：上長のみ\n\n■ フォーム配布方法\n委員会メンバーが各自のチームへ個別チャットで送付\n（全体チャットだと埋もれるため）\n\n---\n【ロールアップバナー 看板検討】\n担当：森下秀之さん\n・ラクスル 巻き取り式：1本¥25,887（税込）\n・組み立てやすい安価版：¥9,000台〜\n・デザイン：ChatGPTで作成済み（PPTX）\n・松下さん承認：「これが良いですね」\n\n---\n【次回MTG 6/26 方針変更】\n松下さんより：6/26は各自タスクを進める時間とする\n→ タスクの進め方がわからない人は質問をあげておく\n→ 前期メンバー（松下・髙松・森下）が対応'},
+  {id:'m7',date:'2026-06-17',title:'リハーサル参加者リスト（波多野さん発信）',body:'【ラクモ登録メンバー】\n担当：波多野恵梨さん\n\n■ 発表者・司会\n社長・三山さん・宇田さん・藤平さん・川島さん・袴田さん・鵜飼さん・水野さん・青島さん・山本さん・大峰さん・周太郎さん（青島さんと2人で発表）・倉田さん\n\n■ その他（委員）\n委員会メンバー全員\n\n■ 削除対象（発表なし）\n磯口さん・石野さん・望月さん\n※ 周太郎さんは一度削除されたが青島さんとの発表のため再追加済み\n\n【リハーサル日程】\n第1回：7月1日（水）9:00〜13:00　PGハウス曳馬\n第2回：7月13日（日）9:00〜13:00　PGハウス曳馬'},
+  {id:'m8',date:'2026-06-26',title:'第6回 委員会MTG（各自タスク進捗）',body:'📅 2026年6月26日（金）10:00〜12:00\n📍 アーチ鴨江事務所\n\n※ 今回は各自タスクを進める作業時間として実施\n\n【記入欄】会議後にここに内容を追記してください\n\n【議題候補】\n1. 各タスクの進捗確認・質問受付\n2. 看板ラクスル発注可否確認\n3. 360°FBフォーム完成確認\n4. タイムテーブル再確認\n5. 次回打合せ（7/8 クリエート浜松）準備'},
+  {id:'m9',date:'2026-07-08',title:'クリエート浜松 会場打合せ（予定）',body:'📅 2026年7月8日（水）9:30〜11:00\n📍 クリエート浜松\n\n【参加予定】\n・松下雄紀さん\n・森下秀之さん\n・山本さん\n\n【確認予定事項】\n・会場レイアウト最終確認\n・PA・映像設備の仕様確認\n・飲食持ち込み規約の最終確認\n・搬入・設営の時間・手順確認\n\n※ 会議後にここに結果を記入してください'},
+  {id:'m10',date:'2026-07-16',title:'第7回 委員会MTG（予定）',body:'📅 2026年7月16日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m11',date:'2026-07-23',title:'第8回 委員会MTG（予定）',body:'📅 2026年7月23日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください（最終確認回）'},
+  {id:'m12',date:'2026-07-01',title:'第1回リハーサル（予定）',body:'📅 2026年7月1日（水）9:00〜13:00\n📍 PGハウス曳馬\n\n※ リハーサル後に内容を記入してください\n\n【実施内容予定】\n・発表者全員のスライド確認\n・タイムキープ練習\n・当日の動線確認\n・改善点の洗い出し'},
+  {id:'m13',date:'2026-07-13',title:'第2回リハーサル（予定）',body:'📅 2026年7月13日（月）9:00〜13:00\n📍 PGハウス曳馬\n\n※ リハーサル後に内容を記入してください\n\n【実施内容予定】\n・第1回の修正点を反映\n・最終タイムテーブル確認\n・当日スタッフ役割の最終確認'},
+],
+members:[
+  {id:'mb1',name:'松下 雄紀',dept:'',role:'委員長・全体統括・司会進行',note:'タイムテーブル管理・社長への予算承認窓口'},
+  {id:'mb2',name:'森下 秀之',dept:'',role:'会場・設備・看板担当',note:'クリエート浜松下見・ラクスルバナー手配'},
+  {id:'mb3',name:'髙松 柚子',dept:'',role:'360°FB担当（3期連続）',note:'アンケートフォーム作成・スライド作成・回答者リスト'},
+  {id:'mb4',name:'岡 真弥子',dept:'',role:'360°FB担当・撮影',note:'フォーム作成補助・叩き台'},
+  {id:'mb5',name:'君塚 菜穂',dept:'',role:'懇親会・コンコルドホテル調整',note:'1月開催分（コンコルドホテル）の調整・問い合わせ担当'},
+  {id:'mb6',name:'波多野 恵梨',dept:'',role:'ケータリング・リハーサル参加者管理',note:'ラクモへの参加者登録・更新担当'},
+  {id:'mb7',name:'清水 洋希',dept:'',role:'コンコルドホテル資料提供',note:'1月懇親会会場資料担当'},
+  {id:'mb8',name:'角谷 啓佳',dept:'',role:'委員',note:''},
+],
+lastChatworkSync:'',
+links:[
+  {id:'lk1',category:'💬 コミュニケーション',title:'Chatwork 委員会ルーム',url:'https://www.chatwork.com/#!rid424948782',note:'委員会の主要連絡チャンネル'},
+  {id:'lk2',category:'📊 スプレッドシート',title:'経営方針発表会委員会 スプレッドシート（メイン）',url:'https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/edit',note:'タイムテーブル・ガントチャート等'},
+  {id:'lk3',category:'📊 スプレッドシート',title:'7月タイムテーブル',url:'https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/edit?gid=1861154966',note:''},
+  {id:'lk4',category:'🏛 会場',title:'クリエート浜松 公式サイト',url:'https://www.hcf.or.jp/facilities/create/',note:'2026年7月28日（火）会場'},
+  {id:'lk5',category:'🏛 会場',title:'クリエート浜松 アクセス・駐車場',url:'https://www.hcf.or.jp/facilities/create/access/',note:'提携駐車場 OGURIパーキング1・2'},
+  {id:'lk6',category:'🏛 会場',title:'松ぼっくり（会場予約システム）',url:'https://yoyacool.e-harp.jp/hamamatsu',note:'利用者ログインID: 50026347'},
+  {id:'lk7',category:'📦 発注・備品',title:'ラクスル ロールアップバナー',url:'https://raksul.com/banner-stand/rollup-banner/',note:'W600×H1800mm 巻き取り式 ¥25,887/本'},
+  {id:'lk8',category:'🎬 動画アーカイブ',title:'2025年7月29日（第54期下期）動画フォルダ',url:'https://drive.google.com/drive/folders/199v4olS6jw2-ysaMA43LBM2mLHmOPHNQ',note:''},
+  {id:'lk9',category:'🎬 動画アーカイブ',title:'2026年1月26日（第55期上期）動画・資料フォルダ',url:'https://drive.google.com/drive/folders/1RH81Llm94q6h412I8ks-DqrsobaRGmx2',note:''},
+  {id:'lk10',category:'📄 資料・PDF',title:'第55期タイムスケジュールPDF（1月開催・Googleドライブ）',url:'https://drive.google.com/drive/folders/13R6UzwdksEBvAN1nxysxQYMIYXDVQpin',note:'LIFEFUND第55期経営方針発表会_スケジュール.pdf'},
+  {id:'lk11',category:'🎉 イベント',title:'スノーウィーカフェ（VISION DAY 2026会場）',url:'',note:'経営方針発表会後のVISION DAYイベント会場'},
+  {id:'lk12',category:'📑 コンセプト・参考資料',title:'📋 コンセプト方針書（260606・白都発行）→ ⑨議事録タブで全文閲覧可',url:'',note:'⑨議事録タブ「コンセプト方針書（白都 卓磨・全文）」を展開してください。発表者必読・全6ページ。'},
+  {id:'lk24',category:'📑 コンセプト・参考資料',title:'第5回 委員会MTG Geminiメモ（2026-06-04）',url:'https://docs.google.com/document/d/1Y_oDSZuRbnGyGetBqTX8MGynVTh_r6NH-Tyv0m7Iats/edit',note:'Google Meetの自動文字起こし・サマリー。録音2時間13分分。'},
+  {id:'lk13',category:'📑 コンセプト・参考資料',title:'社長及び各事業部 参考発表スライド（過去分）',url:'https://docs.google.com/presentation/d/1t-dvgbEQ4w3si_cwuQjMLydi76oqID2l1yhHhQuc434/edit?usp=sharing',note:'発表資料作成前に必ず確認'},
+  {id:'lk14',category:'📑 発表スライド（各チーム）',title:'社長 発表スライド',url:'https://docs.google.com/presentation/d/14oQlGf2UWPQ5T-_OTdSQ9Tl2UB4jibCsAzKDS0bNVSE/edit',note:''},
+  {id:'lk15',category:'📑 発表スライド（各チーム）',title:'上場に向けて・全社で変える基準（藤平 管理本部長・10分）',url:'https://docs.google.com/presentation/d/1bSIillsaMaTABNu5g_zMqCvyCZteGuFU_Tudn4tFfUU/edit?usp=sharing',note:''},
+  {id:'lk16',category:'📑 発表スライド（各チーム）',title:'マーケティング課（宇田課長・15分）',url:'https://docs.google.com/presentation/d/1Gv5hU8sHMp-Jlr520o9-1UgUr1gIqXzB8m5zaDw10io/edit',note:''},
+  {id:'lk17',category:'📑 発表スライド（各チーム）',title:'ARRCHアドバイザー課（三山課長・10分）',url:'https://docs.google.com/presentation/d/1WIUJxd4YbLgcSwXzb7fOlxEKD_rtN1xoc3PbesB1vl4/edit',note:''},
+  {id:'lk18',category:'📑 発表スライド（各チーム）',title:'PGHOUSEアドバイザー課（袴田課長・10分）',url:'https://docs.google.com/presentation/d/17-wui8sHabLB15MNUX7KZkF7dC4rC3Cdwf4iHRFKong/edit',note:''},
+  {id:'lk19',category:'📑 発表スライド（各チーム）',title:'設計課 設計チーム（鵜飼係長・5〜8分）',url:'https://docs.google.com/presentation/d/1VGqod2vIBzhzdOL8nGxApVoz8klTgXrj1AcLzBRRp5w/edit',note:'設計課15分内で配分調整'},
+  {id:'lk20',category:'📑 発表スライド（各チーム）',title:'設計課 スタイリストチーム（水野係長・5〜8分）',url:'https://docs.google.com/presentation/d/12HtdLaG6INTmgR7mJttSr1bwel1od_nIyJiZ-5GzXQA/edit',note:'設計課15分内で配分調整'},
+  {id:'lk21',category:'📑 発表スライド（各チーム）',title:'建設課（監督・アフターチーム）（青島係長・10分）',url:'https://docs.google.com/presentation/d/1clt4iqb20yd5rko0Gc8jHY2-Xxg75IJoHwX5Bx6iy2Y/edit',note:''},
+  {id:'lk22',category:'📑 発表スライド（各チーム）',title:'不動産仲介・買取・相続・戸建て賃貸（山本マネージャー・20分）',url:'https://docs.google.com/presentation/d/1ZIUcRvQFvtKvjoqokvB0bSQ2erJsl6gAeCssZolYExI/edit',note:''},
+  {id:'lk23',category:'📑 発表スライド（各チーム）',title:'組織人事課（川島課長・10分）',url:'https://docs.google.com/presentation/d/1VD9XLOW7_sFjJatC_qPWqoYMd_YErU4UGwsIqtR2muE/edit',note:''},
+],
+};
+
+// ===== データ管理 =====
+const SK='kh26v3',SS='kh26cfg';
+let D={}, cfg={apiKey:'',binId:''};
+
+function loadLocal(){
+  try{const d=localStorage.getItem(SK);D=d?JSON.parse(d):cloneD(INIT);}catch(e){D=cloneD(INIT);}
+  // INITに追加されたレコードを既存データに補完（リセット不要）
+  ['tasks','members','minutes','budget','programs','teams','board'].forEach(function(key){
+    if(!D[key]){D[key]=cloneD(INIT[key]);}
+    else{INIT[key].forEach(function(item){
+      var existing=D[key].find(function(x){return x.id===item.id;});
+      if(!existing){D[key].push(cloneD(item));}
+      else{
+        // 新しく追加されたフィールドをINITから補完
+        Object.keys(item).forEach(function(k){
+          if(existing[k]===undefined||existing[k]===null)existing[k]=cloneD(item[k]);
+        });
+      }
+    });}
+  });
+  // programsのstartTime未設定（旧データ）→ INIT全体で置き換え
+  if(D.programs&&D.programs.length>0&&!D.programs[0].startTime){D.programs=cloneD(INIT.programs);}
+  // programs午前開催の旧データ → 午後開催INITで強制置き換え
+  if(D.programs&&D.programs.length>0&&D.programs[0].startTime&&D.programs[0].startTime.startsWith('9:')){D.programs=cloneD(INIT.programs);}
+  // 旧slidesデータがあれば移行
+  if(D.slides&&!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
+  if(!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
+  if(!D.parking){D.parking=cloneD(INIT.parking);}
+  // 提携駐車場がプレースホルダーのままなら最新INITで上書き
+  else if(D.parking[0]&&D.parking[0].name==='提携駐車場①（未設定）'){D.parking=cloneD(INIT.parking);}
+  if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
+  if(!D.supplies){D.supplies=cloneD(INIT.supplies);}
+  else{
+    INIT.supplies.forEach(function(s){if(!D.supplies.find(function(x){return x.id===s.id;}))D.supplies.push(cloneD(s));});
+    D.supplies.forEach(function(s){if(s.checked===undefined){s.checked=false;s.checkedBy='';s.checkedAt='';}});
+  }
+  // 議事録body強制更新（大幅に加筆されたレコードはINIT内容で上書き）
+  var forceUpdateMins=['m2','m5'];
+  if(D.minutes){forceUpdateMins.forEach(function(fid){
+    var ex=D.minutes.find(function(x){return x.id===fid;});
+    var src=INIT.minutes.find(function(x){return x.id===fid;});
+    if(ex&&src&&src.body.length>ex.body.length+200){ex.body=src.body;ex.title=src.title;ex.docUrl=src.docUrl||'';}
+  });}
+  // budgetマイグレーション
+  if(!D.budget){D.budget=cloneD(INIT.budget);}
+  else{
+    // 旧データ完全置換（看板ロールアップ名 or g3お弁当が残っている旧形式）
+    if(D.budget[0]&&D.budget[0].name==='看板・ロールアップバナー'){D.budget=cloneD(INIT.budget);}
+    else{
+      // g3（お弁当）が残っていれば削除
+      D.budget=D.budget.filter(function(x){return x.id!=='g3';});
+      // 新IDのアイテムを追加（actual・receiptsは既存値を保持）
+      INIT.budget.forEach(function(item){
+        var ex=D.budget.find(function(x){return x.id===item.id;});
+        if(!ex){D.budget.push(cloneD(item));}
+        else{if(ex.spSync===undefined)ex.spSync=item.spSync;}
+      });
+    }
+  }
+  // linksマイグレーション
+  if(!D.links){D.links=cloneD(INIT.links);}
+  else{INIT.links.forEach(function(item){
+    var ex=D.links.find(function(x){return x.id===item.id;});
+    if(!ex){D.links.push(cloneD(item));}
+    else{Object.keys(item).forEach(function(k){if(ex[k]===undefined||ex[k]===null)ex[k]=item[k];});}
+  });}
+  try{const s=localStorage.getItem(SS);if(s)cfg={...cfg,...JSON.parse(s)};}catch(e){}
+}
+function persist(){localStorage.setItem(SK,JSON.stringify(D));autoSync();}
+async function autoSync(){
+  if(!cfg.apiKey||!cfg.binId)return;
+  try{await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});}catch(e){}
+}
+function cloneD(x){return JSON.parse(JSON.stringify(x));}
+function uid(){return 'i'+Date.now()+Math.random().toString(36).slice(2,6);}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtN(n){return Number(n||0).toLocaleString();}
+function getV(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+
+// ===== タブ =====
+let curTab='board';
+function goTab(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('show');});
+  document.querySelectorAll('.tnb').forEach(function(t){t.classList.remove('active');});
+  var pg=document.getElementById('page-'+name);
+  if(pg)pg.classList.add('show');
+  var tnb=document.querySelector('.tnb[data-tab="'+name+'"]');
+  if(tnb)tnb.classList.add('active');
+  curTab=name;
+  var lblMap={board:'＋ 投稿',tasks:'＋ タスク',budget:'＋ 費目',programs:'＋ 種目',teams:'＋ 役割',minutes:'＋ 議事録',members:'＋ メンバー',links:'＋ リンク追加'};
+  var ab=document.getElementById('add-btn');
+  if(lblMap[name]){ab.style.display='';ab.textContent=lblMap[name];}
+  else ab.style.display='none';
+  renderPage(name);
+}
+function onAddBtn(){
+  var map={board:function(){openBoardModal();},tasks:function(){openTaskModal();},budget:function(){openBudgetModal();},programs:function(){openProgModal();},teams:function(){openTeamModal();},minutes:function(){openMinModal();},members:function(){openMemberModal();},links:function(){openLinkModal();}};
+  if(map[curTab])map[curTab]();
+}
+function renderPage(n){
+  if(n==='board')renderBoard();
+  else if(n==='tasks')renderTasks();
+  else if(n==='gantt')renderGantt();
+  else if(n==='budget')renderBudget();
+  else if(n==='venue')renderVenue();
+  else if(n==='layout')renderLayout();
+  else if(n==='programs')renderPrograms();
+  else if(n==='teams'){renderTeams();renderSupplies();}
+  else if(n==='minutes')renderMinutes();
+  else if(n==='members')renderMembers();
+  else if(n==='links')renderLinks();
+}
+
+// ===== モーダル =====
+function openModal(html){document.getElementById('modal-inner').innerHTML=html;document.getElementById('moverlay').classList.add('open');}
+function cm(){document.getElementById('moverlay').classList.remove('open');}
+
+// ===== 掲示板 =====
+function renderBoard(){
+  var bar=document.getElementById('cw-sync-bar');
+  bar.innerHTML=D.lastChatworkSync?'<div class="cw-sync">🔄 最終Chatwork自動更新：'+D.lastChatworkSync+'</div>':'';
+  var list=document.getElementById('board-list');
+  if(!D.board||!D.board.length){list.innerHTML='<div class="empty">投稿がありません</div>';return;}
+  var sorted=D.board.slice().sort(function(a,b){return b.date>a.date?1:-1;});
+  list.innerHTML=sorted.map(function(p){
+    return '<div class="bpost">'+
+      '<div class="bpost-hd"><div><span class="bpost-tag tag-'+(p.tag||'info')+'">'+tagLabel(p.tag)+'</span><div class="bpost-name">👤 '+esc(p.name)+'</div></div>'+
+      '<div style="display:flex;gap:6px;align-items:center"><span class="bpost-date">'+esc(p.date)+'</span>'+
+      '<button class="bsm r" onclick="openBoardModal(\''+p.id+'\')">編集</button>'+
+      '<button class="bsm" onclick="delBoard(\''+p.id+'\')">削除</button></div></div>'+
+      '<div class="bpost-body">'+esc(p.text)+'</div></div>';
+  }).join('');
+}
+function tagLabel(t){return{info:'📢 お知らせ',ask:'❓ 確認依頼',done:'✅ 完了報告',warn:'⚠ 注意'}[t]||'📢 お知らせ';}
+function openBoardModal(id){
+  var p=id?D.board.find(function(x){return x.id===id;}):null;
+  openModal('<h2>📌 掲示板に投稿</h2>'+
+    '<input type="hidden" id="m-id" value="'+(p?p.id:'')+'">'+
+    '<div class="frow"><label>投稿者名 *</label><input id="m-name" value="'+(p?esc(p.name):'')+'"></div>'+
+    '<div class="frow"><label>タグ</label><select id="m-tag">'+
+    '<option value="info"'+(p&&p.tag==='info'?' selected':'')+'>📢 お知らせ</option>'+
+    '<option value="ask"'+(p&&p.tag==='ask'?' selected':'')+'>❓ 確認依頼</option>'+
+    '<option value="done"'+(p&&p.tag==='done'?' selected':'')+'>✅ 完了報告</option>'+
+    '<option value="warn"'+(p&&p.tag==='warn'?' selected':'')+'>⚠ 注意</option>'+
+    '</select></div>'+
+    '<div class="frow"><label>本文 *</label><textarea id="m-text">'+(p?esc(p.text):'')+'</textarea></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveBoard()">投稿</button></div>');
+}
+function saveBoard(){
+  var name=getV('m-name'),text=getV('m-text'),id=getV('m-id');
+  if(!name||!text){alert('投稿者名と本文を入力してください');return;}
+  var data={name:name,tag:getV('m-tag'),text:text,date:todayStr()};
+  if(id){var i=D.board.findIndex(function(x){return x.id===id;});if(i>=0)D.board[i]=Object.assign({},D.board[i],data);}
+  else{data.id=uid();D.board.push(data);}
+  persist();renderBoard();cm();
+}
+function delBoard(id){if(!confirm('削除しますか？'))return;D.board=D.board.filter(function(x){return x.id!==id;});persist();renderBoard();}
+
+// ===== タスク =====
+var taskFilter='';
+function setTaskFilter(st){
+  taskFilter=st;
+  document.querySelectorAll('.fpill').forEach(function(b){b.classList.toggle('active',b.dataset.st===st);});
+  renderTasks();
+}
+function slbl(s){return{todo:'未着手',prog:'進行中',done:'完了'}[s]||s;}
+function renderTasks(){
+  var today=todayStr();
+  var fa=getV('f-as'),fc=getV('f-ca');
+  var all=D.tasks.filter(function(t){return(!fa||t.assignee.includes(fa))&&(!fc||t.category===fc);});
+  var list;
+  if(taskFilter==='od'){list=all.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;});}
+  else if(taskFilter){list=all.filter(function(t){return t.status===taskFilter;});}
+  else{list=all;}
+  // 完了を下、その中は期限順
+  list=list.slice().sort(function(a,b){
+    var aod=a.status!=='done'&&a.due&&a.due<today,bod=b.status!=='done'&&b.due&&b.due<today;
+    if(a.status==='done'&&b.status!=='done')return 1;
+    if(a.status!=='done'&&b.status==='done')return -1;
+    if(aod&&!bod)return -1;
+    if(!aod&&bod)return 1;
+    return(a.due||'9999')<(b.due||'9999')?-1:1;
+  });
+  function tcardHtml(t){
+    var od=t.status!=='done'&&t.due&&t.due<today;
+    var cls='tcard '+t.status+(od?' overdue':'');
+    return '<div class="'+cls+'">'+
+      '<div class="tc-info">'+
+        '<div class="tc-title">'+esc(t.title)+(od?'<span class="od-badge">⚠ 期限超過</span>':'')+'</div>'+
+        '<div class="tc-dates">'+
+          (t.start?'<span>📅 着手：'+t.start+'</span>':'')+(t.due?'<span class="'+(od?'due-od':'')+'">🏁 期限：'+t.due+'</span>':'')+'</div>'+
+        '<div class="tc-meta"><span>👤 '+esc(t.assignee)+'</span><span>🏷 '+esc(t.category)+'</span>'+(t.memo?'<span>📝 '+esc(t.memo)+'</span>':'')+'</div>'+
+      '</div>'+
+      '<div class="tc-right">'+
+        '<div class="status-btns">'+
+          '<button class="sbtn s-todo'+(t.status==='todo'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'todo\')">未着手</button>'+
+          '<button class="sbtn s-prog'+(t.status==='prog'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'prog\')">進行中</button>'+
+          '<button class="sbtn s-done'+(t.status==='done'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'done\')">完了</button>'+
+        '</div>'+
+        '<div class="tc-act2">'+
+          '<button class="bsm r" onclick="openTaskModal(\''+t.id+'\')">編集</button>'+
+          '<button class="bsm" onclick="delTask(\''+t.id+'\')">削除</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+  var active=list.filter(function(t){return t.status!=='done';});
+  var done=list.filter(function(t){return t.status==='done';});
+  var html='';
+  if(active.length){html+=active.map(tcardHtml).join('');}
+  else if(!done.length){html='<div class="empty">タスクがありません</div>';}
+  if(done.length){
+    html+='<div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px">'+
+      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
+      '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 完了済み（'+done.length+'件）</span>'+
+      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
+    '</div>';
+    html+=done.map(tcardHtml).join('');
+  }
+  document.getElementById('task-list').innerHTML=html;
+  // カウント更新
+  var odCount=D.tasks.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;}).length;
+  document.getElementById('cn-todo').textContent=D.tasks.filter(function(t){return t.status==='todo';}).length;
+  document.getElementById('cn-prog').textContent=D.tasks.filter(function(t){return t.status==='prog';}).length;
+  document.getElementById('cn-done').textContent=D.tasks.filter(function(t){return t.status==='done';}).length;
+  document.getElementById('cn-od').textContent=odCount;
+  // ドロップダウン補完
+  var as=[...new Set(D.tasks.map(function(t){return t.assignee;}))].sort();
+  var cs=[...new Set(D.tasks.map(function(t){return t.category||'';}))].filter(Boolean).sort();
+  var cfa=getV('f-as'),cfc=getV('f-ca');
+  document.getElementById('f-as').innerHTML='<option value="">すべての担当者</option>'+as.map(function(a){return'<option'+(cfa===a?' selected':'')+'>'+esc(a)+'</option>';}).join('');
+  document.getElementById('f-ca').innerHTML='<option value="">すべてのカテゴリ</option>'+cs.map(function(c){return'<option'+(cfc===c?' selected':'')+'>'+esc(c)+'</option>';}).join('');
+}
+function setTaskStatus(id,st){
+  var t=D.tasks.find(function(x){return x.id===id;});
+  if(!t)return;t.status=st;persist();renderTasks();
+}
+function delTask(id){if(!confirm('削除しますか？'))return;D.tasks=D.tasks.filter(function(x){return x.id!==id;});persist();renderTasks();}
+function openTaskModal(id){
+  var t=id?D.tasks.find(function(x){return x.id===id;}):null;
+  var cats=['会場・備品','コーヒー・ケータリング','360°フィードバック','タイムテーブル・スライド','表彰・賞金','MTG・リハーサル','広報・看板','お弁当・飲料','その他'];
+  openModal('<h2>📋 タスク'+(t?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
+    '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
+    '<div class="frow"><label>担当者 *</label><input id="m-assignee" value="'+(t?esc(t.assignee):'')+'"></div>'+
+    '<div class="frow"><label>カテゴリ</label><select id="m-cat">'+cats.map(function(c){return'<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div class="frow frow2"><div><label>着手日</label><input type="date" id="m-start" value="'+(t?t.start||'':todayStr())+'"></div><div><label>完了予定日</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div></div>'+
+    '<div class="frow"><label>ステータス</label><select id="m-status">'+
+    '<option value="todo"'+((!t||t.status==='todo')?' selected':'')+'>未着手</option>'+
+    '<option value="prog"'+(t&&t.status==='prog'?' selected':'')+'>進行中</option>'+
+    '<option value="done"'+(t&&t.status==='done'?' selected':'')+'>完了</option>'+
+    '</select></div>'+
+    '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTask()">保存</button></div>');
+}
+function saveTask(){
+  var title=getV('m-title'),assignee=getV('m-assignee'),id=getV('m-id');
+  if(!title||!assignee){alert('タスク名と担当者は必須です');return;}
+  var data={title:title,assignee:assignee,category:getV('m-cat'),start:getV('m-start'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
+  if(id){var i=D.tasks.findIndex(function(x){return x.id===id;});if(i>=0)D.tasks[i]=Object.assign({},D.tasks[i],data);}
+  else{data.id=uid();D.tasks.push(data);}
+  persist();renderTasks();cm();
+}
+
+// ===== ガントチャート =====
+var GS=new Date('2026-06-01'),GE=new Date('2026-07-31');
+function fd(d){return d.toISOString().split('T')[0];}
+function renderGantt(){
+  var days=[],d2=new Date(GS);
+  while(d2<=GE){days.push(new Date(d2));d2.setDate(d2.getDate()+1);}
+  var today=todayStr();
+  var months=[],cm3=null;
+  days.forEach(function(d){var mk=d.getMonth();if(!cm3||cm3.m!==mk){cm3={m:mk,label:(d.getMonth()+1)+'月',count:0};months.push(cm3);}cm3.count++;});
+  var sorted=D.tasks.slice().sort(function(a,b){return(a.start||a.due||'')<(b.start||b.due||'')?-1:1;});
+  var h='<thead>'+
+    '<tr class="ghr-month"><th class="gc0"></th>'+months.map(function(m){return'<th colspan="'+m.count+'" style="text-align:center">'+m.label+'</th>';}).join('')+'</tr>'+
+    '<tr class="ghr-day"><th class="gc0" style="text-align:left;padding-left:10px;font-size:.78rem">タスク / 担当</th>'+
+    days.map(function(d){var iw=d.getDay()===0||d.getDay()===6,it=fd(d)===today;return'<th class="'+(it?'is-today':iw?'is-wk':'')+'">'+(d.getDate())+'</th>';}).join('')+
+    '</tr></thead><tbody>';
+  sorted.forEach(function(t){
+    var od=t.status!=='done'&&t.due&&t.due<today;
+    var sd=t.start?new Date(t.start):(t.due?new Date(t.due):null),ed=t.due?new Date(t.due):sd;
+    h+='<tr><td class="glbl"><div style="'+(od?'color:var(--od);font-weight:700':'')+'">'+esc(t.title)+'</div><div class="ga">'+esc(t.assignee)+'</div></td>';
+    days.forEach(function(d){
+      var ds=fd(d),it=ds===today,iw=d.getDay()===0||d.getDay()===6;
+      var inR=sd&&ed&&ds>=fd(sd)&&ds<=fd(ed),isF=sd&&ds===fd(sd);
+      var bc=od?'overdue':t.status;
+      h+='<td class="gcell'+(iw?' wk':'')+(it?' is-today':'')+'">'+(it?'<div class="tdl"></div>':'')+(inR?'<div class="gbar '+bc+'" title="'+esc(t.title)+'　'+esc(t.assignee)+'">'+(isF?esc(t.title.slice(0,8)):'')+'</div>':'')+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody>';
+  document.getElementById('gtbl').innerHTML=h;
+}
+
+// ===== 予算管理 =====
+function calcActual(g){
+  var up=Number(g.unitPrice||0),q=Number(g.qty||0);
+  return(up>0&&q>0)?up*q:Number(g.actual||0);
+}
+function renderBudget(){
+  var tot=0,act=0;
+  var sections=['7月','1月'];
+  var html='';
+  sections.forEach(function(sec){
+    var items=D.budget.filter(function(g){return (g.section||'7月')===sec;});
+    if(!items.length)return;
+    var secBud=0,secAct=0;
+    var rows=items.map(function(g){
+      if(!g.receipts)g.receipts=[];
+      var actualVal=calcActual(g);
+      secBud+=Number(g.budget||0);secAct+=actualVal;
+      var dif=Number(g.budget||0)-actualVal;
+      var up=Number(g.unitPrice||0),q=Number(g.qty||0);
+      var urlCell=g.url?'<div style="font-size:.76rem;margin-top:3px"><a href="'+esc(g.url)+'" target="_blank" style="color:var(--red)">🔗 参考URLを開く</a></div>':'';
+      var autoTag=(up>0&&q>0)?'<span style="background:#e8f5e9;color:#2e7d32;font-size:.68rem;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px">自動</span>':'';
+      var syncTag=g.spSync===false?'<span style="background:#fff3e0;color:#e65100;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;border:1px solid #ffb74d" title="スプレッドシートに未登録・要確認">⚠ スプシ外</span>':'';
+      var thumbs=g.receipts.map(function(r){return'<img class="receipt-thumb" src="'+r.data+'" alt="'+esc(r.name)+'" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">';}).join('');
+      var addBtn='<div class="receipt-add" onclick="addReceipt(\''+g.id+'\')" title="領収書を追加">📎</div>';
+      return'<tr'+(g.spSync===false?' style="background:#fffde7"':'')+'>'+
+        '<td style="font-weight:700">'+esc(g.name)+syncTag+'</td>'+
+        '<td style="font-size:.82rem">'+esc(g.detail)+urlCell+'</td>'+
+        '<td class="num-cell">'+fmtN(g.budget)+'</td>'+
+        '<td class="num-cell">'+(up>0?fmtN(up):'<span style="color:#ccc">-</span>')+'</td>'+
+        '<td class="num-cell">'+(q>0?q+'個':'<span style="color:#ccc">-</span>')+'</td>'+
+        '<td class="num-cell">'+fmtN(actualVal)+autoTag+'</td>'+
+        '<td class="num-cell '+(dif>=0?'diff-p':'diff-n')+'">'+(dif>=0?'+':'')+fmtN(dif)+'</td>'+
+        '<td><div class="receipt-wrap">'+thumbs+addBtn+'</div></td>'+
+        '<td style="text-align:center"><button class="bsm r" onclick="openBudgetModal(\''+g.id+'\')">編集</button></td></tr>';
+    }).join('');
+    tot+=secBud;act+=secAct;
+    var secDif=secBud-secAct;
+    var secLabel=sec==='7月'?'🗓 7月開催（社員のみ）':'🗓 1月開催（社員＋業者＋来賓）';
+    html+='<tr style="background:#f0f4ff"><td colspan="9" style="font-weight:700;padding:8px 10px;font-size:.88rem;color:#1a237e">'+secLabel+
+      '　予算小計: <b>'+fmtN(secBud)+'円</b>　実績: '+fmtN(secAct)+'円　差引: <span class="'+(secDif>=0?'diff-p':'diff-n')+'">'+(secDif>=0?'+':'')+fmtN(secDif)+'円</span></td></tr>';
+    html+=rows;
+  });
+  document.getElementById('budget-body').innerHTML=html;
+  var dif=tot-act;
+  document.getElementById('bud-tot').textContent=fmtN(tot)+'円';
+  document.getElementById('bud-act').textContent=fmtN(act)+'円';
+  document.getElementById('bud-dif').innerHTML='<span class="'+(dif>=0?'diff-p':'diff-n')+'">'+(dif>=0?'+':'')+fmtN(dif)+'円</span>';
+}
+function addReceipt(gid){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    if(f.size>1500000){alert('ファイルサイズが大きすぎます（1.5MB以下にしてください）');return;}
+    var r=new FileReader();
+    r.onload=function(ev){
+      var g=D.budget.find(function(x){return x.id===gid;});
+      if(!g)return;
+      if(!g.receipts)g.receipts=[];
+      g.receipts.push({id:uid(),name:f.name,data:ev.target.result});
+      persist();renderBudget();
+    };r.readAsDataURL(f);
+  };inp.click();
+}
+function openLb(rid,gid){
+  var g=D.budget.find(function(x){return x.id===gid;});
+  if(!g)return;
+  var r=g.receipts.find(function(x){return x.id===rid;});
+  if(!r)return;
+  document.getElementById('lb-img').src=r.data;
+  document.getElementById('lb').classList.add('open');
+}
+function openBudgetModal(id){
+  var g=id?D.budget.find(function(x){return x.id===id;}):null;
+  var up=g?Number(g.unitPrice||0):0,q=g?Number(g.qty||0):0;
+  var preview=up>0&&q>0?'<div id="calc-preview" style="background:#e8f5e9;border-radius:7px;padding:8px 10px;font-weight:700;font-size:.9rem;color:#2e7d32;margin-top:4px">✅ '+fmtN(up)+'円 × '+q+'個 = '+fmtN(up*q)+'円（自動計算）</div>':'<div id="calc-preview"></div>';
+  openModal('<h2>④ 予算'+(g?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(g?g.id:'')+'">'+
+    '<div class="frow"><label>費目名 *</label><input id="m-name" value="'+(g?esc(g.name):'')+'"></div>'+
+    '<div class="frow"><label>内容・仕様メモ</label><input id="m-detail" value="'+(g?esc(g.detail):'')+'"></div>'+
+    '<div class="frow"><label>参考URL（Amazon・ラクスル等）</label>'+
+      '<div style="display:flex;gap:6px"><input type="url" id="m-url" value="'+(g?esc(g.url||''):'')+'" placeholder="https://" style="flex:1">'+
+      '<button class="bsm" onclick="var u=document.getElementById(\'m-url\').value;if(u)window.open(u,\'_blank\')" style="white-space:nowrap">🔗 開く</button></div></div>'+
+    '<div class="frow"><label>予算額（円）</label><input type="number" id="m-budget" value="'+(g?g.budget||0:0)+'"></div>'+
+    '<div style="background:#fff3e0;border-radius:8px;padding:12px;margin-bottom:12px">'+
+      '<div style="font-size:.8rem;font-weight:700;color:#e65100;margin-bottom:8px">💡 単価×数量で実績を自動計算</div>'+
+      '<div class="frow2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">'+
+        '<div><label style="font-size:.8rem;font-weight:700;display:block;margin-bottom:4px">単価（円）</label>'+
+          '<input type="number" id="m-unitprice" value="'+up+'" oninput="updateCalcPreview()" placeholder="0"></div>'+
+        '<div><label style="font-size:.8rem;font-weight:700;display:block;margin-bottom:4px">数量</label>'+
+          '<input type="number" id="m-qty" value="'+q+'" oninput="updateCalcPreview()" placeholder="0"></div>'+
+      '</div>'+
+      preview+
+    '</div>'+
+    '<div class="frow"><label>実績額（手動入力 / 単価×数量が0の場合に使用）</label><input type="number" id="m-actual" value="'+(g?g.actual||0:0)+'"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveBudget()">保存</button></div>');
+}
+function updateCalcPreview(){
+  var up=Number(document.getElementById('m-unitprice').value||0);
+  var q=Number(document.getElementById('m-qty').value||0);
+  var el=document.getElementById('calc-preview');
+  if(!el)return;
+  if(up>0&&q>0){
+    el.style.cssText='background:#e8f5e9;border-radius:7px;padding:8px 10px;font-weight:700;font-size:.9rem;color:#2e7d32;margin-top:4px';
+    el.textContent='✅ '+fmtN(up)+'円 × '+q+'個 = '+fmtN(up*q)+'円（自動計算）';
+  }else{
+    el.style.cssText='';el.textContent='';
+  }
+}
+function saveBudget(){
+  var name=getV('m-name'),id=getV('m-id');
+  if(!name){alert('費目名を入力してください');return;}
+  var data={name:name,detail:getV('m-detail'),url:getV('m-url'),
+    budget:Number(getV('m-budget')||0),
+    unitPrice:Number(document.getElementById('m-unitprice').value||0),
+    qty:Number(document.getElementById('m-qty').value||0),
+    actual:Number(getV('m-actual')||0)};
+  if(id){var i=D.budget.findIndex(function(x){return x.id===id;});if(i>=0)D.budget[i]=Object.assign({},D.budget[i],data);}
+  else{data.id=uid();data.receipts=[];D.budget.push(data);}
+  persist();renderBudget();cm();
+}
+
+// ===== 会場情報 =====
+function renderVenue(){
+  renderSlideListDisplay();
+  renderVenueCard();
+  renderParkingList();
+}
+function renderSlideListDisplay(){
+  var el=document.getElementById('slide-list-display');
+  if(!el)return;
+  var links=D.slideLinks||[];
+  var byYear={};
+  links.forEach(function(s){if(!byYear[s.year])byYear[s.year]=[];byYear[s.year].push(s);});
+  var html='';
+  Object.keys(byYear).sort().reverse().forEach(function(yr){
+    html+='<div style="margin-bottom:10px"><div style="font-size:.8rem;font-weight:700;color:var(--sub);margin-bottom:5px">'+esc(yr)+'</div>';
+    byYear[yr].forEach(function(s){
+      if(s.url){html+='<div style="margin-bottom:4px"><a href="'+esc(s.url)+'" target="_blank" style="font-size:.9rem;font-weight:700">🔗 '+esc(s.label)+'</a></div>';}
+      else{html+='<div style="margin-bottom:4px;font-size:.87rem;color:#aaa">📄 '+esc(s.label)+'　<span style="font-size:.75rem">（URL未設定）</span></div>';}
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html||'<div style="color:var(--sub);font-size:.86rem">リンクが登録されていません。「＋ リンクを追加・編集」から登録してください。</div>';
+}
+function renderVenueCard(){
+  var v=D.venue||{};
+  var mapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((v.address||'静岡県浜松市中央区早馬町2-1 クリエート浜松'));
+  var telVal=(v.tel||'053-453-5311').replace(/[^\d\-+]/g,'');
+  var el=document.getElementById('venue-display-card');
+  if(!el)return;
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">会場名</div><div style="font-weight:700;font-size:1rem;margin-top:2px">'+esc(v.name||'クリエート浜松 大ホール')+'</div></div>'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">開催日時</div><div style="font-size:.9rem;margin-top:2px">'+esc(v.datetime||'2026年7月28日（火） 12:00〜17:00')+'</div></div>'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">住所</div><div style="margin-top:2px"><a href="'+mapUrl+'" target="_blank" style="font-size:.9rem;font-weight:700">📍 '+esc(v.address||'静岡県浜松市中央区早馬町2-1')+'</a><br><span style="font-size:.75rem;color:var(--sub)">タップでGoogleマップを開く</span></div></div>'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">電話番号</div><div style="margin-top:2px"><a href="tel:'+esc(telVal)+'" style="font-size:1rem;font-weight:800;color:var(--red)">📞 '+esc(v.tel||'053-453-5311')+'</a><br><span style="font-size:.75rem;color:var(--sub)">タップで電話をかける</span></div></div>'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">収容人数</div><div style="font-size:.9rem;margin-top:2px">'+esc(v.capacity||'約500名')+'</div></div>'+
+    '<div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">備考・注意事項</div><div style="font-size:.84rem;margin-top:2px;white-space:pre-wrap">'+esc(v.note||'搬入は当日8:00から可。PA・映像設備は会場設備を利用。')+'</div></div>'+
+  '</div>';
+}
+function renderParkingList(){
+  var el=document.getElementById('parking-list');
+  if(!el)return;
+  el.innerHTML=(D.parking||[]).map(function(p){
+    var mapLink=p.mapUrl?'<a href="'+esc(p.mapUrl)+'" target="_blank" style="font-size:.82rem;font-weight:700">📍 地図を開く</a>':'<span style="font-size:.78rem;color:#bbb">地図URL未設定</span>';
+    return'<div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
+      '<div><div style="font-weight:700;font-size:.92rem">🅿 '+esc(p.name)+'</div>'+
+      (p.address?'<div style="font-size:.8rem;color:var(--sub)">'+esc(p.address)+'</div>':'')+
+      (p.note?'<div style="font-size:.78rem;color:var(--sub)">'+esc(p.note)+'</div>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:8px;align-items:center">'+mapLink+
+      '<button class="bsm r" onclick="openParkingModal(\''+p.id+'\')">編集</button></div>'+
+    '</div>';
+  }).join('');
+}
+function openVenueEditModal(){
+  var v=D.venue||{};
+  openModal('<h2>⑤ 会場情報を編集</h2>'+
+    '<div class="frow"><label>会場名</label><input id="vf-name" value="'+esc(v.name||'')+'"></div>'+
+    '<div class="frow"><label>開催日時</label><input id="vf-datetime" value="'+esc(v.datetime||'')+'"></div>'+
+    '<div class="frow"><label>住所</label><input id="vf-address" value="'+esc(v.address||'')+'"></div>'+
+    '<div class="frow"><label>電話番号</label><input id="vf-tel" value="'+esc(v.tel||'')+'"></div>'+
+    '<div class="frow"><label>収容人数</label><input id="vf-capacity" value="'+esc(v.capacity||'')+'"></div>'+
+    '<div class="frow"><label>備考・注意事項</label><textarea id="vf-note">'+esc(v.note||'')+'</textarea></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveVenue()">保存</button></div>');
+}
+function saveVenue(){
+  if(!D.venue)D.venue={};
+  ['name','datetime','address','tel','capacity','note'].forEach(function(k){var el=document.getElementById('vf-'+k);if(el)D.venue[k]=el.value;});
+  persist();renderVenueCard();cm();
+}
+function openSlideEditModal(){
+  var links=D.slideLinks||[];
+  var rows=links.map(function(s,i){
+    return'<div style="border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:8px">'+
+      '<div style="display:flex;gap:6px;margin-bottom:6px">'+
+      '<input style="flex:1;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="表示ラベル" id="sl-lbl-'+i+'" value="'+esc(s.label)+'">'+
+      '<input style="width:80px;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="年度" id="sl-yr-'+i+'" value="'+esc(s.year)+'">'+
+      '<button class="bsm" onclick="removeSlide('+i+')">削除</button></div>'+
+      '<input style="width:100%;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="URL（https://...）" id="sl-url-'+i+'" value="'+esc(s.url||'')+'">'+
+    '</div>';
+  }).join('');
+  openModal('<h2>🎞 スライドリンクを編集</h2>'+
+    '<div id="slide-rows">'+rows+'</div>'+
+    '<button class="btn btn-gray" onclick="addSlideRow()" style="width:100%;margin-bottom:12px">＋ リンクを追加</button>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveSlideLinks()">保存</button></div>');
+}
+function addSlideRow(){
+  var container=document.getElementById('slide-rows');
+  if(!container)return;
+  var i=D.slideLinks.length;
+  D.slideLinks.push({id:uid(),year:'',label:'',url:''});
+  var div=document.createElement('div');
+  div.style.cssText='border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:8px';
+  var idx=i;
+  div.innerHTML='<div style="display:flex;gap:6px;margin-bottom:6px">'+
+    '<input style="flex:1;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="表示ラベル" id="sl-lbl-'+idx+'">'+
+    '<input style="width:80px;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="年度" id="sl-yr-'+idx+'">'+
+    '<button class="bsm" onclick="removeSlide('+idx+')">削除</button></div>'+
+    '<input style="width:100%;padding:5px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:.82rem" placeholder="URL（https://...）" id="sl-url-'+idx+'">';
+  container.appendChild(div);
+}
+function removeSlide(i){D.slideLinks.splice(i,1);openSlideEditModal();}
+function saveSlideLinks(){
+  var links=D.slideLinks||[];
+  links.forEach(function(s,i){
+    var lbl=document.getElementById('sl-lbl-'+i);
+    var yr=document.getElementById('sl-yr-'+i);
+    var url=document.getElementById('sl-url-'+i);
+    if(lbl)s.label=lbl.value.trim();
+    if(yr)s.year=yr.value.trim();
+    if(url)s.url=url.value.trim();
+  });
+  persist();renderSlideListDisplay();cm();
+}
+function openParkingModal(id){
+  var p=(D.parking||[]).find(function(x){return x.id===id;});
+  if(!p)return;
+  openModal('<h2>🅿 駐車場を編集</h2>'+
+    '<input type="hidden" id="m-id" value="'+p.id+'">'+
+    '<div class="frow"><label>駐車場名</label><input id="pk-name" value="'+esc(p.name)+'"></div>'+
+    '<div class="frow"><label>住所</label><input id="pk-address" value="'+esc(p.address||'')+'"></div>'+
+    '<div class="frow"><label>GoogleマップURL</label><input type="url" id="pk-mapUrl" value="'+esc(p.mapUrl||'')+'" placeholder="https://maps.google.com/..."></div>'+
+    '<div class="frow"><label>メモ</label><input id="pk-note" value="'+esc(p.note||'')+'"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveParking()">保存</button></div>');
+}
+function saveParking(){
+  var id=getV('m-id');
+  var p=(D.parking||[]).find(function(x){return x.id===id;});
+  if(!p)return;
+  p.name=getV('pk-name');p.address=getV('pk-address');p.mapUrl=getV('pk-mapUrl');p.note=getV('pk-note');
+  persist();renderParkingList();cm();
+}
+
+// ===== レイアウト =====
+function renderLayout(){
+  document.getElementById('layout-url').value=D.layout?D.layout.url||'':'';
+  document.getElementById('layout-memo').value=D.layout?D.layout.memo||'':'';
+  updateLayoutImg();
+}
+function updateLayoutImg(){
+  var url=document.getElementById('layout-url').value.trim();
+  document.getElementById('layout-img-preview').innerHTML=url?'<img src="'+esc(url)+'" style="max-width:100%;border-radius:8px;border:1px solid var(--line)" onerror="this.style.display=\'none\'">':'';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var lu=document.getElementById('layout-url');
+  if(lu)lu.addEventListener('change',updateLayoutImg);
+});
+function saveLayout(){
+  if(!D.layout)D.layout={};
+  D.layout.url=getV('layout-url');
+  D.layout.memo=document.getElementById('layout-memo').value;
+  persist();alert('保存しました');
+}
+
+// ===== タイムテーブル =====
+function renderPrograms(){
+  document.getElementById('prog-body').innerHTML=D.programs.map(function(p){
+    var timeStr=(p.startTime&&p.endTime)?(p.startTime+'〜'+p.endTime):(p.startTime||'');
+    var isAux=p.type==='transit'||p.type==='break'||p.type==='pre'||p.type==='end';
+    var rowStyle=isAux?'background:#f5f5f5;':'';
+    var cellStyle=isAux?'color:#999;font-size:.78rem;':'';
+    var noCell=isAux?'':'<b>'+(p.no||'')+'</b>';
+    return'<tr style="'+rowStyle+'">'+
+      '<td style="text-align:center;'+cellStyle+'">'+noCell+'</td>'+
+      '<td style="white-space:nowrap;font-size:.78rem;color:var(--sub)">'+esc(timeStr)+'</td>'+
+      '<td style="'+(isAux?cellStyle:'font-weight:700')+'">'+esc(p.title)+'</td>'+
+      '<td style="'+cellStyle+'">'+esc(p.presenter||'')+'</td>'+
+      '<td class="num-cell" style="'+cellStyle+'">'+(p.time?p.time+'分':'')+'</td>'+
+      '<td style="'+cellStyle+'">'+esc(p.staff||'')+'</td>'+
+      '<td style="text-align:center"><button class="bsm r" onclick="openProgModal(\''+p.id+'\')">編集</button></td></tr>';
+  }).join('');
+}
+function openProgModal(id){
+  var p=id?D.programs.find(function(x){return x.id===id;}):null;
+  openModal('<h2>⑦ タイムテーブル'+(p?'を編集':'に追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(p?p.id:'')+'">'+
+    '<div class="frow frow2"><div><label>No</label><input type="number" id="m-no" value="'+(p?p.no:D.programs.length+1)+'"></div>'+
+    '<div><label>時間（分）</label><input type="number" id="m-time" value="'+(p?p.time:20)+'"></div></div>'+
+    '<div class="frow frow2"><div><label>開始時刻</label><input id="m-stime" placeholder="9:30" value="'+(p&&p.startTime?esc(p.startTime):'')+'"></div>'+
+    '<div><label>終了時刻</label><input id="m-etime" placeholder="9:45" value="'+(p&&p.endTime?esc(p.endTime):'')+'"></div></div>'+
+    '<div class="frow"><label>種目名 *</label><input id="m-title" value="'+(p?esc(p.title):'')+'"></div>'+
+    '<div class="frow"><label>発表者・担当</label><input id="m-presenter" value="'+(p?esc(p.presenter||''):'')+'"></div>'+
+    '<div class="frow"><label>担当委員</label><input id="m-staff" value="'+(p?esc(p.staff||''):'')+'"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveProg()">保存</button></div>');
+}
+function saveProg(){
+  var title=getV('m-title'),id=getV('m-id');
+  if(!title){alert('種目名を入力してください');return;}
+  var data={no:Number(getV('m-no')),title:title,presenter:getV('m-presenter'),time:Number(getV('m-time')||0),staff:getV('m-staff'),startTime:getV('m-stime'),endTime:getV('m-etime')};
+  if(id){var i=D.programs.findIndex(function(x){return x.id===id;});if(i>=0)D.programs[i]=Object.assign({},D.programs[i],data);}
+  else{data.id=uid();D.programs.push(data);}
+  D.programs.sort(function(a,b){return(a.no||0)-(b.no||0);});
+  persist();renderPrograms();cm();
+}
+
+// ===== 当日役割 =====
+function renderTeams(){
+  var bmap={todo:'<span class="badge" style="background:#eceff1;color:#546e7a">未着手</span>',prog:'<span class="badge" style="background:#e3f2fd;color:#1565c0">進行中</span>',done:'<span class="badge" style="background:#e8f5e9;color:#2e7d32">完了</span>'};
+  document.getElementById('teams-body').innerHTML=D.teams.map(function(t){
+    return'<tr><td style="font-weight:700">'+esc(t.role)+'</td><td>'+esc(t.assignee)+'</td>'+
+      '<td>'+(t.due||'-')+'</td><td>'+(bmap[t.status||'todo']||'')+'</td>'+
+      '<td style="font-size:.82rem">'+esc(t.memo||'')+'</td><td style="text-align:center"><button class="bsm r" onclick="openTeamModal(\''+t.id+'\')">編集</button></td></tr>';
+  }).join('');
+}
+function openTeamModal(id){
+  var t=id?D.teams.find(function(x){return x.id===id;}):null;
+  openModal('<h2>⑧ 当日役割'+(t?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
+    '<div class="frow"><label>役割・担当業務 *</label><input id="m-role" value="'+(t?esc(t.role):'')+'"></div>'+
+    '<div class="frow"><label>担当者</label><input id="m-assignee" value="'+(t?esc(t.assignee):'')+'"></div>'+
+    '<div class="frow frow2"><div><label>期限</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div>'+
+    '<div><label>進捗</label><select id="m-status">'+
+    '<option value="todo"'+((!t||t.status==='todo')?' selected':'')+'>未着手</option>'+
+    '<option value="prog"'+(t&&t.status==='prog'?' selected':'')+'>進行中</option>'+
+    '<option value="done"'+(t&&t.status==='done'?' selected':'')+'>完了</option>'+
+    '</select></div></div>'+
+    '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTeam()">保存</button></div>');
+}
+function saveTeam(){
+  var role=getV('m-role'),id=getV('m-id');
+  if(!role){alert('役割を入力してください');return;}
+  var data={role:role,assignee:getV('m-assignee'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
+  if(id){var i=D.teams.findIndex(function(x){return x.id===id;});if(i>=0)D.teams[i]=Object.assign({},D.teams[i],data);}
+  else{data.id=uid();D.teams.push(data);}
+  persist();renderTeams();cm();
+}
+
+// ===== 備品リスト =====
+function renderSupplies(){
+  var bmap={todo:'<span class="badge" style="background:#eceff1;color:#546e7a">未手配</span>',prog:'<span class="badge" style="background:#fff8e1;color:#f57f17">手配中</span>',done:'<span class="badge" style="background:#e8f5e9;color:#2e7d32">準備済</span>'};
+  var el=document.getElementById('supply-body');
+  if(!el)return;
+  el.innerHTML=(D.supplies||[]).map(function(s){
+    var chk=s.checked||false;
+    var chkCell=chk
+      ?'<div style="text-align:center;cursor:pointer" onclick="toggleCheck(\''+s.id+'\')" title="チェックを外す">'+
+        '<div style="font-size:1.4rem">✅</div>'+
+        '<div style="font-size:.68rem;color:#2e7d32;font-weight:700;margin-top:2px">'+esc(s.checkedBy||'')+'</div>'+
+        (s.checkedAt?'<div style="font-size:.62rem;color:#999">'+esc(s.checkedAt)+'</div>':'')+'</div>'
+      :'<div style="text-align:center;cursor:pointer" onclick="toggleCheck(\''+s.id+'\')" title="確認済みにする">'+
+        '<div style="font-size:1.4rem;color:#ccc">☐</div></div>';
+    var rowBg=chk?'background:#f1f8e9':'';
+    return'<tr style="'+rowBg+'">'+
+      '<td>'+chkCell+'</td>'+
+      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.cat||'')+'</td>'+
+      '<td style="font-weight:700'+(chk?';text-decoration:line-through;color:#aaa':'')+'">'+esc(s.name)+'</td>'+
+      '<td style="text-align:center">'+esc(s.qty||'')+'</td>'+
+      '<td>'+esc(s.assignee||'')+'</td>'+
+      '<td>'+(bmap[s.status||'todo']||'')+'</td>'+
+      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td>'+
+      '<td style="text-align:center"><button class="bsm r" onclick="openSupplyModal(\''+s.id+'\')">編集</button></td></tr>';
+  }).join('');
+}
+function toggleCheck(id){
+  var s=(D.supplies||[]).find(function(x){return x.id===id;});
+  if(!s)return;
+  if(s.checked){
+    if(!confirm('「'+s.name+'」のチェックを外しますか？'))return;
+    s.checked=false;s.checkedBy='';s.checkedAt='';
+  }else{
+    var name=prompt('確認者のお名前を入力してください（例：森下）','');
+    if(name===null)return;
+    if(!name.trim()){alert('お名前を入力してください');return;}
+    var now=new Date();
+    var ts=(now.getMonth()+1)+'/'+(now.getDate())+' '+(now.getHours())+':'+(String(now.getMinutes()).padStart(2,'0'));
+    s.checked=true;s.checkedBy=name.trim();s.checkedAt=ts;
+  }
+  persist();renderSupplies();
+}
+function openSupplyModal(id){
+  var s=id?( D.supplies||[]).find(function(x){return x.id===id;}):null;
+  openModal('<h2>備品'+(s?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(s?s.id:'')+'">'+
+    '<div class="frow frow2"><div><label>カテゴリ</label><input id="m-cat" value="'+(s?esc(s.cat||''):'')+'"></div>'+
+    '<div><label>品名 *</label><input id="m-name" value="'+(s?esc(s.name):'')+'"></div></div>'+
+    '<div class="frow frow2"><div><label>数量</label><input id="m-qty" value="'+(s?esc(s.qty||''):'')+'"></div>'+
+    '<div><label>担当者</label><input id="m-assignee" value="'+(s?esc(s.assignee||''):'')+'"></div></div>'+
+    '<div class="frow"><label>状態</label><select id="m-status">'+
+    '<option value="todo"'+((!s||s.status==='todo')?' selected':'')+'>未手配</option>'+
+    '<option value="prog"'+(s&&s.status==='prog'?' selected':'')+'>手配中</option>'+
+    '<option value="done"'+(s&&s.status==='done'?' selected':'')+'>準備済</option>'+
+    '</select></div>'+
+    '<div class="frow"><label>メモ</label><input id="m-memo" value="'+(s?esc(s.memo||''):'')+'"></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:8px">'+
+    (s?'<button class="btn btn-gray" onclick="delSupply(\''+s.id+'\')">削除</button>':'<span></span>')+
+    '<div style="display:flex;gap:8px"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveSupply()">保存</button></div></div>');
+}
+function saveSupply(){
+  var name=getV('m-name'),id=getV('m-id');
+  if(!name){alert('品名を入力してください');return;}
+  if(!D.supplies)D.supplies=[];
+  var data={cat:getV('m-cat'),name:name,qty:getV('m-qty'),assignee:getV('m-assignee'),status:getV('m-status'),memo:getV('m-memo')};
+  // checked/checkedBy/checkedAt は編集モーダルで上書きしない
+  if(id){var i=D.supplies.findIndex(function(x){return x.id===id;});if(i>=0)D.supplies[i]=Object.assign({},D.supplies[i],data);}
+  else{data.id=uid();data.checked=false;data.checkedBy='';data.checkedAt='';D.supplies.push(data);}
+  persist();renderSupplies();cm();
+}
+function delSupply(id){if(!confirm('削除しますか？'))return;D.supplies=D.supplies.filter(function(x){return x.id!==id;});persist();renderSupplies();cm();}
+
+// ===== 議事録 =====
+function renderMinutes(){
+  var today=new Date().toISOString().slice(0,10);
+  var sorted=D.minutes.slice().sort(function(a,b){return b.date>a.date?1:-1;});
+  var past=sorted.filter(function(m){return m.date<=today;});
+  var future=sorted.filter(function(m){return m.date>today;});
+  function minCard(m,isFuture){
+    var body=m.body||'';
+    var lines=body.split('\n').filter(function(l){return l.trim()&&!l.startsWith('━');});
+    var preview=lines.slice(0,2).join(' / ').replace(/#+\s*/g,'').replace(/[■●▶]/g,'').trim();
+    if(preview.length>80)preview=preview.slice(0,80)+'…';
+    var docBtn=m.docUrl?'<a class="bsm" href="'+esc(m.docUrl)+'" target="_blank" onclick="event.stopPropagation()" style="background:#4285f4;color:#fff;text-decoration:none">📄 Geminiメモ</a>':'';
+    var cardStyle=isFuture?'opacity:.65;':'';
+    return'<div class="min-card" style="'+cardStyle+'">'+
+      '<div class="min-head" onclick="toggleMin(\''+m.id+'\')">'+
+      '<div style="flex:1;min-width:0">'+
+        '<div class="min-title">'+esc(m.title)+(isFuture?' <span style="font-size:.72rem;color:#aaa;font-weight:400">（予定）</span>':'')+'</div>'+
+        '<div class="min-date">'+m.date+(preview?'　<span style="color:#888;font-size:.75rem">'+esc(preview)+'</span>':'')+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:5px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end">'+
+        docBtn+
+        '<span class="min-toggle" id="mt-'+m.id+'" style="font-size:.75rem;color:var(--sub);white-space:nowrap">▶ 全文</span>'+
+        '<button class="bsm r" onclick="event.stopPropagation();openMinModal(\''+m.id+'\')">編集</button>'+
+        '<button class="bsm" onclick="event.stopPropagation();delMin(\''+m.id+'\')">削除</button>'+
+      '</div></div>'+
+      '<div class="min-body" id="mb-'+m.id+'">'+esc(body)+'</div></div>';
+  }
+  var html=past.length?past.map(function(m){return minCard(m,false);}).join(''):'<div class="empty">議事録がありません</div>';
+  if(future.length>0){
+    html+='<div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px;"><div style="flex:1;height:1px;background:var(--line)"></div><span style="font-size:.75rem;color:#aaa;white-space:nowrap;padding:0 8px">── 今後の予定 ──</span><div style="flex:1;height:1px;background:var(--line)"></div></div>';
+    html+=future.map(function(m){return minCard(m,true);}).join('');
+  }
+  document.getElementById('min-list').innerHTML=html;
+}
+function toggleMin(id){
+  var b=document.getElementById('mb-'+id);
+  var t=document.getElementById('mt-'+id);
+  if(!b)return;
+  b.classList.toggle('open');
+  if(t)t.textContent=b.classList.contains('open')?'▼ 閉じる':'▶ 詳細';
+}
+function delMin(id){if(!confirm('削除しますか？'))return;D.minutes=D.minutes.filter(function(x){return x.id!==id;});persist();renderMinutes();}
+function openMinModal(id){
+  var m=id?D.minutes.find(function(x){return x.id===id;}):null;
+  openModal('<h2>⑨ 議事録'+(m?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(m?m.id:'')+'">'+
+    '<div class="frow"><label>日付</label><input type="date" id="m-date" value="'+(m?m.date:todayStr())+'"></div>'+
+    '<div class="frow"><label>タイトル *</label><input id="m-title" value="'+(m?esc(m.title):'')+'"></div>'+
+    '<div class="frow"><label>GeminiメモURL</label><input id="m-docurl" value="'+(m?esc(m.docUrl||''):'')+'"></div>'+
+    '<div class="frow"><label>内容</label><textarea id="m-body" style="min-height:160px">'+(m?esc(m.body||''):'')+'</textarea></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveMin()">保存</button></div>');
+}
+function saveMin(){
+  var title=getV('m-title'),id=getV('m-id');
+  if(!title){alert('タイトルを入力してください');return;}
+  var data={date:getV('m-date'),title:title,docUrl:getV('m-docurl'),body:document.getElementById('m-body').value};
+  if(id){var i=D.minutes.findIndex(function(x){return x.id===id;});if(i>=0)D.minutes[i]=Object.assign({},D.minutes[i],data);}
+  else{data.id=uid();D.minutes.push(data);}
+  persist();renderMinutes();cm();
+}
+
+// ===== メンバー =====
+function renderMembers(){
+  document.getElementById('member-list').innerHTML=D.members.length?D.members.map(function(m){
+    return'<div class="member-card">'+
+      '<div class="avatar">'+esc(m.name.slice(0,1))+'</div>'+
+      '<div class="member-info" style="flex:1"><div class="mname">'+esc(m.name)+'</div>'+
+      '<div class="mrole">'+esc(m.role||'')+'</div>'+
+      (m.note?'<div style="font-size:.76rem;color:var(--sub)">'+esc(m.note)+'</div>':'')+'</div>'+
+      '<div class="member-acts">'+
+      '<button class="bsm r" onclick="openMemberModal(\''+m.id+'\')">編集</button>'+
+      '<button class="bsm" onclick="delMember(\''+m.id+'\')">削除</button>'+
+      '</div></div>';
+  }).join(''):'<div class="empty">メンバーがいません</div>';
+}
+function delMember(id){if(!confirm('削除しますか？'))return;D.members=D.members.filter(function(x){return x.id!==id;});persist();renderMembers();}
+function openMemberModal(id){
+  var m=id?D.members.find(function(x){return x.id===id;}):null;
+  openModal('<h2>⑩ メンバー'+(m?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(m?m.id:'')+'">'+
+    '<div class="frow"><label>氏名 *</label><input id="m-name" value="'+(m?esc(m.name):'')+'"></div>'+
+    '<div class="frow"><label>役割・担当</label><input id="m-role" value="'+(m?esc(m.role||''):'')+'"></div>'+
+    '<div class="frow"><label>備考</label><input id="m-note" value="'+(m?esc(m.note||''):'')+'"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveMember()">保存</button></div>');
+}
+function saveMember(){
+  var name=getV('m-name'),id=getV('m-id');
+  if(!name){alert('氏名を入力してください');return;}
+  var data={name:name,dept:'',role:getV('m-role'),note:getV('m-note')};
+  if(id){var i=D.members.findIndex(function(x){return x.id===id;});if(i>=0)D.members[i]=Object.assign({},D.members[i],data);}
+  else{data.id=uid();D.members.push(data);}
+  persist();renderMembers();cm();
+}
+
+// ===== リンク集 =====
+function renderLinks(){
+  var list=document.getElementById('links-list');
+  if(!D.links||!D.links.length){list.innerHTML='<div class="empty">リンクがありません</div>';return;}
+  var cats={};
+  D.links.forEach(function(lk){var c=lk.category||'その他';if(!cats[c])cats[c]=[];cats[c].push(lk);});
+  list.innerHTML=Object.keys(cats).map(function(cat){
+    return'<div class="lk-group"><div class="lk-cat">'+esc(cat)+'</div>'+
+      cats[cat].map(function(lk){
+        return'<div class="lk-card">'+
+          '<div style="flex:1;min-width:0">'+
+            '<div class="lk-title">'+esc(lk.title)+'</div>'+
+            (lk.note?'<div class="lk-note">'+esc(lk.note)+'</div>':'')+
+          '</div>'+
+          '<div style="display:flex;gap:6px;flex-shrink:0;align-items:center">'+
+            (lk.url?'<a class="btn btn-r" href="'+esc(lk.url)+'" target="_blank" style="text-decoration:none;font-size:.78rem;padding:4px 10px">開く</a>':'')+
+            '<button class="bsm r" onclick="openLinkModal(\''+lk.id+'\')">編集</button>'+
+            '<button class="bsm" onclick="delLink(\''+lk.id+'\')">削除</button>'+
+          '</div></div>';
+      }).join('')+'</div>';
+  }).join('');
+}
+function delLink(id){if(!confirm('削除しますか？'))return;D.links=D.links.filter(function(x){return x.id!==id;});persist();renderLinks();}
+function openLinkModal(id){
+  var lk=id?D.links.find(function(x){return x.id===id;}):null;
+  openModal('<h2>⑪ リンク'+(lk?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="lk-id" value="'+(lk?lk.id:'')+'">'+
+    '<div class="frow"><label>タイトル *</label><input id="lk-title" value="'+(lk?esc(lk.title):'')+'"></div>'+
+    '<div class="frow"><label>URL</label><input id="lk-url" value="'+(lk?esc(lk.url||''):'')+'"></div>'+
+    '<div class="frow"><label>カテゴリ</label><input id="lk-cat" value="'+(lk?esc(lk.category||''):'')+'"></div>'+
+    '<div class="frow"><label>メモ</label><input id="lk-note" value="'+(lk?esc(lk.note||''):'')+'"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveLinkData()">保存</button></div>');
+}
+function saveLinkData(){
+  var title=getV('lk-title'),id=getV('lk-id');
+  if(!title){alert('タイトルを入力してください');return;}
+  var data={title:title,url:getV('lk-url'),category:getV('lk-cat')||'その他',note:getV('lk-note')};
+  if(id){var i=D.links.findIndex(function(x){return x.id===id;});if(i>=0)D.links[i]=Object.assign({},D.links[i],data);}
+  else{data.id=uid();D.links.push(data);}
+  persist();renderLinks();cm();
+}
+
+// ===== スケジュールPDFダウンロード =====
+function downloadSchedulePDF(){
+  var progs=D.programs||[];
+  var rows=progs.map(function(p){
+    return'<tr><td style="padding:6px 10px;border-bottom:1px solid #ddd;white-space:nowrap">'+
+      esc(p.startTime||'')+(p.endTime?'〜'+esc(p.endTime):'')+'</td>'+
+      '<td style="padding:6px 10px;border-bottom:1px solid #ddd">'+esc(p.name||'')+'</td>'+
+      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;color:#555">'+esc(p.presenter||'')+'</td>'+
+      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;text-align:center;white-space:nowrap">'+
+      (p.duration?esc(String(p.duration))+'分':'')+'</td>'+
+      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;color:#555">'+esc(p.committee||'')+'</td></tr>';
+  }).join('');
+  var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
+    '<title>LIFEFUND 経営方針発表会\'26 タイムスケジュール</title>'+
+    '<style>body{font-family:"Meiryo","Yu Gothic",sans-serif;margin:20mm 15mm;color:#222}'+
+    'h1{font-size:18pt;color:#C8232A;border-bottom:3px solid #C8232A;padding-bottom:8px;margin-bottom:4px}'+
+    '.sub{font-size:10pt;color:#555;margin-bottom:16px}'+
+    'table{width:100%;border-collapse:collapse;font-size:10pt}'+
+    'th{background:#C8232A;color:#fff;padding:7px 10px;text-align:left}'+
+    'tr:nth-child(even) td{background:#fdf4f4}'+
+    '.info-box{border:1.5px solid #C8232A;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:flex;gap:24px;font-size:10pt}'+
+    '.info-box b{color:#C8232A}'+
+    '@media print{@page{size:A4;margin:15mm}button{display:none}}'+
+    '</style></head><body>'+
+    '<h1>LIFEFUND 経営方針発表会\'26 タイムスケジュール</h1>'+
+    '<div class="sub">第56期 経営方針発表会　2026年7月28日（火）クリエート浜松 2階 大ホール</div>'+
+    '<div class="info-box">'+
+      '<span>📅 <b>開催日</b>：2026年7月28日（火）</span>'+
+      '<span>⏰ <b>発表会</b>：9:30〜15:05</span>'+
+      '<span>🚪 <b>来場者着座</b>：11:30まで</span>'+
+      '<span>👥 <b>委員集合</b>：8:00</span>'+
+    '</div>'+
+    '<table><thead><tr><th style="width:120px">時刻</th><th>種目</th><th style="width:140px">発表者・担当</th><th style="width:50px">時間</th><th style="width:120px">担当委員</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table>'+
+    '<div style="margin-top:20px;font-size:8pt;color:#999;text-align:right">印刷：ファイル→印刷→PDFに保存</div>'+
+    '<script>window.onload=function(){window.print();}<\/script>'+
+    '</body></html>';
+  var win=window.open('','_blank');
+  if(win){win.document.write(html);win.document.close();}
+  else{alert('ポップアップがブロックされています。ブラウザの設定でこのサイトのポップアップを許可してください。');}
+}
+
+// ===== 設定 =====
+function saveCfg(){
+  cfg.apiKey=getV('s-ak');cfg.binId=getV('s-bi');
+  localStorage.setItem(SS,JSON.stringify(cfg));setSt('✅ 設定を保存しました');
+}
+function setSt(m){document.getElementById('syncst').textContent=m;}
+async function syncDown(){
+  if(!cfg.apiKey||!cfg.binId){alert('APIキーとBin IDを入力してください');return;}
+  setSt('読み込み中...');
+  try{
+    var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
+    var data=await r.json();
+    if(data.record&&(data.record.tasks||data.record.board)){
+      D=Object.assign(cloneD(INIT),data.record);
+      localStorage.setItem(SK,JSON.stringify(D));renderPage(curTab);setSt('✅ クラウドから読み込みました');
+    }else setSt('⚠ データが見つかりません');
+  }catch(e){setSt('❌ 失敗: '+e.message);}
+}
+async function syncUp(){
+  if(!cfg.apiKey||!cfg.binId){alert('APIキーとBin IDを入力してください');return;}
+  setSt('保存中...');
+  try{
+    await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});
+    setSt('✅ クラウドに保存しました');
+  }catch(e){setSt('❌ 失敗: '+e.message);}
+}
+function expJSON(){var b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='keieihoshin26.json';a.click();}
+function impJSON(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var data=JSON.parse(ev.target.result);D=Object.assign(cloneD(INIT),data);persist();renderPage(curTab);alert('インポート完了');}catch(err){alert('ファイルが正しくありません');}};r.readAsText(f);};inp.click();}
+function resetAll(){if(!confirm('初期データにリセットします。よろしいですか？'))return;D=cloneD(INIT);persist();renderPage(curTab);alert('リセット完了');}
+
+// ===== 起動 =====
+async function appInit(){
+  loadLocal();
+  document.getElementById('s-ak').value=cfg.apiKey||'';
+  document.getElementById('s-bi').value=cfg.binId||'';
+  if(cfg.apiKey&&cfg.binId){
+    try{
+      var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
+      var data=await r.json();
+      if(data.record&&(data.record.tasks||data.record.board)){D=Object.assign(cloneD(INIT),data.record);localStorage.setItem(SK,JSON.stringify(D));}
+    }catch(e){}
+  }
+  goTab('board');
+}
+appInit();
+</script>
+</body>
+</html>
