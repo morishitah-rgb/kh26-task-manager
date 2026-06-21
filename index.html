@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -195,6 +196,21 @@ a{color:var(--red)}
 </style>
 </head>
 <body>
+
+<!-- ログイン画面 -->
+<div id="login-screen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f3ef;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+  <div style="background:#C8232A;color:#fff;padding:16px 32px;border-radius:12px;text-align:center;max-width:360px;width:90%">
+    <div style="font-size:1.5rem;font-weight:800;margin-bottom:4px">経営方針発表会 2026</div>
+    <div style="font-size:.85rem;opacity:.85">委員会タスク管理</div>
+  </div>
+  <div style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+    <p style="color:#555;margin-bottom:20px;font-size:.9rem">LIFEFUND社員専用ページです。<br>招待メールのリンクからログインしてください。</p>
+    <button onclick="netlifyIdentity.open('login')" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">ログイン</button>
+  </div>
+</div>
+
+<!-- メインアプリ -->
+<div id="app-root" style="display:none">
 
 <header>
   <div>
@@ -1569,6 +1585,16 @@ function expJSON(){var b=new Blob([JSON.stringify(D,null,2)],{type:'application/
 function impJSON(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var data=JSON.parse(ev.target.result);D=Object.assign(cloneD(INIT),data);persist();renderPage(curTab);alert('インポート完了');}catch(err){alert('ファイルが正しくありません');}};r.readAsText(f);};inp.click();}
 function resetAll(){if(!confirm('初期データにリセットします。よろしいですか？'))return;D=cloneD(INIT);persist();renderPage(curTab);alert('リセット完了');}
 
+// ===== 認証 =====
+function showLogin(){
+  document.getElementById('app-root').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+function hideLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-root').style.display='block';
+}
+
 // ===== 起動 =====
 async function appInit(){
   loadLocal();
@@ -1583,7 +1609,22 @@ async function appInit(){
   }
   goTab('board');
 }
-appInit();
+
+// Netlify Identity 認証制御
+if(window.netlifyIdentity){
+  netlifyIdentity.on('init', function(user){
+    if(!user){ showLogin(); } else { hideLogin(); appInit(); }
+  });
+  netlifyIdentity.on('login', function(){
+    hideLogin(); appInit(); netlifyIdentity.close();
+  });
+  netlifyIdentity.on('logout', function(){ showLogin(); });
+  netlifyIdentity.init();
+} else {
+  // ローカル開発時はそのまま起動
+  appInit();
+}
 </script>
+</div><!-- /app-root -->
 </body>
 </html>
