@@ -1613,15 +1613,26 @@ async function appInit(){
 // Netlify Identity 認証制御
 if(window.netlifyIdentity){
   netlifyIdentity.on('init', function(user){
-    if(!user){ showLogin(); } else { hideLogin(); appInit(); }
+    if(!user){
+      // 招待トークンがURLにある場合はIdentityウィジェットに任せる
+      if(window.location.hash.indexOf('invite_token') !== -1){
+        // 何もしない（ウィジェットがパスワード設定ダイアログを開く）
+      } else {
+        showLogin();
+      }
+    } else {
+      hideLogin(); appInit();
+    }
   });
   netlifyIdentity.on('login', function(){
+    hideLogin(); appInit(); netlifyIdentity.close();
+  });
+  netlifyIdentity.on('signup', function(){
     hideLogin(); appInit(); netlifyIdentity.close();
   });
   netlifyIdentity.on('logout', function(){ showLogin(); });
   netlifyIdentity.init();
 } else {
-  // ローカル開発時はそのまま起動
   appInit();
 }
 </script>
