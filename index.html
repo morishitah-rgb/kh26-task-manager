@@ -203,9 +203,19 @@ a{color:var(--red)}
     <div style="font-size:1.5rem;font-weight:800;margin-bottom:4px">経営方針発表会 2026</div>
     <div style="font-size:.85rem;opacity:.85">委員会タスク管理</div>
   </div>
-  <div style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+  <!-- 通常ログイン -->
+  <div id="login-panel" style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
     <p style="color:#555;margin-bottom:20px;font-size:.9rem">LIFEFUND社員専用ページです。<br>招待メールのリンクからログインしてください。</p>
     <button onclick="netlifyIdentity.open('login')" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">ログイン</button>
+  </div>
+  <!-- 招待承認パスワード設定 -->
+  <div id="invite-panel" style="display:none;background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+    <p style="color:#555;margin-bottom:6px;font-size:.9rem;font-weight:700">パスワードを設定してください</p>
+    <p style="color:#999;margin-bottom:20px;font-size:.78rem">8文字以上で設定してください</p>
+    <input id="invite-pw" type="password" placeholder="パスワード（8文字以上）" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;margin-bottom:10px;box-sizing:border-box">
+    <input id="invite-pw2" type="password" placeholder="パスワード（確認）" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;margin-bottom:16px;box-sizing:border-box">
+    <div id="invite-err" style="color:#c62828;font-size:.8rem;margin-bottom:10px;display:none"></div>
+    <button onclick="acceptInvite()" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">設定してログイン</button>
   </div>
 </div>
 
@@ -1610,13 +1620,46 @@ async function appInit(){
   goTab('board');
 }
 
+// 招待承認処理
+function acceptInvite(){
+  var token = (window.location.hash.match(/invite_token=([^&]+)/) || [])[1];
+  var pw = document.getElementById('invite-pw').value;
+  var pw2 = document.getElementById('invite-pw2').value;
+  var errEl = document.getElementById('invite-err');
+  errEl.style.display='none';
+  if(!pw || pw.length < 8){ errEl.textContent='8文字以上で入力してください'; errEl.style.display='block'; return; }
+  if(pw !== pw2){ errEl.textContent='パスワードが一致しません'; errEl.style.display='block'; return; }
+  fetch('/.netlify/identity/verify', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({token: token, password: pw, type:'invite'})
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if(data.access_token){
+      // 認証成功 → ログイン状態にしてアプリ起動
+      netlifyIdentity.store && (netlifyIdentity.store.user = data);
+      hideLogin(); appInit();
+      // URLからトークンを除去
+      history.replaceState(null,'',window.location.pathname);
+    } else {
+      errEl.textContent = data.msg || 'エラーが発生しました。もう一度お試しください。';
+      errEl.style.display='block';
+    }
+  }).catch(function(){
+    errEl.textContent='通信エラーが発生しました。';
+    errEl.style.display='block';
+  });
+}
+
 // Netlify Identity 認証制御
 if(window.netlifyIdentity){
   netlifyIdentity.on('init', function(user){
     if(!user){
-      // 招待トークンがURLにある場合はIdentityウィジェットに任せる
-      if(window.location.hash.indexOf('invite_token') !== -1){
-        netlifyIdentity.open();
+      var inviteToken = (window.location.hash.match(/invite_token=([^&]+)/) || [])[1];
+      if(inviteToken){
+        // 招待パスワード設定画面を表示
+        document.getElementById('login-panel').style.display='none';
+        document.getElementById('invite-panel').style.display='block';
+        document.getElementById('login-screen').style.display='flex';
       } else {
         showLogin();
       }
