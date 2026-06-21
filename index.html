@@ -1652,6 +1652,10 @@ async function appInit(){
   goTab('board');
 }
 
+// ページ読み込み時にトークンを即保存（init()でハッシュが消えるため）
+var _inviteToken = (window.location.hash.match(/invite_token=([^&]+)/) || [])[1] || null;
+var _recoveryToken = (window.location.hash.match(/recovery_token=([^&]+)/) || [])[1] || null;
+
 function showResetPanel(){
   document.getElementById('login-panel').style.display='none';
   document.getElementById('reset-panel').style.display='block';
@@ -1674,7 +1678,7 @@ function sendReset(){
   .catch(function(){ errEl.textContent='送信に失敗しました。もう一度お試しください。'; errEl.style.display='block'; });
 }
 function acceptRecovery(){
-  var token = (window.location.hash.match(/recovery_token=([^&]+)/) || [])[1];
+  var token = _recoveryToken;
   var pw = document.getElementById('recovery-pw').value;
   var pw2 = document.getElementById('recovery-pw2').value;
   var errEl = document.getElementById('recovery-err');
@@ -1703,7 +1707,7 @@ function togglePw(id, btn){
 
 // 招待承認処理
 function acceptInvite(){
-  var token = (window.location.hash.match(/invite_token=([^&]+)/) || [])[1];
+  var token = _inviteToken;
   var pw = document.getElementById('invite-pw').value;
   var pw2 = document.getElementById('invite-pw2').value;
   var errEl = document.getElementById('invite-err');
