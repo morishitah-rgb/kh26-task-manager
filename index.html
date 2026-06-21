@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://accounts.google.com/gsi/client" onload="if(window.onGsiLoad)onGsiLoad()" async defer></script>
 <title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -197,25 +197,16 @@ a{color:var(--red)}
 </head>
 <body>
 
-<!-- ログイン画面（z-index:1000 ← ウィジェットは99999なので必ず前面に出る） -->
-<div id="login-screen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f3ef;z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+<!-- ログイン画面 -->
+<div id="login-screen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f3ef;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
   <div style="background:#C8232A;color:#fff;padding:16px 32px;border-radius:12px;text-align:center;max-width:360px;width:90%">
     <div style="font-size:1.5rem;font-weight:800;margin-bottom:4px">経営方針発表会 2026</div>
     <div style="font-size:.85rem;opacity:.85">委員会タスク管理</div>
   </div>
-  <div id="login-panel" style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
-    <p style="color:#555;margin-bottom:20px;font-size:.9rem">LIFEFUND社員専用ページです。<br>招待メールのリンクからログインしてください。</p>
-    <button onclick="netlifyIdentity.open('login')" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">ログイン</button>
-    <p style="margin-top:16px"><a href="#" onclick="showResetPanel();return false;" style="color:#999;font-size:.8rem">パスワードを忘れた方はこちら</a></p>
-  </div>
-  <div id="reset-panel" style="display:none;background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
-    <p style="color:#555;margin-bottom:6px;font-size:.9rem;font-weight:700">パスワードのリセット</p>
-    <p style="color:#999;margin-bottom:20px;font-size:.78rem">登録メールアドレスを入力してください。<br>リセット用リンクをお送りします。</p>
-    <input id="reset-email" type="email" placeholder="morishita.h@hakuto-k.jp" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;margin-bottom:12px;box-sizing:border-box">
-    <div id="reset-err" style="color:#c62828;font-size:.8rem;margin-bottom:10px;display:none"></div>
-    <div id="reset-ok" style="color:#43a047;font-size:.85rem;margin-bottom:10px;display:none">送信しました。メールを確認してリンクをクリックしてください。<br>ウィジェットが開いたらパスワードを設定できます。</div>
-    <button onclick="sendReset()" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-bottom:10px">リセットメールを送信</button>
-    <p><a href="#" onclick="showLoginPanel();return false;" style="color:#999;font-size:.8rem">← ログインに戻る</a></p>
+  <div style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+    <p style="color:#555;margin-bottom:20px;font-size:.9rem">LIFEFUND社員専用ページです。<br>@hakuto-k.jpのGoogleアカウントでログインしてください。</p>
+    <div id="g-signin-btn"></div>
+    <div id="login-err" style="color:#c62828;font-size:.82rem;margin-top:12px;display:none"></div>
   </div>
 </div>
 
@@ -1621,53 +1612,67 @@ async function appInit(){
   goTab('board');
 }
 
+// ===== Google OAuth 認証 =====
+var GOOGLE_CLIENT_ID = 'REPLACE_WITH_CLIENT_ID'; // ← ここにクライアントIDを入れる
+var ALLOWED_DOMAIN = 'hakuto-k.jp';
+var AUTH_KEY = 'kh26_gauth';
+
+function showLogin(){ document.getElementById('login-screen').style.display='flex'; }
+function hideLogin(){ document.getElementById('login-screen').style.display='none'; }
+
 function doLogout(){
-  if(window.netlifyIdentity) netlifyIdentity.logout();
-}
-function showResetPanel(){
-  document.getElementById('login-panel').style.display='none';
-  document.getElementById('reset-panel').style.display='block';
-}
-function showLoginPanel(){
-  document.getElementById('reset-panel').style.display='none';
-  document.getElementById('login-panel').style.display='block';
-}
-function sendReset(){
-  var email = document.getElementById('reset-email').value.trim();
-  var errEl = document.getElementById('reset-err');
-  var okEl = document.getElementById('reset-ok');
-  errEl.style.display='none'; okEl.style.display='none';
-  if(!email){ errEl.textContent='メールアドレスを入力してください'; errEl.style.display='block'; return; }
-  fetch('/.netlify/identity/recover', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({email: email})
-  }).then(function(r){
-    if(r.ok){ okEl.style.display='block'; }
-    else{ errEl.textContent='送信に失敗しました（'+r.status+'）'; errEl.style.display='block'; }
-  }).catch(function(){ errEl.textContent='通信エラーが発生しました'; errEl.style.display='block'; });
+  localStorage.removeItem(AUTH_KEY);
+  if(window.google && google.accounts) google.accounts.id.disableAutoSelect();
+  showLogin();
 }
 
-// Netlify Identity 認証制御
-// ポイント：login-screenのz-index=1000、ウィジェットは内部でz-index=99999を使用
-// → ウィジェットのモーダルは必ずlogin-screenより前面に表示される
-// → invite_token / recovery_token はウィジェットが自動検出してモーダルを開く
-if(window.netlifyIdentity){
-  netlifyIdentity.on('init', function(user){
-    if(user){ hideLogin(); appInit(); }
-    else{ showLogin(); }
-  });
-  netlifyIdentity.on('login', function(){
-    hideLogin(); appInit(); netlifyIdentity.close();
-  });
-  netlifyIdentity.on('signup', function(){
-    hideLogin(); appInit(); netlifyIdentity.close();
-  });
-  netlifyIdentity.on('logout', function(){ showLogin(); });
-  netlifyIdentity.init();
-} else {
+function onGoogleSignIn(resp){
+  var payload = JSON.parse(atob(resp.credential.split('.')[1]));
+  var email = payload.email || '';
+  if(!email.endsWith('@'+ALLOWED_DOMAIN)){
+    document.getElementById('login-err').textContent = '@'+ALLOWED_DOMAIN+' のアカウントのみ利用できます（'+email+'）';
+    document.getElementById('login-err').style.display='block';
+    google.accounts.id.disableAutoSelect();
+    return;
+  }
+  // 認証OK：メールとトークンを保存
+  localStorage.setItem(AUTH_KEY, JSON.stringify({email:email, name:payload.name, exp:payload.exp}));
+  hideLogin();
   appInit();
 }
+
+function initGoogleAuth(){
+  // 保存済みセッションを確認
+  var saved = localStorage.getItem(AUTH_KEY);
+  if(saved){
+    var s = JSON.parse(saved);
+    // expiry確認（Googleのトークンは1時間だが、ここでは日付のみ簡易チェック）
+    if(s.exp && s.exp * 1000 > Date.now()){
+      hideLogin(); appInit(); return;
+    }
+    localStorage.removeItem(AUTH_KEY);
+  }
+  showLogin();
+  // Google Identity Services の初期化
+  if(window.google && google.accounts){
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: onGoogleSignIn,
+      auto_select: true,
+      hosted_domain: ALLOWED_DOMAIN
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('g-signin-btn'),
+      {theme:'outline', size:'large', text:'signin_with', locale:'ja', width:280}
+    );
+    google.accounts.id.prompt();
+  }
+}
+
+// Google GSI スクリプトロード後に initGoogleAuth を呼ぶ
+window.onGsiLoad = initGoogleAuth;
+// GSIが既にロード済みの場合（キャッシュ等）
+if(window.google && google.accounts) initGoogleAuth();
 </script>
 </div><!-- /app-root -->
 </body>
