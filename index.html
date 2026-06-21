@@ -1618,7 +1618,7 @@ var ALLOWED_DOMAIN = 'hakuto-k.jp';
 var AUTH_KEY = 'kh26_gauth';
 
 function showLogin(){ document.getElementById('login-screen').style.display='flex'; }
-function hideLogin(){ document.getElementById('login-screen').style.display='none'; }
+function hideLogin(){ document.getElementById('login-screen').style.display='none'; document.getElementById('app-root').style.display='block'; }
 
 function doLogout(){
   localStorage.removeItem(AUTH_KEY);
