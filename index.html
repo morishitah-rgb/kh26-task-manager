@@ -1616,7 +1616,7 @@ if(window.netlifyIdentity){
     if(!user){
       // 招待トークンがURLにある場合はIdentityウィジェットに任せる
       if(window.location.hash.indexOf('invite_token') !== -1){
-        // 何もしない（ウィジェットがパスワード設定ダイアログを開く）
+        netlifyIdentity.open();
       } else {
         showLogin();
       }
