@@ -207,6 +207,32 @@ a{color:var(--red)}
   <div id="login-panel" style="background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
     <p style="color:#555;margin-bottom:20px;font-size:.9rem">LIFEFUND社員専用ページです。<br>招待メールのリンクからログインしてください。</p>
     <button onclick="netlifyIdentity.open('login')" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">ログイン</button>
+    <p style="margin-top:16px"><a href="#" onclick="showResetPanel();return false;" style="color:#999;font-size:.8rem">パスワードを忘れた方はこちら</a></p>
+  </div>
+  <!-- パスワードリセット申請 -->
+  <div id="reset-panel" style="display:none;background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+    <p style="color:#555;margin-bottom:6px;font-size:.9rem;font-weight:700">パスワードのリセット</p>
+    <p style="color:#999;margin-bottom:20px;font-size:.78rem">登録メールアドレスを入力してください。<br>リセット用リンクをお送りします。</p>
+    <input id="reset-email" type="email" placeholder="メールアドレス" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;margin-bottom:12px;box-sizing:border-box">
+    <div id="reset-err" style="color:#c62828;font-size:.8rem;margin-bottom:10px;display:none"></div>
+    <div id="reset-ok" style="color:#43a047;font-size:.85rem;margin-bottom:10px;display:none">送信しました。メールをご確認ください。</div>
+    <button onclick="sendReset()" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-bottom:10px">リセットメールを送信</button>
+    <p><a href="#" onclick="showLoginPanel();return false;" style="color:#999;font-size:.8rem">← ログインに戻る</a></p>
+  </div>
+  <!-- パスワードリセット（新パスワード設定） -->
+  <div id="recovery-panel" style="display:none;background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
+    <p style="color:#555;margin-bottom:6px;font-size:.9rem;font-weight:700">新しいパスワードを設定</p>
+    <p style="color:#999;margin-bottom:20px;font-size:.78rem">半角英数字8文字以上で設定してください<br>例：abc12345</p>
+    <div style="position:relative;margin-bottom:10px">
+      <input id="recovery-pw" type="password" placeholder="新しいパスワード（8文字以上）" style="width:100%;padding:10px 44px 10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;box-sizing:border-box">
+      <button type="button" onclick="togglePw('recovery-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999;font-size:.8rem;padding:2px 4px">表示</button>
+    </div>
+    <div style="position:relative;margin-bottom:16px">
+      <input id="recovery-pw2" type="password" placeholder="パスワード（確認）" style="width:100%;padding:10px 44px 10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;box-sizing:border-box">
+      <button type="button" onclick="togglePw('recovery-pw2',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999;font-size:.8rem;padding:2px 4px">表示</button>
+    </div>
+    <div id="recovery-err" style="color:#c62828;font-size:.8rem;margin-bottom:10px;display:none"></div>
+    <button onclick="acceptRecovery()" style="background:#C8232A;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;width:100%">設定してログイン</button>
   </div>
   <!-- 招待承認パスワード設定 -->
   <div id="invite-panel" style="display:none;background:#fff;padding:28px 32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;max-width:360px;width:90%">
@@ -1626,6 +1652,49 @@ async function appInit(){
   goTab('board');
 }
 
+function showResetPanel(){
+  document.getElementById('login-panel').style.display='none';
+  document.getElementById('reset-panel').style.display='block';
+}
+function showLoginPanel(){
+  document.getElementById('reset-panel').style.display='none';
+  document.getElementById('login-panel').style.display='block';
+}
+function sendReset(){
+  var email = document.getElementById('reset-email').value.trim();
+  var errEl = document.getElementById('reset-err');
+  var okEl = document.getElementById('reset-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(!email){ errEl.textContent='メールアドレスを入力してください'; errEl.style.display='block'; return; }
+  fetch('/.netlify/identity/recover', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email: email})
+  }).then(function(){ okEl.style.display='block'; })
+  .catch(function(){ errEl.textContent='送信に失敗しました。もう一度お試しください。'; errEl.style.display='block'; });
+}
+function acceptRecovery(){
+  var token = (window.location.hash.match(/recovery_token=([^&]+)/) || [])[1];
+  var pw = document.getElementById('recovery-pw').value;
+  var pw2 = document.getElementById('recovery-pw2').value;
+  var errEl = document.getElementById('recovery-err');
+  errEl.style.display='none';
+  if(!pw || pw.length < 8){ errEl.textContent='8文字以上で入力してください'; errEl.style.display='block'; return; }
+  if(pw !== pw2){ errEl.textContent='パスワードが一致しません'; errEl.style.display='block'; return; }
+  fetch('/.netlify/identity/verify', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({token: token, password: pw, type:'recovery'})
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if(data.access_token){
+      hideLogin(); appInit();
+      history.replaceState(null,'',window.location.pathname);
+    } else {
+      errEl.textContent = data.msg || 'エラーが発生しました。もう一度お試しください。';
+      errEl.style.display='block';
+    }
+  }).catch(function(){ errEl.textContent='通信エラーが発生しました。'; errEl.style.display='block'; });
+}
 function togglePw(id, btn){
   var el = document.getElementById(id);
   if(el.type === 'password'){ el.type='text'; btn.textContent='隠す'; }
@@ -1667,10 +1736,14 @@ if(window.netlifyIdentity){
   netlifyIdentity.on('init', function(user){
     if(!user){
       var inviteToken = (window.location.hash.match(/invite_token=([^&]+)/) || [])[1];
+      var recoveryToken = (window.location.hash.match(/recovery_token=([^&]+)/) || [])[1];
       if(inviteToken){
-        // 招待パスワード設定画面を表示
         document.getElementById('login-panel').style.display='none';
         document.getElementById('invite-panel').style.display='block';
+        document.getElementById('login-screen').style.display='flex';
+      } else if(recoveryToken){
+        document.getElementById('login-panel').style.display='none';
+        document.getElementById('recovery-panel').style.display='block';
         document.getElementById('login-screen').style.display='flex';
       } else {
         showLogin();
