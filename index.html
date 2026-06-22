@@ -1596,6 +1596,7 @@ function makeNameTag(emp,seatId){
 
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('[id^="seat-"]').forEach(function(c){if(!c.querySelector('[data-emp-no]')){c.style.background='#e9ecef';c.style.borderColor='#adb5bd';}});});
+  tag.addEventListener('dblclick',function(){returnToUnplaced(this);});
   return tag;
 }
 
