@@ -362,6 +362,7 @@ a{color:var(--red)}
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn btn-r" onclick="saveSeating()">💾 保存</button>
       <button class="btn btn-gray" onclick="resetSeating()">🔄 リセット</button>
+      <button class="btn btn-gray" onclick="printSeating()">🖨 印刷用PDF</button>
       <button class="btn btn-gray" onclick="autoArrangeSeating()">✨ 自動配置</button>
       <button class="btn btn-gray" onclick="openAddPersonModal()">＋ 人を追加</button>
     </div>
@@ -1362,7 +1363,7 @@ function saveLayout(){
 var EMPLOYEES=[
   {no:1,name:'白都卓磨',cat:'社員',attendance:'出席'},
   {no:2,name:'青島怜史',cat:'社員',attendance:'出席'},
-  {no:3,name:'伊賀篤奈',cat:'社員',attendance:'出席'},
+  {no:3,name:'伊熊麗奈',cat:'社員',attendance:'出席'},
   {no:4,name:'石澤光弘',cat:'社員',attendance:'出席'},
   {no:5,name:'石野祐太朗',cat:'社員',attendance:'出席'},
   {no:6,name:'磯口耕大',cat:'社員',attendance:'出席'},
@@ -1378,20 +1379,20 @@ var EMPLOYEES=[
   {no:16,name:'小澤美香',cat:'社員',attendance:'出席'},
   {no:17,name:'岡村祥子',cat:'社員',attendance:'出席'},
   {no:18,name:'加藤宏昭',cat:'社員',attendance:'出席'},
-  {no:19,name:'神谷信度',cat:'社員',attendance:'出席'},
+  {no:19,name:'神谷信慶',cat:'社員',attendance:'出席'},
   {no:20,name:'金子美佳',cat:'社員',attendance:'出席'},
   {no:21,name:'川島隆義',cat:'社員',attendance:'出席'},
   {no:22,name:'川原和輝',cat:'社員',attendance:'出席'},
-  {no:23,name:'栢井夏実',cat:'社員',attendance:'出席'},
+  {no:23,name:'梅井愛実',cat:'社員',attendance:'出席'},
   {no:24,name:'角谷菅佳',cat:'社員',attendance:'出席'},
   {no:25,name:'君塚菜穂',cat:'社員',attendance:'出席'},
-  {no:26,name:'早浦文子',cat:'社員',attendance:'出席'},
+  {no:26,name:'草浦文子',cat:'社員',attendance:'出席'},
   {no:27,name:'倉田剛',cat:'社員',attendance:'出席'},
   {no:28,name:'小林直希',cat:'社員',attendance:'出席'},
   {no:29,name:'酒井太希',cat:'社員',attendance:'出席'},
   {no:30,name:'佐藤大樹',cat:'社員',attendance:'出席'},
   {no:31,name:'佐藤真亮',cat:'社員',attendance:'出席'},
-  {no:32,name:'佐原真子',cat:'社員',attendance:'出席'},
+  {no:32,name:'佐原寛子',cat:'社員',attendance:'出席'},
   {no:33,name:'澤由美子',cat:'社員',attendance:'出席'},
   {no:34,name:'清水洋希',cat:'社員',attendance:'出席'},
   {no:35,name:'白柳愛菜',cat:'社員',attendance:'出席'},
@@ -1399,22 +1400,22 @@ var EMPLOYEES=[
   {no:37,name:'鈴木寿',cat:'社員',attendance:'出席'},
   {no:38,name:'鈴木達男',cat:'社員',attendance:'出席'},
   {no:39,name:'鈴木玲',cat:'社員',attendance:'出席'},
-  {no:40,name:'添田昌人',cat:'社員',attendance:'出席'},
-  {no:41,name:'染矢海偉',cat:'社員',attendance:'出席'},
+  {no:40,name:'添田岳人',cat:'社員',attendance:'出席'},
+  {no:41,name:'染矢海優',cat:'社員',attendance:'出席'},
   {no:42,name:'高松柚子',cat:'社員',attendance:'出席'},
   {no:43,name:'田中康太',cat:'社員',attendance:'出席'},
   {no:44,name:'寺田結音',cat:'社員',attendance:'出席'},
   {no:45,name:'内藤紗波',cat:'社員',attendance:'出席'},
   {no:46,name:'永井貴之',cat:'社員',attendance:'出席'},
-  {no:47,name:'棗松一聖',cat:'社員',attendance:'出席'},
+  {no:47,name:'乗松一聖',cat:'社員',attendance:'出席'},
   {no:48,name:'橋本浩平',cat:'社員',attendance:'出席'},
   {no:49,name:'波多野恵梨',cat:'社員',attendance:'出席'},
-  {no:50,name:'花岡友美',cat:'社員',attendance:'出席'},
+  {no:50,name:'花畑友美',cat:'社員',attendance:'出席'},
   {no:51,name:'袴田晴久',cat:'社員',attendance:'出席'},
   {no:52,name:'袴田真奈',cat:'社員',attendance:'出席'},
   {no:53,name:'平澤明和',cat:'社員',attendance:'出席'},
   {no:54,name:'平野誠人',cat:'社員',attendance:'出席'},
-  {no:55,name:'藤田樵二',cat:'社員',attendance:'出席'},
+  {no:55,name:'藤田琢二',cat:'社員',attendance:'出席'},
   {no:56,name:'藤原香織',cat:'社員',attendance:'出席'},
   {no:57,name:'藤原由乃',cat:'社員',attendance:'出席'},
   {no:58,name:'藤平恭輔',cat:'社員',attendance:'出席'},
@@ -1431,18 +1432,19 @@ var EMPLOYEES=[
   {no:69,name:'森美香',cat:'社員',attendance:'出席'},
   {no:70,name:'山﨑円花',cat:'社員',attendance:'出席'},
   {no:71,name:'山本英之',cat:'社員',attendance:'出席'},
-  {no:72,name:'世田珠史',cat:'社員',attendance:'出席'},
+  {no:72,name:'世田珠更',cat:'社員',attendance:'出席'},
   {no:73,name:'渡邊新',cat:'社員',attendance:'出席'},
-  {no:74,name:'飯藤之英',cat:'AI業務委託',attendance:'出席'},
-  {no:75,name:'箱岩瑠菜',cat:'AI業務委託',attendance:'出席'},
-  {no:76,name:'杉山哲也',cat:'AI業務委託',attendance:'出席'},
-  {no:77,name:'石塚優太',cat:'AI業務委託',attendance:'出席'},
-  {no:78,name:'杉原響',cat:'AI業務委託',attendance:'出席'},
-  {no:79,name:'中川雄斗',cat:'AI業務委託',attendance:'出席'},
-  {no:80,name:'熊野秀人',cat:'AI業務委託',attendance:'出席'},
-  {no:81,name:'本吉光',cat:'AI業務委託',attendance:'出席'},
-  {no:82,name:'篠原幸江',cat:'AI業務委託',attendance:'出席'},
-  {no:83,name:'堤木朱音',cat:'AI業務委託',attendance:'出席'},
+  {no:74,name:'藤平恭輔②',cat:'社員',attendance:'出席'},
+  {no:75,name:'齋藤之英',cat:'AI業務委託',attendance:'出席'},
+  {no:76,name:'箱岩瑠菜',cat:'AI業務委託',attendance:'出席'},
+  {no:77,name:'杉山哲也',cat:'AI業務委託',attendance:'出席'},
+  {no:78,name:'石塚優太',cat:'AI業務委託',attendance:'出席'},
+  {no:79,name:'杉原響',cat:'AI業務委託',attendance:'出席'},
+  {no:80,name:'中川雄斗',cat:'AI業務委託',attendance:'出席'},
+  {no:81,name:'熊野秀人',cat:'AI業務委託',attendance:'出席'},
+  {no:82,name:'本吉光',cat:'AI業務委託',attendance:'出席'},
+  {no:83,name:'篠原幸江',cat:'AI業務委託',attendance:'出席'},
+  {no:84,name:'堤木朱音',cat:'AI業務委託',attendance:'出席'},
   {no:85,name:'大江沙亜也',cat:'入社予定',attendance:'出席'},
   {no:86,name:'匂坂菜奈',cat:'入社予定',attendance:'出席'},
 ];
@@ -1652,9 +1654,60 @@ function saveSeating(){
 }
 
 function resetSeating(){
-  if(!confirm('座席配置をリセットしますか？'))return;
+  if(!confirm('本当にリセットしますか？\n現在の座席配置がすべて消えます。'))return;
   if(D.seating)D.seating.seats={};
   renderSeating();
+}
+
+function printSeating(){
+  var ROW_LABELS='ABCDEFGHIJK'.split('');
+  var saved=(D.seating&&D.seating.seats)||{};
+  // 印刷用HTML生成
+  var rows='';
+  for(var r=0;r<SEAT_ROWS;r++){
+    var cells='<td style="width:22px;font-weight:700;font-size:10px;color:#555;vertical-align:middle;text-align:center">'+ROW_LABELS[r]+'</td>';
+    var colIdx=0;
+    [[0,1],[2,3],[4,5],[6,7]].forEach(function(pair,bi){
+      if(bi>0)cells+='<td style="width:14px"></td>';
+      pair.forEach(function(c){
+        var sid='r'+r+'c'+c;
+        var no=saved[sid];
+        var emp=no?EMPLOYEES.find(function(e){return e.no===no;}):null;
+        var bg='#f0f0f0';
+        if(emp){
+          var attBg={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
+          var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd','社外':'#e8d5f5','カメラマン':'#cfe2ff'};
+          bg=catBg[emp.cat]||attBg[emp.attendance]||'#e2e3e5';
+        }
+        cells+='<td style="width:68px;height:38px;background:'+bg+';border:1px solid #ccc;border-radius:4px;font-size:9px;font-weight:700;text-align:center;vertical-align:middle;padding:2px">'+(emp?emp.name:'')+'</td>';
+      });
+    });
+    rows+='<tr style="height:40px">'+cells+'</tr>';
+  }
+
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+    '<title>座席表 2026年7月28日</title>'+
+    '<style>'+
+    '@page{size:A4 portrait;margin:12mm 8mm;}'+
+    'body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;padding:0}'+
+    'h2{text-align:center;font-size:14px;margin:0 0 4px}'+
+    '.sub{text-align:center;font-size:10px;color:#555;margin-bottom:8px}'+
+    'table{border-collapse:separate;border-spacing:4px;margin:0 auto}'+
+    '.stage{background:#2c3e50;color:#fff;text-align:center;padding:6px;border-radius:4px;font-weight:700;font-size:11px;width:320px;margin:0 auto 6px;letter-spacing:3px}'+
+    '.screen{background:#7f8c8d;color:#fff;text-align:center;padding:3px;border-radius:3px;font-size:9px;width:200px;margin:0 auto 3px;letter-spacing:2px}'+
+    '</style></head><body>'+
+    '<h2>経営方針発表会 2026　座席表</h2>'+
+    '<div class="sub">2026年7月28日（火）｜クリエート浜松 2階 大ホール</div>'+
+    '<div class="screen">スクリーン</div>'+
+    '<div class="stage">演 台</div>'+
+    '<table><tbody>'+rows+'</tbody></table>'+
+    '</body></html>';
+
+  var w=window.open('','_blank','width=800,height=900');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print();},400);
 }
 
 function openAddPersonModal(){
