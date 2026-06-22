@@ -981,8 +981,13 @@ function renderBudget(){
       var urlCell=g.url?'<div style="font-size:.76rem;margin-top:3px"><a href="'+esc(g.url)+'" target="_blank" style="color:var(--red)">🔗 参考URLを開く</a></div>':'';
       var autoTag=(up>0&&q>0)?'<span style="background:#e8f5e9;color:#2e7d32;font-size:.68rem;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px">自動</span>':'';
       var syncTag=g.spSync===false?'<span style="background:#fff3e0;color:#e65100;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;border:1px solid #ffb74d" title="スプレッドシートに未登録・要確認">⚠ スプシ外</span>':'';
-      var thumbs=g.receipts.map(function(r){return'<img class="receipt-thumb" src="'+r.data+'" alt="'+esc(r.name)+'" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">';}).join('');
-      var addBtn='<div class="receipt-add" onclick="addReceipt(\''+g.id+'\')" title="領収書を追加">📎</div>';
+      var thumbs=g.receipts.map(function(r){
+        var isImg=r.data&&r.data.startsWith('data:image');
+        var thumb=isImg?'<img class="receipt-thumb" src="'+r.data+'" alt="'+esc(r.name)+'" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">':'<div class="receipt-thumb pdf-thumb" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">📄<div style="font-size:.55rem;margin-top:2px;overflow:hidden;max-width:52px;text-overflow:ellipsis;white-space:nowrap">'+esc(r.name)+'</div></div>';
+        return thumb;
+      }).join('');
+      var addBtn='<div class="receipt-add" onclick="addReceipt(\''+g.id+'\',\'file\')" title="画像・PDFを添付">📎</div>'+
+                 '<div class="receipt-add" onclick="addReceipt(\''+g.id+'\',\'camera\')" title="カメラで撮影（スマホ）" style="background:#e3f2fd;color:#1565c0">📷</div>';
       return'<tr'+(g.spSync===false?' style="background:#fffde7"':'')+'>'+
         '<td style="font-weight:700">'+esc(g.name)+syncTag+'</td>'+
         '<td style="font-size:.82rem">'+esc(g.detail)+urlCell+'</td>'+
@@ -1007,20 +1012,56 @@ function renderBudget(){
   document.getElementById('bud-act').textContent=fmtN(act)+'円';
   document.getElementById('bud-dif').innerHTML='<span class="'+(dif>=0?'diff-p':'diff-n')+'">'+(dif>=0?'+':'')+fmtN(dif)+'円</span>';
 }
-function addReceipt(gid){
-  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+// 領収書追加（カメラ/画像/PDF対応）
+var _receipt={};
+function addReceipt(gid, mode){
+  var inp=document.createElement('input');
+  inp.type='file';
+  inp.accept='image/*,application/pdf';
+  if(mode==='camera') inp.setAttribute('capture','environment');
   inp.onchange=function(e){
-    var f=e.target.files[0];if(!f)return;
-    if(f.size>1500000){alert('ファイルサイズが大きすぎます（1.5MB以下にしてください）');return;}
-    var r=new FileReader();
-    r.onload=function(ev){
-      var g=D.budget.find(function(x){return x.id===gid;});
-      if(!g)return;
-      if(!g.receipts)g.receipts=[];
-      g.receipts.push({id:uid(),name:f.name,data:ev.target.result});
-      persist();renderBudget();
-    };r.readAsDataURL(f);
-  };inp.click();
+    var f=e.target.files[0]; if(!f)return;
+    if(f.size>5000000){alert('ファイルサイズが大きすぎます（5MB以下）'); return;}
+    var isPdf=f.type==='application/pdf';
+    var rid=uid();
+    _receipt={gid:gid,rid:rid,name:f.name,isPdf:isPdf,data:isPdf?'pdf:'+f.name:''};
+    if(isPdf){
+      _showReceiptAmountModal(isPdf, f.name, '');
+    } else {
+      var r=new FileReader();
+      r.onerror=function(){alert('読み込みエラー。別のファイルをお試しください。');};
+      r.onload=function(ev){
+        _receipt.data=ev.target.result;
+        _showReceiptAmountModal(false, f.name, ev.target.result);
+      };
+      r.readAsDataURL(f);
+    }
+  };
+  inp.click();
+}
+function _showReceiptAmountModal(isPdf, fname, dataUrl){
+  var preview=isPdf
+    ?'<div style="text-align:center;font-size:3rem;padding:8px">📄</div><p style="text-align:center;font-size:.85rem;color:#666;margin-bottom:12px">'+esc(fname)+'</p>'
+    :'<img src="'+dataUrl+'" style="max-width:100%;max-height:180px;border-radius:8px;display:block;margin:0 auto 12px;border:1px solid #eee">';
+  openModal(
+    '<h2>💰 領収書の金額を入力</h2>'+preview+
+    '<div class="frow"><label>金額（円）</label>'+
+    '<input type="number" id="r-amt" placeholder="例：3500" style="font-size:1.15rem;font-weight:700" autofocus></div>'+
+    '<p style="font-size:.77rem;color:#aaa;margin-bottom:14px">入力した金額が実績に加算されます。金額不要なら空欄でスキップ。</p>'+
+    '<div style="display:flex;gap:8px">'+
+    '<button class="btn btn-r" style="flex:1" onclick="_saveReceipt(true)">保存して実績に反映</button>'+
+    '<button class="btn btn-gray" style="flex:1" onclick="_saveReceipt(false)">添付のみ（金額スキップ）</button>'+
+    '</div>'
+  );
+}
+function _saveReceipt(applyAmount){
+  var g=D.budget.find(function(x){return x.id===_receipt.gid;});
+  if(!g){closeModal();return;}
+  if(!g.receipts)g.receipts=[];
+  var amt=applyAmount?Number(document.getElementById('r-amt').value||0):0;
+  g.receipts.push({id:_receipt.rid,name:_receipt.name,data:_receipt.data,amount:amt});
+  if(amt>0) g.actual=(Number(g.actual)||0)+amt;
+  persist(); closeModal(); renderBudget();
 }
 function openLb(rid,gid){
   var g=D.budget.find(function(x){return x.id===gid;});
