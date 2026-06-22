@@ -370,22 +370,45 @@ a{color:var(--red)}
     <br>ドラッグ＆ドロップで席を移動できます。「未配置」エリアの名札を席へドロップしてください。
   </div>
   <!-- 凡例 -->
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.78rem">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#d4edda;display:inline-block;border:1px solid #7cba8b"></span>出席</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#f8d7da;display:inline-block;border:1px solid #c9748e"></span>欠席</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#fff3cd;display:inline-block;border:1px solid #c4a000"></span>AI業務委託/入社予定</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#e2e3e5;display:inline-block;border:1px solid #999"></span>未定</span>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:.78rem;align-items:center">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#d4edda;display:inline-block;border:1px solid #7cba8b"></span>出席</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#f8d7da;display:inline-block;border:1px solid #c9748e"></span>欠席</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff3cd;display:inline-block;border:1px solid #c4a000"></span>AI委託/入社予定</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#e9ecef;display:inline-block;border:1px solid #adb5bd"></span>空席</span>
+    <span style="color:var(--sub)">💡 ダブルクリックで未配置に戻す</span>
   </div>
-  <!-- 座席エリア -->
-  <div id="seating-stage" style="background:#2c3e50;color:#fff;text-align:center;padding:12px;border-radius:8px;margin-bottom:16px;font-weight:700;font-size:.9rem;letter-spacing:2px">
-    ★ ステージ ★
+  <!-- ホール全体 -->
+  <div style="overflow-x:auto">
+    <div style="min-width:700px;padding:16px;background:#f0f2f5;border-radius:12px;border:2px solid var(--line)">
+      <!-- スクリーン -->
+      <div style="background:#7f8c8d;color:#fff;text-align:center;padding:6px;border-radius:4px;margin:0 auto 4px;max-width:300px;font-size:.75rem;letter-spacing:2px">スクリーン</div>
+      <!-- ステージ -->
+      <div style="background:#2c3e50;color:#fff;text-align:center;padding:10px;border-radius:6px;margin:0 auto 20px;max-width:400px;font-weight:700;font-size:.85rem;letter-spacing:3px">演台</div>
+      <!-- 座席グリッド -->
+      <div id="seating-grid-wrap" style="display:flex;gap:4px;justify-content:center;align-items:flex-start">
+        <!-- 行ラベル -->
+        <div id="seating-row-labels" style="display:flex;flex-direction:column;gap:6px;padding-top:2px"></div>
+        <!-- ブロック左（列1-2） -->
+        <div id="seating-block-L" style="display:flex;flex-direction:column;gap:6px"></div>
+        <!-- 通路 -->
+        <div style="width:20px"></div>
+        <!-- ブロック中左（列3-4） -->
+        <div id="seating-block-CL" style="display:flex;flex-direction:column;gap:6px"></div>
+        <!-- 通路 -->
+        <div style="width:20px"></div>
+        <!-- ブロック中右（列5-6） -->
+        <div id="seating-block-CR" style="display:flex;flex-direction:column;gap:6px"></div>
+        <!-- 通路 -->
+        <div style="width:20px"></div>
+        <!-- ブロック右（列7-8） -->
+        <div id="seating-block-R" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
   </div>
-  <div id="seating-area" style="overflow-x:auto">
-    <div id="seating-grid" style="display:grid;grid-template-columns:repeat(10,80px);gap:6px;min-width:860px;padding:8px;background:#f8f9fa;border-radius:10px;border:2px solid var(--line)"></div>
-  </div>
+  <!-- 未配置 -->
   <div style="margin-top:16px">
-    <div style="font-weight:700;font-size:.85rem;margin-bottom:8px;color:var(--sub)">📋 未配置の人 (<span id="unplaced-count">0</span>人)</div>
-    <div id="unplaced-area" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#fff;border-radius:10px;border:2px dashed var(--line);min-height:50px"></div>
+    <div style="font-weight:700;font-size:.85rem;margin-bottom:8px;color:var(--sub)">📋 未配置 (<span id="unplaced-count">0</span>人)</div>
+    <div id="unplaced-area" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#fff;border-radius:10px;border:2px dashed var(--line);min-height:48px"></div>
   </div>
 </div>
 
@@ -1471,46 +1494,61 @@ function saveRoster(){
 }
 
 // ===== 座席表 =====
-var SEAT_ROWS=8,SEAT_COLS=10;
+var SEAT_ROWS=11,SEAT_COLS=8;
 var seatingDragSrc=null;
 
 function renderSeating(){
   var saved=D.seating||{};
-  var grid=document.getElementById('seating-grid');
   var unplaced=document.getElementById('unplaced-area');
-  grid.innerHTML='';
   unplaced.innerHTML='';
-  grid.style.gridTemplateColumns='repeat('+SEAT_COLS+',minmax(75px,1fr))';
+  var rowLabels=document.getElementById('seating-row-labels');
+  var blockL=document.getElementById('seating-block-L');
+  var blockCL=document.getElementById('seating-block-CL');
+  var blockCR=document.getElementById('seating-block-CR');
+  var blockR=document.getElementById('seating-block-R');
+  rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
   var placedNos=new Set(Object.values(saved.seats||{}));
+  var ROW_LABELS='ABCDEFGHIJK'.split('');
+  // col→block: 0,1=L / 2,3=CL / 4,5=CR / 6,7=R
+  var blocks=[blockL,blockL,blockCL,blockCL,blockCR,blockCR,blockR,blockR];
 
-  // グリッド生成
+  // 行ごとにペアのラッパーを作る
+  var rowPairs={L:[],CL:[],CR:[],R:[]};
   for(var r=0;r<SEAT_ROWS;r++){
-    for(var c=0;c<SEAT_COLS;c++){
-      var seatId='r'+r+'c'+c;
-      var cell=document.createElement('div');
-      cell.id='seat-'+seatId;
-      cell.dataset.seatId=seatId;
-      cell.style.cssText='min-height:54px;background:#fff;border:2px dashed #ccc;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:background .15s';
-      cell.addEventListener('dragover',function(e){e.preventDefault();this.style.background='#e3f0ff';});
-      cell.addEventListener('dragleave',function(){this.style.background='';});
-      cell.addEventListener('drop',onSeatDrop);
-      var occupiedNo=(saved.seats||{})[seatId];
-      if(occupiedNo){
-        var emp=EMPLOYEES.find(function(e){return e.no===occupiedNo;});
-        if(emp)cell.appendChild(makeNameTag(emp,seatId));
-      } else {
-        cell.innerHTML='<span style="font-size:.7rem;color:#ccc">'+seatId+'</span>';
-      }
-      grid.appendChild(cell);
-    }
+    // 行ラベル
+    var lbl=document.createElement('div');
+    lbl.style.cssText='height:54px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--sub);width:18px';
+    lbl.textContent=ROW_LABELS[r]||r;
+    rowLabels.appendChild(lbl);
+
+    // 各ブロックにペアwrapperを追加
+    [['L',blockL,[0,1]],['CL',blockCL,[2,3]],['CR',blockCR,[4,5]],['R',blockR,[6,7]]].forEach(function(binfo){
+      var wrap=document.createElement('div');
+      wrap.style.cssText='display:flex;gap:4px';
+      binfo[2].forEach(function(c){
+        var seatId='r'+r+'c'+c;
+        var cell=document.createElement('div');
+        cell.id='seat-'+seatId;
+        cell.dataset.seatId=seatId;
+        cell.style.cssText='width:72px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#adb5bd;transition:background .15s;overflow:hidden';
+        cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
+        cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-emp-no]');if(t)this.style.background='';});
+        cell.addEventListener('drop',onSeatDrop);
+        var occupiedNo=(saved.seats||{})[seatId];
+        if(occupiedNo){
+          var emp=EMPLOYEES.find(function(e){return e.no===occupiedNo;});
+          if(emp){cell.style.background='';cell.style.border='2px solid rgba(0,0,0,.1)';cell.appendChild(makeNameTag(emp,seatId));}
+        }
+        wrap.appendChild(cell);
+      });
+      binfo[1].appendChild(wrap);
+    });
   }
 
   // 未配置エリア
   EMPLOYEES.forEach(function(e){
-    if(!placedNos.has(e.no)){
-      unplaced.appendChild(makeNameTag(e,null));
-    }
+    if(!placedNos.has(e.no)) unplaced.appendChild(makeNameTag(e,null));
   });
   document.getElementById('unplaced-count').textContent=unplaced.children.length;
 }
@@ -1526,31 +1564,34 @@ function makeNameTag(emp,seatId){
   tag.style.cssText='background:'+bg+';border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px';
   tag.innerHTML=emp.name+(emp.attendance==='欠席'?'<br><span style="font-size:.65rem;color:#c0392b">欠席</span>':'');
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
-  tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('#seating-grid>div').forEach(function(c){c.style.background='';});});
+  tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('[id^="seat-"]').forEach(function(c){if(!c.querySelector('[data-emp-no]')){c.style.background='#e9ecef';c.style.borderColor='#adb5bd';}});});
   tag.addEventListener('dblclick',function(){returnToUnplaced(this);});
   return tag;
 }
 
 function onSeatDrop(e){
   e.preventDefault();
-  this.style.background='';
+  this.style.borderColor='#adb5bd';
   if(!seatingDragSrc)return;
-  var empNo=parseInt(seatingDragSrc.dataset.empNo);
   var fromSeat=seatingDragSrc.dataset.seatId;
   var toSeat=this.dataset.seatId;
   var existing=this.querySelector('[data-emp-no]');
   if(existing){
-    var existingNo=parseInt(existing.dataset.empNo);
     if(fromSeat){
       var fromCell=document.getElementById('seat-'+fromSeat);
-      if(fromCell){fromCell.innerHTML='';fromCell.appendChild(existing);existing.dataset.seatId=fromSeat;}
+      if(fromCell){fromCell.innerHTML='';fromCell.style.background='';fromCell.style.border='2px solid rgba(0,0,0,.1)';fromCell.appendChild(existing);existing.dataset.seatId=fromSeat;}
     } else {
       document.getElementById('unplaced-area').appendChild(existing);
       delete existing.dataset.seatId;
       updateUnplacedCount();
     }
+  } else if(fromSeat){
+    var fromCell2=document.getElementById('seat-'+fromSeat);
+    if(fromCell2){fromCell2.innerHTML='';fromCell2.style.background='#e9ecef';fromCell2.style.border='2px dashed #adb5bd';}
   }
   this.innerHTML='';
+  this.style.background='';
+  this.style.border='2px solid rgba(0,0,0,.1)';
   this.appendChild(seatingDragSrc);
   seatingDragSrc.dataset.seatId=toSeat;
   if(!fromSeat)updateUnplacedCount();
@@ -1560,7 +1601,7 @@ function returnToUnplaced(tag){
   var seatId=tag.dataset.seatId;
   if(seatId){
     var cell=document.getElementById('seat-'+seatId);
-    if(cell){cell.innerHTML='<span style="font-size:.7rem;color:#ccc">'+seatId+'</span>';}
+    if(cell){cell.innerHTML='';cell.style.background='#e9ecef';cell.style.border='2px dashed #adb5bd';}
     delete tag.dataset.seatId;
   }
   document.getElementById('unplaced-area').appendChild(tag);
@@ -1574,7 +1615,7 @@ function updateUnplacedCount(){
 
 function saveSeating(){
   var seats={};
-  document.querySelectorAll('#seating-grid [data-emp-no]').forEach(function(tag){
+  document.querySelectorAll('[id^="seat-"] [data-emp-no]').forEach(function(tag){
     if(tag.dataset.seatId)seats[tag.dataset.seatId]=parseInt(tag.dataset.empNo);
   });
   if(!D.seating)D.seating={};
