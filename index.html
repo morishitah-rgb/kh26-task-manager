@@ -232,12 +232,13 @@ a{color:var(--red)}
   <div class="tnb"        data-tab="gantt"    onclick="goTab('gantt')">   ③ ガントチャート</div>
   <div class="tnb"        data-tab="budget"   onclick="goTab('budget')">  ④ 予算管理</div>
   <div class="tnb"        data-tab="venue"    onclick="goTab('venue')">   ⑤ 会場情報</div>
-  <div class="tnb"        data-tab="layout"   onclick="goTab('layout')">  ⑥ レイアウト</div>
-  <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑦ タイムテーブル</div>
-  <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑧ 当日役割・備品</div>
-  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑨ 議事録</div>
-  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑩ メンバー</div>
-  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑪ リンク集</div>
+  <div class="tnb"        data-tab="seating"  onclick="goTab('seating')"> ⑥ 座席表</div>
+  <div class="tnb"        data-tab="roster"   onclick="goTab('roster')">  ⑦ 名簿</div>
+  <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑧ タイムテーブル</div>
+  <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑨ 当日役割・備品</div>
+  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑩ 議事録</div>
+  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑪ メンバー</div>
+  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑫ リンク集</div>
   <div class="tnb"        data-tab="settings" onclick="goTab('settings')">⚙ 設定</div>
 </nav>
 
@@ -354,20 +355,67 @@ a{color:var(--red)}
   </div>
 </div>
 
-<!-- レイアウト -->
-<div class="page" id="page-layout">
-  <div class="sect-head"><h2>⑥ レイアウト</h2><button class="btn btn-r" onclick="saveLayout()">保存</button></div>
-  <div class="card">
-    <div class="frow"><label>レイアウト図のURL（画像リンクがあれば）</label><input type="url" id="layout-url" placeholder="https://..."></div>
-    <div id="layout-img-preview" style="margin-bottom:12px"></div>
-    <div class="frow"><label>レイアウトメモ・備考</label><textarea id="layout-memo" style="min-height:200px"></textarea></div>
+<!-- 座席表 -->
+<div class="page" id="page-seating">
+  <div class="sect-head">
+    <h2>⑥ 座席表</h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-r" onclick="saveSeating()">💾 保存</button>
+      <button class="btn btn-gray" onclick="resetSeating()">🔄 リセット</button>
+      <button class="btn btn-gray" onclick="autoArrangeSeating()">✨ 自動配置</button>
+    </div>
+  </div>
+  <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
+    📌 <b>クリエート浜松 2階 大ホール</b>｜2026年7月28日（火）｜社員席：73名 + AI業務委託：11名 + 入社予定：2名
+    <br>ドラッグ＆ドロップで席を移動できます。「未配置」エリアの名札を席へドロップしてください。
+  </div>
+  <!-- 凡例 -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.78rem">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#d4edda;display:inline-block;border:1px solid #7cba8b"></span>出席</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#f8d7da;display:inline-block;border:1px solid #c9748e"></span>欠席</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#fff3cd;display:inline-block;border:1px solid #c4a000"></span>AI業務委託/入社予定</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#e2e3e5;display:inline-block;border:1px solid #999"></span>未定</span>
+  </div>
+  <!-- 座席エリア -->
+  <div id="seating-stage" style="background:#2c3e50;color:#fff;text-align:center;padding:12px;border-radius:8px;margin-bottom:16px;font-weight:700;font-size:.9rem;letter-spacing:2px">
+    ★ ステージ ★
+  </div>
+  <div id="seating-area" style="overflow-x:auto">
+    <div id="seating-grid" style="display:grid;grid-template-columns:repeat(10,80px);gap:6px;min-width:860px;padding:8px;background:#f8f9fa;border-radius:10px;border:2px solid var(--line)"></div>
+  </div>
+  <div style="margin-top:16px">
+    <div style="font-weight:700;font-size:.85rem;margin-bottom:8px;color:var(--sub)">📋 未配置の人 (<span id="unplaced-count">0</span>人)</div>
+    <div id="unplaced-area" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#fff;border-radius:10px;border:2px dashed var(--line);min-height:50px"></div>
+  </div>
+</div>
+
+<!-- 名簿 -->
+<div class="page" id="page-roster">
+  <div class="sect-head">
+    <h2>⑦ 名簿</h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-r" onclick="saveRoster()">💾 保存</button>
+      <span id="roster-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+      <thead>
+        <tr style="background:var(--navy);color:#fff">
+          <th style="padding:8px 12px;text-align:left;width:40px">#</th>
+          <th style="padding:8px 12px;text-align:left">氏名</th>
+          <th style="padding:8px 12px;text-align:center;width:120px">出席状況</th>
+        </tr>
+      </thead>
+      <tbody id="roster-tbody"></tbody>
+    </table>
   </div>
 </div>
 
 <!-- タイムテーブル -->
 <div class="page" id="page-programs">
   <div class="sect-head">
-    <h2>⑦ タイムテーブル</h2>
+    <h2>⑧ タイムテーブル</h2>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <a class="btn btn-r" style="text-decoration:none" href="https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/edit?gid=1861154966" target="_blank">📊 スプレッドシートを開く</a>
       <button class="btn btn-gray" onclick="downloadSchedulePDF()">🖨 スケジュール印刷用PDF</button>
@@ -402,7 +450,7 @@ a{color:var(--red)}
 
 <!-- 当日役割 -->
 <div class="page" id="page-teams">
-  <div class="sect-head"><h2>⑧ 当日役割・担当一覧</h2><button class="btn btn-r" onclick="openTeamModal()">＋ 役割追加</button></div>
+  <div class="sect-head"><h2>⑨ 当日役割・担当一覧</h2><button class="btn btn-r" onclick="openTeamModal()">＋ 役割追加</button></div>
   <div class="card" style="overflow-x:auto">
     <table class="dtbl">
       <thead><tr><th>役割・担当業務</th><th>担当者</th><th>期限</th><th>進捗</th><th>メモ</th><th style="width:56px"></th></tr></thead>
@@ -421,19 +469,19 @@ a{color:var(--red)}
 
 <!-- 議事録 -->
 <div class="page" id="page-minutes">
-  <div class="sect-head"><h2>⑨ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑩ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
   <div id="min-list"></div>
 </div>
 
 <!-- メンバー -->
 <div class="page" id="page-members">
-  <div class="sect-head"><h2>⑩ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
+  <div class="sect-head"><h2>⑪ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
   <div id="member-list"></div>
 </div>
 
 <!-- リンク集 -->
 <div class="page" id="page-links">
-  <div class="sect-head"><h2>⑪ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑫ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
   <div id="links-list"></div>
 </div>
 
@@ -780,7 +828,8 @@ function renderPage(n){
   else if(n==='gantt')renderGantt();
   else if(n==='budget')renderBudget();
   else if(n==='venue')renderVenue();
-  else if(n==='layout')renderLayout();
+  else if(n==='seating')renderSeating();
+  else if(n==='roster')renderRoster();
   else if(n==='programs')renderPrograms();
   else if(n==='teams'){renderTeams();renderSupplies();}
   else if(n==='minutes')renderMinutes();
@@ -1283,6 +1332,276 @@ function saveLayout(){
   D.layout.url=getV('layout-url');
   D.layout.memo=document.getElementById('layout-memo').value;
   persist();alert('保存しました');
+}
+
+// ===== 社員名簿マスタ =====
+var EMPLOYEES=[
+  {no:1,name:'白部卓也',cat:'社員',attendance:'出席'},
+  {no:2,name:'青島怜史',cat:'社員',attendance:'出席'},
+  {no:3,name:'伊賀篤奈',cat:'社員',attendance:'出席'},
+  {no:4,name:'石澤光弘',cat:'社員',attendance:'出席'},
+  {no:5,name:'石野祐太朗',cat:'社員',attendance:'出席'},
+  {no:6,name:'磯口耕大',cat:'社員',attendance:'出席'},
+  {no:7,name:'市川高裕',cat:'社員',attendance:'出席'},
+  {no:8,name:'糸繰優介',cat:'社員',attendance:'出席'},
+  {no:9,name:'今関香澄',cat:'社員',attendance:'欠席',note:'育休中'},
+  {no:10,name:'鵜飼玲奈',cat:'社員',attendance:'出席'},
+  {no:11,name:'宇田身江子',cat:'社員',attendance:'出席'},
+  {no:12,name:'大石起輝',cat:'社員',attendance:'出席'},
+  {no:13,name:'大峰佑月',cat:'社員',attendance:'出席'},
+  {no:14,name:'岡真弥子',cat:'社員',attendance:'出席'},
+  {no:15,name:'岡田学',cat:'社員',attendance:'出席'},
+  {no:16,name:'小澤美香',cat:'社員',attendance:'出席'},
+  {no:17,name:'岡村祥子',cat:'社員',attendance:'出席'},
+  {no:18,name:'加藤宏昭',cat:'社員',attendance:'出席'},
+  {no:19,name:'神谷信度',cat:'社員',attendance:'出席'},
+  {no:20,name:'金子美佳',cat:'社員',attendance:'出席'},
+  {no:21,name:'川島隆義',cat:'社員',attendance:'出席'},
+  {no:22,name:'川原和輝',cat:'社員',attendance:'出席'},
+  {no:23,name:'栢井夏実',cat:'社員',attendance:'出席'},
+  {no:24,name:'角谷菅佳',cat:'社員',attendance:'出席'},
+  {no:25,name:'君塚菜穂',cat:'社員',attendance:'出席'},
+  {no:26,name:'早浦文子',cat:'社員',attendance:'出席'},
+  {no:27,name:'倉田剛',cat:'社員',attendance:'出席'},
+  {no:28,name:'小林直希',cat:'社員',attendance:'出席'},
+  {no:29,name:'酒井太希',cat:'社員',attendance:'出席'},
+  {no:30,name:'佐藤大樹',cat:'社員',attendance:'出席'},
+  {no:31,name:'佐藤真亮',cat:'社員',attendance:'出席'},
+  {no:32,name:'佐原真子',cat:'社員',attendance:'出席'},
+  {no:33,name:'澤由美子',cat:'社員',attendance:'出席'},
+  {no:34,name:'清水洋希',cat:'社員',attendance:'出席'},
+  {no:35,name:'白柳愛菜',cat:'社員',attendance:'出席'},
+  {no:36,name:'杉山恵美',cat:'社員',attendance:'出席'},
+  {no:37,name:'鈴木寿',cat:'社員',attendance:'出席'},
+  {no:38,name:'鈴木達男',cat:'社員',attendance:'出席'},
+  {no:39,name:'鈴木玲',cat:'社員',attendance:'出席'},
+  {no:40,name:'添田昌人',cat:'社員',attendance:'出席'},
+  {no:41,name:'染矢海偉',cat:'社員',attendance:'出席'},
+  {no:42,name:'高松柚子',cat:'社員',attendance:'出席'},
+  {no:43,name:'田中康太',cat:'社員',attendance:'出席'},
+  {no:44,name:'寺田結音',cat:'社員',attendance:'出席'},
+  {no:45,name:'内藤紗波',cat:'社員',attendance:'出席'},
+  {no:46,name:'永井貴之',cat:'社員',attendance:'出席'},
+  {no:47,name:'棗松一聖',cat:'社員',attendance:'出席'},
+  {no:48,name:'橋本浩平',cat:'社員',attendance:'出席'},
+  {no:49,name:'波多野恵梨',cat:'社員',attendance:'出席'},
+  {no:50,name:'花岡友美',cat:'社員',attendance:'出席'},
+  {no:51,name:'袴田晴久',cat:'社員',attendance:'出席'},
+  {no:52,name:'袴田真奈',cat:'社員',attendance:'出席'},
+  {no:53,name:'平澤明和',cat:'社員',attendance:'出席'},
+  {no:54,name:'平野誠人',cat:'社員',attendance:'出席'},
+  {no:55,name:'藤田樵二',cat:'社員',attendance:'出席'},
+  {no:56,name:'藤原香織',cat:'社員',attendance:'出席'},
+  {no:57,name:'藤原由乃',cat:'社員',attendance:'出席'},
+  {no:58,name:'藤平恭輔',cat:'社員',attendance:'出席'},
+  {no:59,name:'松下雄紀',cat:'社員',attendance:'出席'},
+  {no:60,name:'松田美乃里',cat:'社員',attendance:'出席'},
+  {no:61,name:'水野萌',cat:'社員',attendance:'出席'},
+  {no:62,name:'見野桃子',cat:'社員',attendance:'出席'},
+  {no:63,name:'三村賢澄',cat:'社員',attendance:'出席'},
+  {no:64,name:'三山大智',cat:'社員',attendance:'出席'},
+  {no:65,name:'望月厚治',cat:'社員',attendance:'出席'},
+  {no:66,name:'森下周太郎',cat:'社員',attendance:'出席'},
+  {no:67,name:'森下秀之',cat:'社員',attendance:'出席'},
+  {no:68,name:'森秀樹',cat:'社員',attendance:'出席'},
+  {no:69,name:'森美香',cat:'社員',attendance:'出席'},
+  {no:70,name:'山﨑円花',cat:'社員',attendance:'出席'},
+  {no:71,name:'山本英之',cat:'社員',attendance:'出席'},
+  {no:72,name:'世田珠史',cat:'社員',attendance:'出席'},
+  {no:73,name:'渡邊新',cat:'社員',attendance:'出席'},
+  {no:74,name:'飯藤之英',cat:'AI業務委託',attendance:'出席'},
+  {no:75,name:'箱岩瑠菜',cat:'AI業務委託',attendance:'出席'},
+  {no:76,name:'杉山哲也',cat:'AI業務委託',attendance:'出席'},
+  {no:77,name:'石塚優太',cat:'AI業務委託',attendance:'出席'},
+  {no:78,name:'杉原響',cat:'AI業務委託',attendance:'出席'},
+  {no:79,name:'中川雄斗',cat:'AI業務委託',attendance:'出席'},
+  {no:80,name:'熊野秀人',cat:'AI業務委託',attendance:'出席'},
+  {no:81,name:'本吉光',cat:'AI業務委託',attendance:'出席'},
+  {no:82,name:'篠原幸江',cat:'AI業務委託',attendance:'出席'},
+  {no:83,name:'堤木朱音',cat:'AI業務委託',attendance:'出席'},
+  {no:85,name:'大江沙亜也',cat:'入社予定',attendance:'出席'},
+  {no:86,name:'匂坂菜奈',cat:'入社予定',attendance:'出席'},
+];
+
+// ===== 名簿 =====
+function getEmployeeData(){
+  if(D.roster&&D.roster.length){
+    D.roster.forEach(function(r){
+      var emp=EMPLOYEES.find(function(e){return e.no===r.no;});
+      if(emp)emp.attendance=r.attendance;
+    });
+  }
+  return EMPLOYEES;
+}
+function renderRoster(){
+  var emps=getEmployeeData();
+  var tbody=document.getElementById('roster-tbody');
+  var attColors={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
+  var catColors={'社員':'','AI業務委託':'#fff8e1','入社予定':'#fff8e1'};
+  tbody.innerHTML=emps.map(function(e){
+    var bg=catColors[e.cat]||'';
+    var opts=['出席','欠席','未定'].map(function(o){
+      return '<option value="'+o+'"'+(e.attendance===o?' selected':'')+'>'+o+'</option>';
+    }).join('');
+    var noteHtml=e.note?'<span style="font-size:.75rem;color:#888;margin-left:4px">（'+e.note+'）</span>':'';
+    var catBadge=e.cat!=='社員'?'<span style="font-size:.7rem;background:#f0c040;border-radius:4px;padding:1px 5px;margin-left:6px">'+e.cat+'</span>':'';
+    return '<tr style="border-bottom:1px solid var(--line);background:'+bg+'">'+
+      '<td style="padding:6px 12px;color:var(--sub);font-size:.8rem">'+e.no+'</td>'+
+      '<td style="padding:6px 12px">'+e.name+catBadge+noteHtml+'</td>'+
+      '<td style="padding:4px 8px;text-align:center">'+
+        '<select onchange="onRosterChange('+e.no+',this.value)" style="padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:'+attColors[e.attendance||'未定']+';font-size:.83rem">'+opts+'</select>'+
+      '</td></tr>';
+  }).join('');
+  updateRosterStats();
+}
+function onRosterChange(no,val){
+  var emp=EMPLOYEES.find(function(e){return e.no===no;});
+  if(emp){emp.attendance=val;updateRosterStats();}
+}
+function updateRosterStats(){
+  var emps=EMPLOYEES.filter(function(e){return e.cat==='社員';});
+  var cnt={出席:0,欠席:0,未定:0};
+  emps.forEach(function(e){cnt[e.attendance]=(cnt[e.attendance]||0)+1;});
+  var el=document.getElementById('roster-stats');
+  if(el)el.textContent='出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名 ／ 未定 '+(cnt['未定']||0)+'名（社員のみ）';
+}
+function saveRoster(){
+  D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance};});
+  persist();alert('名簿を保存しました');
+}
+
+// ===== 座席表 =====
+var SEAT_ROWS=8,SEAT_COLS=10;
+var seatingDragSrc=null;
+
+function renderSeating(){
+  var saved=D.seating||{};
+  var grid=document.getElementById('seating-grid');
+  var unplaced=document.getElementById('unplaced-area');
+  grid.innerHTML='';
+  unplaced.innerHTML='';
+  grid.style.gridTemplateColumns='repeat('+SEAT_COLS+',minmax(75px,1fr))';
+
+  var placedNos=new Set(Object.values(saved.seats||{}));
+
+  // グリッド生成
+  for(var r=0;r<SEAT_ROWS;r++){
+    for(var c=0;c<SEAT_COLS;c++){
+      var seatId='r'+r+'c'+c;
+      var cell=document.createElement('div');
+      cell.id='seat-'+seatId;
+      cell.dataset.seatId=seatId;
+      cell.style.cssText='min-height:54px;background:#fff;border:2px dashed #ccc;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:background .15s';
+      cell.addEventListener('dragover',function(e){e.preventDefault();this.style.background='#e3f0ff';});
+      cell.addEventListener('dragleave',function(){this.style.background='';});
+      cell.addEventListener('drop',onSeatDrop);
+      var occupiedNo=(saved.seats||{})[seatId];
+      if(occupiedNo){
+        var emp=EMPLOYEES.find(function(e){return e.no===occupiedNo;});
+        if(emp)cell.appendChild(makeNameTag(emp,seatId));
+      } else {
+        cell.innerHTML='<span style="font-size:.7rem;color:#ccc">'+seatId+'</span>';
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  // 未配置エリア
+  EMPLOYEES.forEach(function(e){
+    if(!placedNos.has(e.no)){
+      unplaced.appendChild(makeNameTag(e,null));
+    }
+  });
+  document.getElementById('unplaced-count').textContent=unplaced.children.length;
+}
+
+function makeNameTag(emp,seatId){
+  var attBg={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
+  var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd'};
+  var bg=catBg[emp.cat]||attBg[emp.attendance]||'#e2e3e5';
+  var tag=document.createElement('div');
+  tag.draggable=true;
+  tag.dataset.empNo=emp.no;
+  if(seatId)tag.dataset.seatId=seatId;
+  tag.style.cssText='background:'+bg+';border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px';
+  tag.innerHTML=emp.name+(emp.attendance==='欠席'?'<br><span style="font-size:.65rem;color:#c0392b">欠席</span>':'');
+  tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
+  tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('#seating-grid>div').forEach(function(c){c.style.background='';});});
+  tag.addEventListener('dblclick',function(){returnToUnplaced(this);});
+  return tag;
+}
+
+function onSeatDrop(e){
+  e.preventDefault();
+  this.style.background='';
+  if(!seatingDragSrc)return;
+  var empNo=parseInt(seatingDragSrc.dataset.empNo);
+  var fromSeat=seatingDragSrc.dataset.seatId;
+  var toSeat=this.dataset.seatId;
+  var existing=this.querySelector('[data-emp-no]');
+  if(existing){
+    var existingNo=parseInt(existing.dataset.empNo);
+    if(fromSeat){
+      var fromCell=document.getElementById('seat-'+fromSeat);
+      if(fromCell){fromCell.innerHTML='';fromCell.appendChild(existing);existing.dataset.seatId=fromSeat;}
+    } else {
+      document.getElementById('unplaced-area').appendChild(existing);
+      delete existing.dataset.seatId;
+      updateUnplacedCount();
+    }
+  }
+  this.innerHTML='';
+  this.appendChild(seatingDragSrc);
+  seatingDragSrc.dataset.seatId=toSeat;
+  if(!fromSeat)updateUnplacedCount();
+}
+
+function returnToUnplaced(tag){
+  var seatId=tag.dataset.seatId;
+  if(seatId){
+    var cell=document.getElementById('seat-'+seatId);
+    if(cell){cell.innerHTML='<span style="font-size:.7rem;color:#ccc">'+seatId+'</span>';}
+    delete tag.dataset.seatId;
+  }
+  document.getElementById('unplaced-area').appendChild(tag);
+  updateUnplacedCount();
+}
+
+function updateUnplacedCount(){
+  var ua=document.getElementById('unplaced-area');
+  if(ua)document.getElementById('unplaced-count').textContent=ua.children.length;
+}
+
+function saveSeating(){
+  var seats={};
+  document.querySelectorAll('#seating-grid [data-emp-no]').forEach(function(tag){
+    if(tag.dataset.seatId)seats[tag.dataset.seatId]=parseInt(tag.dataset.empNo);
+  });
+  if(!D.seating)D.seating={};
+  D.seating.seats=seats;
+  persist();alert('座席表を保存しました');
+}
+
+function resetSeating(){
+  if(!confirm('座席配置をリセットしますか？'))return;
+  if(D.seating)D.seating.seats={};
+  renderSeating();
+}
+
+function autoArrangeSeating(){
+  if(!confirm('出席者を自動配置します。現在の配置はリセットされます。よいですか？'))return;
+  var attending=EMPLOYEES.filter(function(e){return e.attendance!=='欠席';});
+  var seats={};
+  var idx=0;
+  for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
+    for(var c=0;c<SEAT_COLS&&idx<attending.length;c++){
+      seats['r'+r+'c'+c]=attending[idx].no;
+      idx++;
+    }
+  }
+  if(!D.seating)D.seating={};
+  D.seating.seats=seats;
+  renderSeating();
 }
 
 // ===== タイムテーブル =====
