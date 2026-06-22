@@ -731,6 +731,15 @@ function loadLocal(){
     else{Object.keys(item).forEach(function(k){if(ex[k]===undefined||ex[k]===null)ex[k]=item[k];});}
   });}
   try{const s=localStorage.getItem(SS);if(s)cfg={...cfg,...JSON.parse(s)};}catch(e){}
+  // URLハッシュ（#k=APIKEY&b=BINID）からcfgを自動設定
+  (function(){
+    var h=location.hash.slice(1);
+    if(!h)return;
+    var p={};h.split('&').forEach(function(pair){var kv=pair.split('=');if(kv.length===2)p[kv[0]]=decodeURIComponent(kv[1]);});
+    if(p.k){cfg.apiKey=p.k;if(p.b)cfg.binId=p.b;localStorage.setItem(SS,JSON.stringify({apiKey:cfg.apiKey,binId:cfg.binId}));}
+    // セキュリティのためURLからハッシュを除去
+    if(history.replaceState)history.replaceState(null,'',location.pathname);
+  })();
 }
 function persist(){localStorage.setItem(SK,JSON.stringify(D));autoSync();}
 async function autoSync(){
