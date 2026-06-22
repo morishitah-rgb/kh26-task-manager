@@ -363,6 +363,7 @@ a{color:var(--red)}
       <button class="btn btn-r" onclick="saveSeating()">💾 保存</button>
       <button class="btn btn-gray" onclick="resetSeating()">🔄 リセット</button>
       <button class="btn btn-gray" onclick="autoArrangeSeating()">✨ 自動配置</button>
+      <button class="btn btn-gray" onclick="openAddPersonModal()">＋ 人を追加</button>
     </div>
   </div>
   <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
@@ -1499,6 +1500,12 @@ var seatingDragSrc=null;
 
 function renderSeating(){
   var saved=D.seating||{};
+  // 保存済みカスタム人物をEMPLOYEESに復元（重複しないよう）
+  if(saved.custom){
+    saved.custom.forEach(function(c){
+      if(!EMPLOYEES.find(function(e){return e.no===c.no;}))EMPLOYEES.push(c);
+    });
+  }
   var unplaced=document.getElementById('unplaced-area');
   unplaced.innerHTML='';
   var rowLabels=document.getElementById('seating-row-labels');
@@ -1555,17 +1562,38 @@ function renderSeating(){
 
 function makeNameTag(emp,seatId){
   var attBg={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
-  var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd'};
+  var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd','社外':'#e8d5f5','カメラマン':'#cfe2ff'};
   var bg=catBg[emp.cat]||attBg[emp.attendance]||'#e2e3e5';
   var tag=document.createElement('div');
   tag.draggable=true;
   tag.dataset.empNo=emp.no;
   if(seatId)tag.dataset.seatId=seatId;
-  tag.style.cssText='background:'+bg+';border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px';
-  tag.innerHTML=emp.name+(emp.attendance==='欠席'?'<br><span style="font-size:.65rem;color:#c0392b">欠席</span>':'');
+  tag.style.cssText='position:relative;background:'+bg+';border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:4px 6px 4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px';
+
+  var nameEl=document.createElement('div');
+  nameEl.textContent=emp.name;
+  tag.appendChild(nameEl);
+
+  if(emp.attendance==='欠席'){
+    var abEl=document.createElement('span');
+    abEl.style.cssText='font-size:.65rem;color:#c0392b';
+    abEl.textContent='欠席';
+    tag.appendChild(abEl);
+  }
+
+  // ×ボタン（席に配置されている場合のみ表示）
+  if(seatId){
+    var xBtn=document.createElement('span');
+    xBtn.textContent='×';
+    xBtn.title='未配置に戻す';
+    xBtn.style.cssText='position:absolute;top:-6px;right:-6px;width:16px;height:16px;background:#e74c3c;color:#fff;border-radius:50%;font-size:.65rem;line-height:16px;text-align:center;cursor:pointer;font-weight:900;z-index:10';
+    xBtn.addEventListener('mousedown',function(e){e.stopPropagation();});
+    xBtn.addEventListener('click',function(e){e.stopPropagation();returnToUnplaced(tag);});
+    tag.appendChild(xBtn);
+  }
+
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('[id^="seat-"]').forEach(function(c){if(!c.querySelector('[data-emp-no]')){c.style.background='#e9ecef';c.style.borderColor='#adb5bd';}});});
-  tag.addEventListener('dblclick',function(){returnToUnplaced(this);});
   return tag;
 }
 
@@ -1627,6 +1655,42 @@ function resetSeating(){
   if(!confirm('座席配置をリセットしますか？'))return;
   if(D.seating)D.seating.seats={};
   renderSeating();
+}
+
+function openAddPersonModal(){
+  openModal('<h2>＋ 人を追加（座席表用）</h2>'+
+    '<div class="frow"><label>氏名 <span style="color:red">*</span></label>'+
+    '<input id="ap-name" placeholder="例：カメラマン 山田" style="width:100%"></div>'+
+    '<div class="frow"><label>種別</label>'+
+    '<select id="ap-cat" style="width:100%">'+
+    '<option value="社外">社外ゲスト</option>'+
+    '<option value="カメラマン">カメラマン</option>'+
+    '<option value="業者">業者</option>'+
+    '<option value="来賓">来賓</option>'+
+    '<option value="その他">その他</option>'+
+    '</select></div>'+
+    '<div style="display:flex;gap:8px;margin-top:12px">'+
+    '<button class="btn btn-r" onclick="addCustomPerson()">追加</button>'+
+    '<button class="btn btn-gray" onclick="cm()">キャンセル</button></div>');
+}
+
+function addCustomPerson(){
+  var name=document.getElementById('ap-name').value.trim();
+  if(!name){alert('氏名を入力してください');return;}
+  var cat=document.getElementById('ap-cat').value;
+  if(!D.seating)D.seating={};
+  if(!D.seating.custom)D.seating.custom=[];
+  // 連番はEMPLOYEESの最大+1から始まり、既存カスタムと被らないように
+  var maxNo=EMPLOYEES.reduce(function(m,e){return Math.max(m,e.no);},0);
+  D.seating.custom.forEach(function(c){maxNo=Math.max(maxNo,c.no);});
+  var newNo=maxNo+1;
+  var emp={no:newNo,name:name,cat:cat,attendance:'出席'};
+  D.seating.custom.push(emp);
+  EMPLOYEES.push(emp);
+  cm();
+  // 未配置エリアに名札を追加
+  var unplaced=document.getElementById('unplaced-area');
+  if(unplaced){unplaced.appendChild(makeNameTag(emp,null));updateUnplacedCount();}
 }
 
 function autoArrangeSeating(){
