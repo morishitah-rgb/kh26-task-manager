@@ -1678,7 +1678,9 @@ function doLogout(){
 }
 
 function onGoogleSignIn(resp){
-  var payload = JSON.parse(atob(resp.credential.split('.')[1]));
+  var b64=resp.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+  b64+='='.repeat((4-b64.length%4)%4);
+  var payload = JSON.parse(atob(b64));
   var email = payload.email || '';
   if(!email.endsWith('@'+ALLOWED_DOMAIN)){
     document.getElementById('login-err').textContent = '@'+ALLOWED_DOMAIN+' のアカウントのみ利用できます（'+email+'）';
