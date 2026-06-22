@@ -425,6 +425,7 @@ a{color:var(--red)}
     <h2>⑦ 名簿</h2>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn btn-r" onclick="saveRoster()">💾 保存</button>
+      <button class="btn btn-gray" onclick="openAddRosterModal()">＋ 追加</button>
       <span id="roster-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
     </div>
   </div>
@@ -1773,6 +1774,60 @@ function addCustomPerson(){
   // 未配置エリアに名札を追加
   var unplaced=document.getElementById('unplaced-area');
   if(unplaced){unplaced.appendChild(makeNameTag(emp,null));updateUnplacedCount();}
+}
+
+function openAddRosterModal(){
+  openModal('<h2>＋ 社員を追加</h2>'+
+    '<div class="frow"><label>氏名 <span style="color:red">*</span></label>'+
+    '<input id="ar-name" type="text" placeholder="例：田中太郎" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:4px"></div>'+
+    '<div class="frow"><label>区分</label>'+
+    '<select id="ar-cat" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:4px">'+
+    '<option value="社員">社員</option>'+
+    '<option value="AI業務委託">AI業務委託</option>'+
+    '<option value="入社予定">入社予定</option>'+
+    '<option value="社外">社外</option>'+
+    '</select></div>'+
+    '<div class="frow"><label>出席状況</label>'+
+    '<select id="ar-att" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:4px">'+
+    '<option value="出席">出席</option>'+
+    '<option value="欠席">欠席</option>'+
+    '<option value="未定">未定</option>'+
+    '</select></div>'+
+    '<div class="frow"><label>備考</label>'+
+    '<input id="ar-note" type="text" placeholder="例：育休中" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:4px"></div>'+
+    '<div style="display:flex;gap:8px;margin-top:12px">'+
+    '<button class="btn btn-r" onclick="addRosterPerson()">追加</button>'+
+    '<button class="btn btn-gray" onclick="cm()">キャンセル</button></div>');
+}
+
+function addRosterPerson(){
+  var name=document.getElementById('ar-name').value.trim();
+  if(!name){alert('氏名を入力してください');return;}
+  var cat=document.getElementById('ar-cat').value;
+  var att=document.getElementById('ar-att').value;
+  var note=document.getElementById('ar-note').value.trim();
+  var maxNo=EMPLOYEES.reduce(function(m,e){return Math.max(m,e.no);},0);
+  if(D.seating&&D.seating.custom)D.seating.custom.forEach(function(c){maxNo=Math.max(maxNo,c.no);});
+  var newNo=maxNo+1;
+  var emp={no:newNo,name:name,cat:cat,attendance:att};
+  if(note)emp.note=note;
+  EMPLOYEES.push(emp);
+  // D.rosterにも追加
+  if(!D.roster)D.roster=[];
+  D.roster.push({no:newNo,attendance:att});
+  cm();
+  renderRoster();
+  // 出席者なら座席表の未配置エリアにも追加
+  if(att!=='欠席'){
+    var unplaced=document.getElementById('unplaced-area');
+    if(unplaced){
+      if(!D.seating)D.seating={};
+      if(!D.seating.custom)D.seating.custom=[];
+      D.seating.custom.push(emp);
+      unplaced.appendChild(makeNameTag(emp,null));
+      if(typeof updateUnplacedCount==='function')updateUnplacedCount();
+    }
+  }
 }
 
 function autoArrangeSeating(){
