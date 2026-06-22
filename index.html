@@ -1668,52 +1668,75 @@ function resetSeating(){
 function printSeating(){
   var ROW_LABELS='ABCDEFGHIJK'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
-  // 印刷用HTML生成
+  var SEAT_W=62, SEAT_H=36, GAP=4, AISLE=18, LABEL_W=20;
+
   var rows='';
   for(var r=0;r<SEAT_ROWS;r++){
-    var cells='<td style="width:22px;font-weight:700;font-size:10px;color:#555;vertical-align:middle;text-align:center">'+ROW_LABELS[r]+'</td>';
-    var colIdx=0;
+    var cells='';
+    // 行ラベル
+    cells+='<td class="rl">'+ROW_LABELS[r]+'</td>';
     [[0,1],[2,3],[4,5],[6,7]].forEach(function(pair,bi){
-      if(bi>0)cells+='<td style="width:14px"></td>';
+      if(bi>0) cells+='<td class="aisle"></td>';
       pair.forEach(function(c){
         var sid='r'+r+'c'+c;
         var no=saved[sid];
         var emp=no?EMPLOYEES.find(function(e){return e.no===no;}):null;
-        var bg='#f0f0f0';
+        var bg='#efefef';
+        var nameStr='';
         if(emp){
-          var attBg={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
-          var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd','社外':'#e8d5f5','カメラマン':'#cfe2ff'};
-          bg=catBg[emp.cat]||attBg[emp.attendance]||'#e2e3e5';
+          var attBg={'出席':'#d9f0df','欠席':'#fadadd','未定':'#e8e8e8'};
+          var catBg={'AI業務委託':'#fef9c3','入社予定':'#fef9c3','社外':'#ede0f8','カメラマン':'#dbeafe'};
+          bg=catBg[emp.cat]||attBg[emp.attendance]||'#e8e8e8';
+          nameStr=emp.name;
         }
-        cells+='<td style="width:68px;height:38px;background:'+bg+';border:1px solid #ccc;border-radius:4px;font-size:9px;font-weight:700;text-align:center;vertical-align:middle;padding:2px">'+(emp?emp.name:'')+'</td>';
+        cells+='<td class="seat" style="background:'+bg+'">'+nameStr+'</td>';
       });
     });
-    rows+='<tr style="height:40px">'+cells+'</tr>';
+    rows+='<tr>'+cells+'</tr>';
   }
+
+  // 凡例
+  var legend='<div class="legend">'+
+    '<span class="lbox" style="background:#d9f0df">出席</span>'+
+    '<span class="lbox" style="background:#fadadd">欠席</span>'+
+    '<span class="lbox" style="background:#fef9c3">AI委託/入社予定</span>'+
+    '<span class="lbox" style="background:#dbeafe">カメラマン等</span>'+
+    '<span class="lbox" style="background:#efefef">空席</span>'+
+    '</div>';
 
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
     '<title>座席表 2026年7月28日</title>'+
     '<style>'+
-    '@page{size:A4 portrait;margin:12mm 8mm;}'+
-    'body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;padding:0}'+
-    'h2{text-align:center;font-size:14px;margin:0 0 4px}'+
-    '.sub{text-align:center;font-size:10px;color:#555;margin-bottom:8px}'+
-    'table{border-collapse:separate;border-spacing:4px;margin:0 auto}'+
-    '.stage{background:#2c3e50;color:#fff;text-align:center;padding:6px;border-radius:4px;font-weight:700;font-size:11px;width:320px;margin:0 auto 6px;letter-spacing:3px}'+
-    '.screen{background:#7f8c8d;color:#fff;text-align:center;padding:3px;border-radius:3px;font-size:9px;width:200px;margin:0 auto 3px;letter-spacing:2px}'+
+    '@page{size:A4 portrait;margin:10mm 8mm;}'+
+    '*{box-sizing:border-box;}'+
+    'body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;padding:0;font-size:10px;}'+
+    'h1{text-align:center;font-size:15px;margin:0 0 2px;letter-spacing:1px;}'+
+    '.sub{text-align:center;font-size:9px;color:#555;margin-bottom:6px;}'+
+    '.screen{background:#888;color:#fff;text-align:center;padding:4px 0;border-radius:3px;font-size:9px;width:180px;margin:0 auto 3px;letter-spacing:2px;}'+
+    '.stage{background:#2c3e50;color:#fff;text-align:center;padding:7px 0;border-radius:5px;font-size:11px;font-weight:700;width:260px;margin:0 auto 10px;letter-spacing:4px;}'+
+    'table{border-collapse:separate;border-spacing:'+GAP+'px;margin:0 auto;}'+
+    'td.rl{width:'+LABEL_W+'px;font-weight:700;font-size:10px;color:#444;text-align:center;vertical-align:middle;}'+
+    'td.seat{width:'+SEAT_W+'px;height:'+SEAT_H+'px;border:1px solid #bbb;border-radius:4px;font-size:9px;font-weight:700;text-align:center;vertical-align:middle;padding:2px;line-height:1.2;}'+
+    'td.aisle{width:'+AISLE+'px;}'+
+    '.exits{display:flex;justify-content:space-around;margin:10px auto 6px;width:500px;}'+
+    '.exit{background:#e67e22;color:#fff;padding:5px 20px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:1px;}'+
+    '.legend{display:flex;gap:8px;justify-content:center;margin-top:6px;flex-wrap:wrap;}'+
+    '.lbox{padding:2px 8px;border:1px solid #bbb;border-radius:3px;font-size:8px;}'+
     '</style></head><body>'+
-    '<h2>経営方針発表会 2026　座席表</h2>'+
+    '<h1>経営方針発表会 2026　座席表</h1>'+
     '<div class="sub">2026年7月28日（火）｜クリエート浜松 2階 大ホール</div>'+
     '<div class="screen">スクリーン</div>'+
-    '<div class="stage">演 台</div>'+
+    '<div class="stage">演　台</div>'+
     '<table><tbody>'+rows+'</tbody></table>'+
+    '<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>'+
+    legend+
     '</body></html>';
 
-  var w=window.open('','_blank','width=800,height=900');
+  var w=window.open('','_blank','width=820,height=1000');
   w.document.write(html);
   w.document.close();
   w.focus();
-  setTimeout(function(){w.print();},400);
+  setTimeout(function(){w.print();},500);
 }
 
 function openAddPersonModal(){
