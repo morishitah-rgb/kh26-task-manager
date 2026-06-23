@@ -332,6 +332,18 @@ header .sub{font-size:.7rem;opacity:.8}
 
 /* メンバー */
 .member-card{background:#fff;border-radius:11px;padding:13px 15px;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.mb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.mb-card{background:#fff;border-radius:13px;padding:18px 12px 13px;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:box-shadow .15s}
+.mb-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.13)}
+.mb-av{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.15rem;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.mb-name{font-weight:800;font-size:.9rem;color:#222;line-height:1.3}
+.mb-badges{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;min-height:18px}
+.mb-title{display:inline-block;padding:1px 8px;background:#fff3e0;color:#e65100;border-radius:10px;font-size:.67rem;font-weight:800;border:1px solid #ffcc80}
+.mb-first{display:inline-block;padding:1px 8px;background:#e3f2fd;color:#1565c0;border-radius:10px;font-size:.67rem;font-weight:800;border:1px solid #90caf9}
+.mb-edit-btn{font-size:.68rem;color:var(--sub);background:#f5f5f5;border:none;border-radius:5px;padding:2px 8px;cursor:pointer;margin-top:2px}
+.mb-edit-btn:hover{background:#eee;color:#333}
+/* モバイル アバター選択状態 */
+.av-chip.av-selected{outline:3px solid rgba(255,255,255,.9);box-shadow:0 0 0 5px rgba(255,255,255,.35);transform:translateY(-2px)}
 .lk-group{margin-bottom:18px}
 .lk-cat{font-size:.78rem;font-weight:800;color:var(--red);letter-spacing:.04em;margin-bottom:6px;padding-left:4px}
 .lk-card{background:#fff;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow);padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
@@ -1207,10 +1219,15 @@ function migrateOwnerNames(){
 function nameColor(n){if(!n)return'#95a5a6';var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return NAME_COLORS[h%NAME_COLORS.length];}
 function nameInit(n){if(!n)return'?';return n.replace(/さん|様|さま|くん|君/g,'').charAt(0)||n.charAt(0);}
 var avDragName='';
+var avMobileSelected=null;
+function isMobile(){return window.innerWidth<=700;}
 function avDragStart(e,name){avDragName=name;e.dataTransfer.setData('text/plain',name);}
-function onAssignDrop(e,el){
-  e.preventDefault();el.classList.remove('dg-over');
-  var name=avDragName||e.dataTransfer.getData('text/plain');
+function avMobileSelect(name){
+  avMobileSelected=(avMobileSelected===name)?null:name;
+  renderAvatarPanel('task-avatar-panel');
+  renderAvatarPanel('supply-avatar-panel');
+}
+function doAssign(el,name){
   if(!name)return;
   var id=el.dataset.id,role=el.dataset.role,dtype=el.dataset.dtype;
   var arr=dtype==='supply'?D.supplies:D.tasks;
@@ -1221,6 +1238,20 @@ function onAssignDrop(e,el){
   else item.assignee=(item.owner||'')+(item.sub?'・'+item.sub:'');
   persist();
   if(dtype==='supply')renderSupplies();else renderTasks();
+}
+function onAssignDrop(e,el){
+  e.preventDefault();el.classList.remove('dg-over');
+  var name=avDragName||e.dataTransfer.getData('text/plain');
+  doAssign(el,name);
+}
+function onMobileTap(e,el){
+  if(!isMobile())return;
+  if(!avMobileSelected)return;
+  e.stopPropagation();
+  doAssign(el,avMobileSelected);
+  avMobileSelected=null;
+  renderAvatarPanel('task-avatar-panel');
+  renderAvatarPanel('supply-avatar-panel');
 }
 function _inlineSave(id,field,dtype,newVal){
   var arr=dtype==='supply'?D.supplies:D.tasks;
@@ -1289,15 +1320,28 @@ function renderAvatarPanel(panelId){
   var el=document.getElementById(panelId);if(!el)return;
   var arr=(D.members||[]).map(function(m){return memberShortName(m.name);});
   if(!arr.length){el.innerHTML='';return;}
+  var mobile=isMobile();
   function chip(n,bg,init){
+    var sel=mobile&&avMobileSelected===n;
+    var extra=sel?' av-selected':'';
+    if(mobile){
+      return '<div class="av-chip'+extra+'" style="background:'+bg+';margin-bottom:6px;width:100%;justify-content:flex-start;box-sizing:border-box" '+
+        'onclick="avMobileSelect(\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\');" title="'+esc(n)+'">'+
+        '<div class="av-init">'+(init||esc(nameInit(n)))+'</div>'+esc(n)+'</div>';
+    }
     return '<div class="av-chip" draggable="true" style="background:'+bg+';margin-bottom:6px;width:100%;justify-content:flex-start;box-sizing:border-box" '+
       'ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
       '<div class="av-init">'+(init||esc(nameInit(n)))+'</div>'+esc(n)+'</div>';
   }
   var allChip=chip('全員','linear-gradient(135deg,#455a64,#607d8b)','全');
   var memberChips=arr.map(function(n){return chip(n,nameColor(n));}).join('');
+  var hd=mobile
+    ?(avMobileSelected
+      ?'✓ <b>'+esc(avMobileSelected)+'</b>を選択中<br><span style="font-weight:400;opacity:.8">割り当てたいタスクをタップ</span>'
+      :'👆 タップして選択')
+    :'👤 ドラッグ→割り当て';
   el.innerHTML='<div class="av-panel">'+
-    '<div class="av-panel-hd" style="font-size:.7rem">👤 ドラッグ→割り当て</div>'+
+    '<div class="av-panel-hd" style="font-size:.7rem;line-height:1.5">'+hd+'</div>'+
     '<div class="av-pool" style="flex-direction:column;gap:0">'+allChip+memberChips+'</div></div>';
 }
 
@@ -1311,21 +1355,21 @@ function taskCardHtml(t,dtype){
   var dueClass=t.status==='done'?'dc-done':od?'dc-od':(daysLeft!==null&&daysLeft<=5?'dc-soon':'dc-norm');
   var dueDisp=t.due?t.due.slice(5).replace('-','/'):'';
   var dueExtra=daysLeft===0?' 今日':od?' ('+Math.abs(daysLeft)+'日超過)':daysLeft===1?' 明日':'';
-  var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)"';
+  var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)" onclick="onMobileTap(event,this)"';
   var ownerHtml=owner
     ?'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(owner)+'44;padding:0">'+
-        '<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\')">'+
+        '<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation()">'+
           '<div class="asgn-dot" style="background:'+nameColor(owner)+'">'+esc(nameInit(owner))+'</div>'+
           '<span class="asgn-name">'+esc(owner)+'</span>'+
           '<span class="asgn-x">✕</span></div></div>'
-    :'<div class="asgn-drop" data-role="owner"'+dzAttrs+'>ドロップで割り当て</div>';
+    :'<div class="asgn-drop" data-role="owner"'+dzAttrs+'>タップ / ドロップで割り当て</div>';
   var subHtml=sub
     ?'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(sub)+'44;padding:0;font-size:.72rem">'+
-        '<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\')">'+
+        '<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation()">'+
           '<div class="asgn-dot" style="background:'+nameColor(sub)+'">'+esc(nameInit(sub))+'</div>'+
           '<span class="asgn-name">'+esc(sub)+'</span>'+
           '<span class="asgn-x">✕</span></div></div>'
-    :'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="font-size:.72rem;padding:5px 12px">ドロップ</div>';
+    :'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="font-size:.72rem;padding:5px 12px">サブ</div>';
   var editFn=dtype==='supply'?'openSupplyModal':'openTaskModal';
   var delFn=dtype==='supply'?'delSupply':'delTask';
   var stFn=dtype==='supply'?'setSupplyStatus':'setTaskStatus';
@@ -3128,18 +3172,23 @@ function saveMin(){
 }
 
 // ===== メンバー =====
+var MB_TITLES={'松下雄紀':'委員長','森下秀之':'副委員長'};
+var MB_FIRST=['岡真弥子','君塚菜穂','波多野恵梨','清水洋希','山本英之'];
 function renderMembers(){
-  document.getElementById('member-list').innerHTML=D.members.length?D.members.map(function(m){
-    return'<div class="member-card">'+
-      '<div class="avatar">'+esc(m.name.slice(0,1))+'</div>'+
-      '<div class="member-info" style="flex:1"><div class="mname">'+esc(m.name)+'</div>'+
-      '<div class="mrole">'+esc(m.role||'')+'</div>'+
-      (m.note?'<div style="font-size:.76rem;color:var(--sub)">'+esc(m.note)+'</div>':'')+'</div>'+
-      '<div class="member-acts">'+
-      '<button class="bsm r" onclick="openMemberModal(\''+m.id+'\')">編集</button>'+
-      '<button class="bsm" onclick="delMember(\''+m.id+'\')">削除</button>'+
-      '</div></div>';
-  }).join(''):'<div class="empty">メンバーがいません</div>';
+  if(!D.members.length){document.getElementById('member-list').innerHTML='<div class="empty">メンバーがいません</div>';return;}
+  document.getElementById('member-list').innerHTML='<div class="mb-grid">'+D.members.map(function(m){
+    var clean=m.name.replace(/\s+/g,'');
+    var bg=nameColor(clean);
+    var init=nameInit(clean);
+    var tb=MB_TITLES[clean]?'<span class="mb-title">'+MB_TITLES[clean]+'</span>':'';
+    var fb=MB_FIRST.indexOf(clean)>-1?'<span class="mb-first">初参加</span>':'';
+    return'<div class="mb-card">'+
+      '<div class="mb-av" style="background:'+bg+'">'+esc(init)+'</div>'+
+      '<div class="mb-name">'+esc(m.name)+'</div>'+
+      '<div class="mb-badges">'+tb+fb+'</div>'+
+      '<button class="mb-edit-btn" onclick="openMemberModal(\''+m.id+'\')">編集</button>'+
+      '</div>';
+  }).join('')+'</div>';
 }
 function delMember(id){if(!confirm('削除しますか？'))return;D.members=D.members.filter(function(x){return x.id!==id;});persist();renderMembers();}
 function openMemberModal(id){
