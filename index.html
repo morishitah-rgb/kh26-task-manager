@@ -1055,14 +1055,15 @@ function removeAssign(id,role,dtype){
   persist();
   if(dtype==='supply')renderSupplies();else renderTasks();
 }
+function memberShortName(fullName){
+  // "松下 雄紀" → "松下さん"
+  var sei=fullName.split(/\s+/)[0];
+  return sei+'さん';
+}
 function renderAvatarPanel(panelId){
   var el=document.getElementById(panelId);if(!el)return;
-  // ⑬メンバーリスト全員を基準（スペース除去）
-  var arr=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
-  // タスク・備品に存在するがメンバーリストにない名前を末尾に追加
-  var inList=new Set(arr);
-  (D.tasks||[]).forEach(function(t){[t.owner,t.sub].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&!inList.has(n)){arr.push(n);inList.add(n);}});});});
-  (D.supplies||[]).forEach(function(s){[s.owner,s.sub].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&!inList.has(n)){arr.push(n);inList.add(n);}});});});
+  // ⑬メンバーリストのみを使用（姓+さん形式で統一、重複なし）
+  var arr=(D.members||[]).map(function(m){return memberShortName(m.name);});
   if(!arr.length){el.innerHTML='';return;}
   el.innerHTML='<div class="av-panel">'+
     '<div class="av-panel-hd">👤 担当者パネル &nbsp;—&nbsp; ドラッグしてカードの <strong>オーナー</strong> または <strong>サブ</strong> 欄へ</div>'+
