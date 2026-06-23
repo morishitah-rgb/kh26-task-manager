@@ -394,6 +394,43 @@ a{color:var(--red)}
 .lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;cursor:pointer}
 .lb.open{display:flex}
 .lb img{max-width:90vw;max-height:90vh;border-radius:8px}
+
+/* ── 当日役割 フォーメーション ── */
+.dr-phase-tabs{display:flex;gap:0;border-radius:12px 12px 0 0;overflow:hidden;border:1px solid #e0e0e0;border-bottom:none}
+.dr-phase-tab{flex:1;padding:11px 6px;text-align:center;cursor:pointer;font-weight:700;font-size:.8rem;background:#f7f7f7;color:#888;transition:all .15s;border-right:1px solid #e0e0e0;line-height:1.3}
+.dr-phase-tab:last-child{border-right:none}
+.dr-phase-tab.dr-active{color:#fff;border-bottom:none}
+.dr-phase-tab.dr-p1.dr-active{background:#1565c0}
+.dr-phase-tab.dr-p2.dr-active{background:#2e7d32}
+.dr-phase-tab.dr-p3.dr-active{background:#6a1b9a}
+.dr-phase-tab.dr-p4.dr-active{background:#e65100}
+.dr-field{border-radius:0 0 14px 14px;padding:18px 14px 22px;min-height:340px;position:relative;border:1px solid #e0e0e0;border-top:none}
+.dr-field.dr-fp1{background:linear-gradient(160deg,#0d47a1 0%,#1565c0 40%,#1976d2 100%)}
+.dr-field.dr-fp2{background:linear-gradient(160deg,#1b5e20 0%,#2e7d32 50%,#388e3c 100%)}
+.dr-field.dr-fp3{background:linear-gradient(160deg,#4a148c 0%,#6a1b9a 50%,#7b1fa2 100%)}
+.dr-field.dr-fp4{background:linear-gradient(160deg,#bf360c 0%,#e64a19 50%,#f4511e 100%)}
+.dr-coach-zone{background:rgba(0,0,0,.22);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;border:1.5px solid rgba(255,255,255,.2)}
+.dr-coach-badge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;background:linear-gradient(135deg,#ffd700,#ffa000);box-shadow:0 2px 10px rgba(0,0,0,.4);flex-shrink:0}
+.dr-coach-info{color:#fff}
+.dr-coach-label{font-size:.68rem;opacity:.75;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.dr-coach-name{font-weight:900;font-size:1rem;line-height:1.2}
+.dr-coach-desc{font-size:.72rem;opacity:.7;margin-top:1px}
+.dr-divider{height:1px;background:rgba(255,255,255,.15);margin:12px 0}
+.dr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px}
+.dr-role-card{background:rgba(255,255,255,.13);backdrop-filter:blur(2px);border:1.5px solid rgba(255,255,255,.22);border-radius:12px;padding:11px 8px 10px;text-align:center;cursor:pointer;transition:all .18s;color:#fff}
+.dr-role-card:hover{background:rgba(255,255,255,.25);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.dr-role-card.dr-assigned{border-color:rgba(255,235,59,.7);background:rgba(255,235,59,.15)}
+.dr-role-icon{font-size:1.35rem;margin-bottom:5px;line-height:1}
+.dr-role-name{font-size:.73rem;font-weight:700;line-height:1.3;margin-bottom:7px}
+.dr-role-person{font-size:.7rem;background:rgba(0,0,0,.28);border-radius:20px;padding:2px 9px;display:inline-block;min-width:56px;min-height:17px;line-height:17px}
+.dr-role-person.dr-empty{color:rgba(255,255,255,.45);font-style:italic}
+.dr-role-note{font-size:.64rem;opacity:.55;margin-top:4px;line-height:1.2}
+.dr-add-btn{background:rgba(255,255,255,.12);border:1.5px dashed rgba(255,255,255,.35);color:rgba(255,255,255,.6);border-radius:12px;padding:11px 8px;text-align:center;cursor:pointer;font-size:.78rem;font-weight:700;transition:all .18s;width:100%}
+.dr-add-btn:hover{background:rgba(255,255,255,.22);color:#fff}
+.dr-progress{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.18);border-radius:8px;padding:7px 12px;margin-bottom:12px}
+.dr-progress-bar{flex:1;height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}
+.dr-progress-fill{height:100%;background:linear-gradient(90deg,#ffeb3b,#fff176);border-radius:3px;transition:width .3s}
+.dr-progress-txt{font-size:.72rem;color:rgba(255,255,255,.8);white-space:nowrap;font-weight:700}
 </style>
 </head>
 <body>
@@ -716,13 +753,11 @@ a{color:var(--red)}
 
 <!-- 当日役割 -->
 <div class="page" id="page-teams">
-  <div class="sect-head"><h2>⑩ 当日役割・担当一覧</h2><button class="btn btn-r" onclick="openTeamModal()">＋ 役割追加</button></div>
-  <div class="card" style="overflow-x:auto">
-    <table class="dtbl">
-      <thead><tr><th>役割・担当業務</th><th>担当者</th><th>期限</th><th>進捗</th><th>メモ</th><th style="width:56px"></th></tr></thead>
-      <tbody id="teams-body"></tbody>
-    </table>
+  <div class="sect-head">
+    <h2>⑩ 当日役割</h2>
   </div>
+  <div id="dr-phase-tabs" class="dr-phase-tabs"></div>
+  <div id="dr-field" class="dr-field"></div>
 </div>
 
 <!-- 持ち物事前チェック -->
@@ -920,6 +955,42 @@ teams:[
   {id:'r7',role:'受付・案内スタッフ調整',assignee:'未定',due:'2026-07-20',status:'todo',memo:''},
   {id:'r8',role:'当日PA・映像オペ確認',assignee:'秀之さん',due:'2026-07-01',status:'todo',memo:'会場スタッフと事前打合せ'},
 ],
+dayRoles:[
+  {id:'dr1',phase:1,role:'会場受付',assignee:'',icon:'🚪',note:''},
+  {id:'dr2',phase:1,role:'スタッフ腕章配布',assignee:'',icon:'💪',note:''},
+  {id:'dr3',phase:1,role:'机・椅子セット・調整',assignee:'',icon:'🪑',note:''},
+  {id:'dr4',phase:1,role:'お茶・配布物・備品セット',assignee:'',icon:'🍵',note:''},
+  {id:'dr5',phase:1,role:'機材セット',assignee:'',icon:'📹',note:''},
+  {id:'dr6',phase:1,role:'PCセット',assignee:'',icon:'💻',note:''},
+  {id:'dr7',phase:1,role:'音響セット',assignee:'',icon:'🎤',note:''},
+  {id:'dr8',phase:1,role:'バックヤード整理・表彰状準備',assignee:'',icon:'🏆',note:''},
+  {id:'dr9',phase:1,role:'カメラマン準備',assignee:'',icon:'📷',note:''},
+  {id:'dr10',phase:1,role:'タイムキーパー準備',assignee:'',icon:'⏱',note:''},
+  {id:'dr11',phase:1,role:'受付スタンバイ',assignee:'',icon:'📋',note:''},
+  {id:'dr12',phase:1,role:'社員への伝達事項',assignee:'',icon:'📢',note:''},
+  {id:'dr13',phase:1,role:'ドア開閉',assignee:'',icon:'🚪',note:''},
+  {id:'dr14',phase:2,role:'席で話を聞く',assignee:'',icon:'👂',note:'全員'},
+  {id:'dr15',phase:2,role:'マイク渡す係',assignee:'',icon:'🎤',note:''},
+  {id:'dr16',phase:2,role:'タイムキーパー係',assignee:'',icon:'⏱',note:''},
+  {id:'dr17',phase:2,role:'機材操作',assignee:'',icon:'💻',note:''},
+  {id:'dr18',phase:2,role:'コーヒーヘルプ',assignee:'',icon:'☕',note:''},
+  {id:'dr19',phase:2,role:'ゴミ袋設置係',assignee:'',icon:'🗑',note:'コーヒー提供時'},
+  {id:'dr20',phase:2,role:'残り時間看板提示',assignee:'',icon:'🪧',note:'時間を押した時のみ'},
+  {id:'dr21',phase:3,role:'マイクスタンド',assignee:'',icon:'🎙',note:''},
+  {id:'dr22',phase:3,role:'社長アテンド',assignee:'',icon:'👔',note:''},
+  {id:'dr23',phase:3,role:'表彰者アテンド',assignee:'',icon:'🏆',note:''},
+  {id:'dr24',phase:3,role:'表彰状準備',assignee:'',icon:'📜',note:''},
+  {id:'dr25',phase:3,role:'機材準備',assignee:'',icon:'📹',note:''},
+  {id:'dr26',phase:3,role:'タイムキーパー',assignee:'',icon:'⏱',note:''},
+  {id:'dr27',phase:3,role:'社長へのマイク渡し',assignee:'',icon:'🎤',note:''},
+  {id:'dr28',phase:4,role:'駐車券割引案内',assignee:'',icon:'🚗',note:''},
+  {id:'dr29',phase:4,role:'机・椅子片付け',assignee:'',icon:'🪑',note:''},
+  {id:'dr30',phase:4,role:'ゴミ袋追加・収集',assignee:'',icon:'🗑',note:''},
+  {id:'dr31',phase:4,role:'バックヤード片付け',assignee:'',icon:'📦',note:''},
+  {id:'dr32',phase:4,role:'機材片付け',assignee:'',icon:'📹',note:''},
+  {id:'dr33',phase:4,role:'会場費支払い',assignee:'',icon:'💴',note:''},
+  {id:'dr34',phase:4,role:'アンケート回収係',assignee:'',icon:'📋',note:'あれば'},
+],
 supplies:[
   {id:'s1',cat:'映像・音響',name:'HDMI ケーブル（発表者用）',qty:'3本',assignee:'秀之さん',status:'todo',memo:'外部/Mac対応変換アダプタも持参'},
   {id:'s2',cat:'映像・音響',name:'Wi-Fiルーター',qty:'1台',assignee:'秀之さん',status:'todo',memo:'当日使用後に返却（酒井くん）'},
@@ -1065,6 +1136,8 @@ function loadLocal(){
   var scheduleTaskIds=['t10','t11','t12','t13','t14','t15','t16','t18','t20'];
   if(D.tasks)D.tasks=D.tasks.filter(function(t){return scheduleTaskIds.indexOf(t.id)===-1;});
   if(D.tasks)D.tasks=D.tasks.filter(function(t){return t.id!=='t19';});
+  if(!D.dayRoles){D.dayRoles=cloneD(INIT.dayRoles);}
+  else{INIT.dayRoles.forEach(function(r){if(!D.dayRoles.find(function(x){return x.id===r.id;}))D.dayRoles.push(cloneD(r));});}
   if(!D.supplies){D.supplies=cloneD(INIT.supplies);}
   else{
     INIT.supplies.forEach(function(s){if(!D.supplies.find(function(x){return x.id===s.id;}))D.supplies.push(cloneD(s));});
@@ -2902,36 +2975,99 @@ document.addEventListener('click',function(e){
 function openProgModal(id){renderPrograms();}
 function saveProg(){cm();}
 
-// ===== 当日役割 =====
+// ===== 当日役割 フォーメーション =====
+var _drPhase=1;
+var PHASE_LABELS=['①準備〜開会前','②発表中','③スタッフ表彰','④片付け'];
+var PHASE_COLORS=['#1565c0','#2e7d32','#6a1b9a','#e65100'];
+
 function renderTeams(){
-  var bmap={todo:'<span class="badge" style="background:#eceff1;color:#546e7a">未着手</span>',prog:'<span class="badge" style="background:#e3f2fd;color:#1565c0">進行中</span>',done:'<span class="badge" style="background:#e8f5e9;color:#2e7d32">完了</span>'};
-  document.getElementById('teams-body').innerHTML=D.teams.map(function(t){
-    return'<tr><td style="font-weight:700">'+esc(t.role)+'</td><td>'+esc(t.assignee)+'</td>'+
-      '<td>'+(t.due||'-')+'</td><td>'+(bmap[t.status||'todo']||'')+'</td>'+
-      '<td style="font-size:.82rem">'+esc(t.memo||'')+'</td><td style="text-align:center"><button class="bsm r" onclick="openTeamModal(\''+t.id+'\')">編集</button></td></tr>';
+  if(!D.dayRoles)D.dayRoles=cloneD(INIT.dayRoles);
+  var roles=(D.dayRoles||[]).filter(function(r){return r.phase===_drPhase;});
+  var total=roles.length;
+  var assigned=roles.filter(function(r){return r.assignee&&r.assignee.trim();}).length;
+
+  // tabs
+  var tabsHtml=PHASE_LABELS.map(function(l,i){
+    var n=i+1;
+    var cnt=(D.dayRoles||[]).filter(function(r){return r.phase===n;}).length;
+    var asgn=(D.dayRoles||[]).filter(function(r){return r.phase===n&&r.assignee&&r.assignee.trim();}).length;
+    return '<div class="dr-phase-tab dr-p'+n+(n===_drPhase?' dr-active':'')+'" onclick="setDrPhase('+n+')">'+
+      '<div>'+l+'</div>'+
+      '<div style="font-size:.65rem;font-weight:400;opacity:.7;margin-top:2px">'+asgn+'/'+cnt+'割当済</div>'+
+    '</div>';
   }).join('');
+  document.getElementById('dr-phase-tabs').innerHTML=tabsHtml;
+
+  // progress
+  var pct=total?Math.round(assigned/total*100):0;
+  var progressHtml='<div class="dr-progress">'+
+    '<div class="dr-progress-bar"><div class="dr-progress-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="dr-progress-txt">'+assigned+'/'+total+' 割当済</div>'+
+  '</div>';
+
+  // coach
+  var coachHtml='<div class="dr-coach-zone">'+
+    '<div class="dr-coach-badge">🎯</div>'+
+    '<div class="dr-coach-info">'+
+      '<div class="dr-coach-label">総監督</div>'+
+      '<div class="dr-coach-name">松下 雄紀</div>'+
+      '<div class="dr-coach-desc">全体統括・最終判断・指示</div>'+
+    '</div>'+
+  '</div>';
+
+  // role cards
+  var rolesHtml=roles.map(function(r){
+    var has=r.assignee&&r.assignee.trim();
+    return '<div class="dr-role-card'+(has?' dr-assigned':'')+'" onclick="openDrModal(\''+r.id+'\')">'+
+      '<div class="dr-role-icon">'+(r.icon||'👤')+'</div>'+
+      '<div class="dr-role-name">'+esc(r.role)+'</div>'+
+      '<div class="dr-role-person'+(has?'':' dr-empty')+'">'+(has?esc(r.assignee):'未割当')+'</div>'+
+      (r.note?'<div class="dr-role-note">'+esc(r.note)+'</div>':'')+
+    '</div>';
+  }).join('');
+
+  var addBtn='<div class="dr-add-btn" onclick="openDrModal()">＋ 役割を追加</div>';
+
+  var fieldCls='dr-field dr-fp'+_drPhase;
+  document.getElementById('dr-field').className=fieldCls;
+  document.getElementById('dr-field').innerHTML=progressHtml+coachHtml+'<div class="dr-divider"></div><div class="dr-grid">'+rolesHtml+addBtn+'</div>';
 }
-function openTeamModal(id){
-  var t=id?D.teams.find(function(x){return x.id===id;}):null;
-  openModal('<h2>⑩ 当日役割'+(t?'を編集':'を追加')+'</h2>'+
-    '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
-    '<div class="frow"><label>役割・担当業務 *</label><input id="m-role" value="'+(t?esc(t.role):'')+'"></div>'+
-    '<div class="frow"><label>担当者</label><input id="m-assignee" value="'+(t?esc(t.assignee):'')+'"></div>'+
-    '<div class="frow frow2"><div><label>期限</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div>'+
-    '<div><label>進捗</label><select id="m-status">'+
-    '<option value="todo"'+((!t||t.status==='todo')?' selected':'')+'>未着手</option>'+
-    '<option value="prog"'+(t&&t.status==='prog'?' selected':'')+'>進行中</option>'+
-    '<option value="done"'+(t&&t.status==='done'?' selected':'')+'>完了</option>'+
-    '</select></div></div>'+
-    '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
-    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTeam()">保存</button></div>');
+
+function setDrPhase(n){_drPhase=n;renderTeams();}
+
+function openDrModal(id){
+  var r=id?(D.dayRoles||[]).find(function(x){return x.id===id;}):null;
+  var memberOpts=(D.members||[]).map(function(m){
+    return '<option value="'+esc(m.name)+'"'+(r&&r.assignee===m.name?' selected':'')+'>'+esc(m.name)+'</option>';
+  }).join('');
+  openModal(
+    '<h2 style="margin-bottom:14px">役割'+(r?'を編集':'を追加')+'</h2>'+
+    '<input type="hidden" id="m-id" value="'+(r?r.id:'')+'">'+
+    '<div class="frow"><label>フェーズ</label><select id="m-phase">'+
+    PHASE_LABELS.map(function(l,i){var n=i+1;return '<option value="'+n+'"'+((r?r.phase:_drPhase)===n?' selected':'')+'>'+l+'</option>';}).join('')+
+    '</select></div>'+
+    '<div class="frow"><label>役割名 *</label><input id="m-role" value="'+(r?esc(r.role):'')+'"></div>'+
+    '<div class="frow"><label>アイコン（絵文字）</label><input id="m-icon" value="'+(r?esc(r.icon||''):'')+'"></div>'+
+    '<div class="frow"><label>担当者</label><select id="m-assignee"><option value="">未割当</option>'+memberOpts+'</select></div>'+
+    '<div class="frow"><label>補足メモ（任意）</label><input id="m-note" value="'+(r?esc(r.note||''):'')+'"></div>'+
+    (r?'<div style="margin-top:6px;text-align:right"><button class="btn" style="background:#ffebee;color:#c62828;font-size:.8rem" onclick="delDrRole(\''+r.id+'\')">この役割を削除</button></div>':'')+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveDrRole()">保存</button></div>'
+  );
 }
-function saveTeam(){
+
+function saveDrRole(){
   var role=getV('m-role'),id=getV('m-id');
-  if(!role){alert('役割を入力してください');return;}
-  var data={role:role,assignee:getV('m-assignee'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
-  if(id){var i=D.teams.findIndex(function(x){return x.id===id;});if(i>=0)D.teams[i]=Object.assign({},D.teams[i],data);}
-  else{data.id=uid();D.teams.push(data);}
+  if(!role){alert('役割名を入力してください');return;}
+  var data={phase:parseInt(getV('m-phase')),role:role,icon:getV('m-icon'),assignee:getV('m-assignee'),note:getV('m-note')};
+  if(!D.dayRoles)D.dayRoles=[];
+  if(id){var i=D.dayRoles.findIndex(function(x){return x.id===id;});if(i>=0)D.dayRoles[i]=Object.assign({},D.dayRoles[i],data);}
+  else{data.id=uid();D.dayRoles.push(data);}
+  persist();renderTeams();cm();
+}
+
+function delDrRole(id){
+  if(!confirm('この役割を削除しますか？'))return;
+  D.dayRoles=(D.dayRoles||[]).filter(function(x){return x.id!==id;});
   persist();renderTeams();cm();
 }
 
