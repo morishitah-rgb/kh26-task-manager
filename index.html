@@ -206,23 +206,51 @@ header .sub{font-size:.7rem;opacity:.8}
 .av-chip:active{cursor:grabbing;transform:scale(.94)}
 .av-init{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:900}
 
-/* ガントチャート */
-.gantt-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--line)}
-.gtbl{min-width:900px;border-collapse:collapse;width:100%}
-.gtbl th,.gtbl td{border:1px solid #e8e8e8;padding:0;font-size:.74rem}
-.ghr-month th{background:var(--red);color:#fff;font-weight:700;text-align:center;padding:7px 2px;white-space:nowrap}
-.ghr-day th{background:#f5f5f5;color:#444;font-weight:700;text-align:center;padding:5px 2px;font-size:.7rem}
-.ghr-day th.is-today{background:#ff6b00;color:#fff}
-.ghr-day th.is-wk{background:#efefef;color:#aaa}
-.gc0{width:200px;min-width:160px}
-.glbl{padding:7px 10px;font-size:.8rem;line-height:1.3;border-right:2px solid var(--line)}
-.glbl .ga{font-size:.68rem;color:var(--sub);margin-top:2px}
-.gcell{height:38px;position:relative;min-width:18px}
-.gcell.wk{background:#f9f9f9}
+/* ── Gantt Chart Professional ── */
+.gantt-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.gl-item{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--sub);font-weight:700}
+.gl-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.gantt-wrap{overflow-x:auto;background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);border:1px solid var(--line)}
+.gtbl{border-collapse:collapse;table-layout:fixed}
+.gtbl th,.gtbl td{padding:0;font-size:.74rem;border:none}
+/* Sticky headers */
+.ghr-month th{position:sticky;top:0;z-index:6;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;font-weight:800;text-align:center;padding:8px 2px;font-size:.78rem;letter-spacing:.04em;border-right:1px solid rgba(255,255,255,.15)}
+.ghr-day th{position:sticky;top:31px;z-index:6;background:#f5f7ff;color:#546e7a;font-weight:700;text-align:center;padding:5px 0;font-size:.68rem;border-bottom:2px solid #dce0f0;border-right:1px solid #eef0f8}
+.ghr-day th.is-today{background:#ff6b00;color:#fff;font-weight:900}
+.ghr-day th.is-wk{background:#eeeff5;color:#bbb}
+/* Corner sticky cells */
+.gc0-head{position:sticky!important;left:0;z-index:12!important;background:#fff!important;border-right:2px solid #dce0f0!important}
+/* Label column */
+.glbl{position:sticky;left:0;z-index:3;background:#fff;padding:8px 12px;border-right:2px solid #dce0f0;min-width:200px;max-width:200px;width:200px;box-shadow:2px 0 6px rgba(0,0,0,.06)}
+.gtbl tbody tr:hover .glbl{background:#f8f9ff}
+.gtbl tbody tr:hover .gcell{background-color:rgba(57,73,171,.025)!important}
+.glbl-name{font-size:.8rem;font-weight:800;color:var(--ink);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:176px}
+.glbl-name.od{color:#c62828}
+.glbl-sub{display:flex;align-items:center;gap:4px;margin-top:3px}
+.glbl-dot{width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.54rem;font-weight:900;color:#fff;flex-shrink:0}
+.glbl-asgn{font-size:.65rem;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Section rows */
+.g-sec-lbl{position:sticky;left:0;z-index:3;background:linear-gradient(135deg,#263238,#37474f);color:#fff;font-weight:900;font-size:.72rem;letter-spacing:.1em;padding:7px 14px;border:none}
+.g-sec-cell{background:linear-gradient(135deg,#263238,#37474f);border:none}
+.g-cat-lbl{position:sticky;left:0;z-index:3;background:#f0f2fc;color:#3949ab;font-weight:800;font-size:.7rem;padding:5px 14px 5px 22px;border-top:1px solid #dce0f0;border-bottom:1px solid #dce0f0}
+.g-cat-cell{background:#f0f2fc;border-top:1px solid #dce0f0;border-bottom:1px solid #dce0f0}
+/* Day cells */
+.gcell{height:44px;position:relative;width:22px;min-width:22px;border-right:1px solid #f0f2f8}
+.gcell.wk{background:#f7f8fb}
 .gcell.is-today{background:rgba(255,107,0,.06)}
-.gbar{position:absolute;top:6px;height:26px;border-radius:5px;left:2px;right:2px;display:flex;align-items:center;padding:0 5px;font-size:.62rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18)}
-.gbar.todo{background:var(--todo)}.gbar.prog{background:var(--prog)}.gbar.done{background:var(--done)}.gbar.overdue{background:var(--od)}
-.tdl{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#ff6b00;opacity:.8;z-index:2}
+/* Bars */
+.gbar{position:absolute;top:8px;height:28px;border-radius:6px;left:1px;right:1px;display:flex;align-items:center;padding:0 6px;font-size:.6rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.22);transition:filter .1s}
+.gbar:hover{filter:brightness(1.08)}
+.gbar.todo{background:linear-gradient(90deg,#78909c,#90a4ae)}
+.gbar.prog{background:linear-gradient(90deg,#1565c0,#42a5f5)}
+.gbar.done{background:linear-gradient(90deg,#2e7d32,#66bb6a)}
+.gbar.overdue{background:linear-gradient(90deg,#b71c1c,#ef5350)}
+/* Supply bars (diamond style - narrower) */
+.gbar.supply-bar{top:12px;height:20px;border-radius:4px;opacity:.9}
+/* Today line */
+.tdl{position:absolute;top:-2px;bottom:-2px;left:50%;width:2px;background:#ff6b00;opacity:.75;z-index:4;pointer-events:none}
+/* Row separator */
+.gtbl tbody tr{border-bottom:1px solid #f4f5fb}
 
 /* 掲示板 */
 .bpost{background:#fff;border-radius:11px;padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:10px}
@@ -423,8 +451,19 @@ a{color:var(--red)}
 
 <!-- ガントチャート -->
 <div class="page" id="page-gantt">
-  <div class="sect-head"><h2>④ ガントチャート（2026年6〜7月）</h2></div>
-  <div class="gantt-wrap"><table class="gtbl" id="gtbl"></table></div>
+  <div class="sect-head">
+    <h2>④ ガントチャート</h2>
+    <div class="gantt-legend">
+      <span class="gl-item"><span class="gl-dot" style="background:#90a4ae"></span>未着手</span>
+      <span class="gl-item"><span class="gl-dot" style="background:#42a5f5"></span>進行中</span>
+      <span class="gl-item"><span class="gl-dot" style="background:#66bb6a"></span>完了</span>
+      <span class="gl-item"><span class="gl-dot" style="background:#ef5350"></span>期限超過</span>
+      <span class="gl-item"><span class="gl-dot" style="background:#ff6b00;border-radius:50%"></span>今日</span>
+    </div>
+  </div>
+  <div class="gantt-wrap">
+    <table class="gtbl" id="gtbl"></table>
+  </div>
 </div>
 
 <!-- 予算管理 -->
@@ -1424,26 +1463,129 @@ function renderGantt(){
   var days=[],d2=new Date(GS);
   while(d2<=GE){days.push(new Date(d2));d2.setDate(d2.getDate()+1);}
   var today=todayStr();
-  var months=[],cm3=null;
-  days.forEach(function(d){var mk=d.getMonth();if(!cm3||cm3.m!==mk){cm3={m:mk,label:(d.getMonth()+1)+'月',count:0};months.push(cm3);}cm3.count++;});
-  var sorted=D.tasks.slice().sort(function(a,b){return(a.start||a.due||'')<(b.start||b.due||'')?-1:1;});
-  var h='<thead>'+
-    '<tr class="ghr-month"><th class="gc0"></th>'+months.map(function(m){return'<th colspan="'+m.count+'" style="text-align:center">'+m.label+'</th>';}).join('')+'</tr>'+
-    '<tr class="ghr-day"><th class="gc0" style="text-align:left;padding-left:10px;font-size:.78rem">タスク / 担当</th>'+
-    days.map(function(d){var iw=d.getDay()===0||d.getDay()===6,it=fd(d)===today;return'<th class="'+(it?'is-today':iw?'is-wk':'')+'">'+(d.getDate())+'</th>';}).join('')+
-    '</tr></thead><tbody>';
-  sorted.forEach(function(t){
-    var od=t.status!=='done'&&t.due&&t.due<today;
-    var sd=t.start?new Date(t.start):(t.due?new Date(t.due):null),ed=t.due?new Date(t.due):sd;
-    h+='<tr><td class="glbl"><div style="'+(od?'color:var(--od);font-weight:700':'')+'">'+esc(t.title)+'</div><div class="ga">'+esc(t.assignee)+'</div></td>';
+  var N=days.length;
+
+  // 月グループ
+  var months=[],cm=null;
+  days.forEach(function(d){
+    var mk=d.getMonth();
+    if(!cm||cm.m!==mk){cm={m:mk,label:(d.getMonth()+1)+'月',count:0};months.push(cm);}
+    cm.count++;
+  });
+
+  // colgroup
+  var h='<colgroup><col style="width:200px;min-width:200px">';
+  days.forEach(function(){h+='<col style="width:22px;min-width:22px">';});
+  h+='</colgroup>';
+
+  // thead
+  h+='<thead>';
+  h+='<tr class="ghr-month">';
+  h+='<th class="gc0-head" style="text-align:left;padding:8px 14px;font-size:.76rem;color:var(--sub);letter-spacing:.04em">タスク / 担当者</th>';
+  months.forEach(function(m){h+='<th colspan="'+m.count+'">'+m.label+'</th>';});
+  h+='</tr>';
+  h+='<tr class="ghr-day">';
+  h+='<th class="gc0-head" style="top:31px;border-bottom:2px solid #dce0f0"></th>';
+  days.forEach(function(d){
+    var iw=d.getDay()===0||d.getDay()===6,it=fd(d)===today;
+    h+='<th class="'+(it?'is-today':iw?'is-wk':'')+'">'+(d.getDate())+'</th>';
+  });
+  h+='</tr></thead><tbody>';
+
+  // セクション行
+  function secRow(label,color1,color2){
+    var bg='background:linear-gradient(135deg,'+color1+','+color2+')';
+    var h2='<tr>';
+    h2+='<td class="g-sec-lbl" style="'+bg+'">'+label+'</td>';
+    days.forEach(function(d){
+      var iw=d.getDay()===0||d.getDay()===6;
+      h2+='<td class="g-sec-cell" style="'+bg+(iw?';opacity:.7':'')+'">&nbsp;</td>';
+    });
+    return h2+'</tr>';
+  }
+  // カテゴリ行
+  function catRow(label){
+    var h2='<tr>';
+    h2+='<td class="g-cat-lbl">'+esc(label)+'</td>';
+    days.forEach(function(d){
+      var iw=d.getDay()===0||d.getDay()===6;
+      h2+='<td class="g-cat-cell'+(iw?' wk':'')+'">&nbsp;</td>';
+    });
+    return h2+'</tr>';
+  }
+  // タスク行
+  function taskRow(item,dtype){
+    var title=dtype==='supply'?(item.name||''):(item.title||item.name||'');
+    var assignee=item.owner||item.assignee||'';
+    var start=item.start||item.due||null;
+    var due=item.due||null;
+    var status=item.status||'todo';
+    var od=status!=='done'&&due&&due<today;
+    var bc=od?'overdue':status;
+    var sd=start?new Date(start):null,ed=due?new Date(due):null;
+    var aName=(assignee.split(/[・、]/)[0]||'').trim();
+    var adot=aName?'<div class="glbl-dot" style="background:'+nameColor(aName)+'">'+esc(nameInit(aName))+'</div>':'';
+    var r='<tr>';
+    r+='<td class="glbl">';
+    r+='<div class="glbl-name'+(od?' od':'')+'" title="'+esc(title)+'">'+esc(title)+'</div>';
+    r+='<div class="glbl-sub">'+adot+'<span class="glbl-asgn">'+esc(assignee||'未割当')+'</span></div>';
+    r+='</td>';
     days.forEach(function(d){
       var ds=fd(d),it=ds===today,iw=d.getDay()===0||d.getDay()===6;
-      var inR=sd&&ed&&ds>=fd(sd)&&ds<=fd(ed),isF=sd&&ds===fd(sd);
-      var bc=od?'overdue':t.status;
-      h+='<td class="gcell'+(iw?' wk':'')+(it?' is-today':'')+'">'+(it?'<div class="tdl"></div>':'')+(inR?'<div class="gbar '+bc+'" title="'+esc(t.title)+'　'+esc(t.assignee)+'">'+(isF?esc(t.title.slice(0,8)):'')+'</div>':'')+'</td>';
+      var inR=sd&&ed&&ds>=fd(sd)&&ds<=fd(ed);
+      var isF=sd&&ds===fd(sd);
+      var cls='gcell'+(iw?' wk':'')+(it?' is-today':'');
+      r+='<td class="'+cls+'">';
+      if(it)r+='<div class="tdl"></div>';
+      if(inR){
+        var extra=dtype==='supply'?' supply-bar':'';
+        r+='<div class="gbar '+bc+extra+'" title="'+esc(title)+(assignee?' ('+esc(assignee)+')':'')+'">';
+        if(isF)r+='<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title.slice(0,12))+'</span>';
+        r+='</div>';
+      }
+      r+='</td>';
     });
-    h+='</tr>';
+    return r+'</tr>';
+  }
+
+  // ── ② タスク ──
+  h+=secRow('② タスク','#1a237e','#283593');
+  var tCats={};
+  (D.tasks||[]).forEach(function(t){
+    var c=t.category||t.cat||'その他';
+    if(!tCats[c])tCats[c]=[];
+    tCats[c].push(t);
   });
+  Object.keys(tCats).forEach(function(cat){
+    h+=catRow(cat);
+    tCats[cat].slice().sort(function(a,b){return(a.start||a.due||'')>(b.start||b.due||'')?1:-1;})
+      .forEach(function(t){h+=taskRow(t,'task');});
+  });
+  if(!(D.tasks&&D.tasks.length)){
+    h+='<tr><td class="glbl" style="color:#ccc;font-style:italic">タスクなし</td>';
+    days.forEach(function(d){h+='<td class="gcell'+(d.getDay()===0||d.getDay()===6?' wk':'')+'">&nbsp;</td>';});
+    h+='</tr>';
+  }
+
+  // ── ③ 備品タスク ──
+  h+=secRow('③ 備品タスク','#263238','#37474f');
+  var sCats={};
+  (D.supplies||[]).filter(function(s){return s.due||s.start;}).forEach(function(s){
+    var c=s.cat||'その他';
+    if(!sCats[c])sCats[c]=[];
+    sCats[c].push(s);
+  });
+  if(!Object.keys(sCats).length){
+    h+='<tr><td class="glbl" style="color:#aaa;font-size:.78rem;padding:12px 14px">期限が設定された備品タスクはここに表示されます</td>';
+    days.forEach(function(d){h+='<td class="gcell'+(d.getDay()===0||d.getDay()===6?' wk':'')+'">&nbsp;</td>';});
+    h+='</tr>';
+  } else {
+    Object.keys(sCats).forEach(function(cat){
+      h+=catRow(cat);
+      sCats[cat].slice().sort(function(a,b){return(a.due||'')>(b.due||'')?1:-1;})
+        .forEach(function(s){h+=taskRow(s,'supply');});
+    });
+  }
   h+='</tbody>';
   document.getElementById('gtbl').innerHTML=h;
 }
