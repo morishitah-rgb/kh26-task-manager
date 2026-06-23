@@ -1180,8 +1180,16 @@ function openTaskModal(id){
   openModal('<h2>📋 タスク'+(t?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
     '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
-    '<div class="frow frow2"><div><label>オーナー（主担当）</label><input id="m-owner" placeholder="例：松下さん" value="'+esc(owner)+'"></div>'+
-    '<div><label>サブ（副担当）</label><input id="m-sub" placeholder="例：岡さん" value="'+esc(sub)+'"></div></div>'+
+    '<div class="frow"><label style="margin-bottom:8px;display:block">担当者</label>'+
+      '<div id="m-av-pool" style="display:flex;gap:7px;flex-wrap:wrap;padding:10px;background:#f8f8f8;border-radius:10px;border:1px solid var(--line);margin-bottom:10px"></div>'+
+      '<div style="display:flex;gap:10px">'+
+        '<div style="flex:1"><div style="font-size:.72rem;font-weight:800;color:var(--sub);margin-bottom:5px">オーナー（主担当）</div>'+
+          '<div id="m-owner-zone" class="asgn-drop" style="min-height:40px;display:flex;align-items:center;justify-content:center" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onModalAssignDrop(event,\'owner\')">ドラッグして割り当て</div>'+
+          '<input type="hidden" id="m-owner"></div>'+
+        '<div style="flex:1"><div style="font-size:.72rem;font-weight:800;color:var(--sub);margin-bottom:5px">サブ（副担当）</div>'+
+          '<div id="m-sub-zone" class="asgn-drop" style="min-height:40px;display:flex;align-items:center;justify-content:center" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onModalAssignDrop(event,\'sub\')">ドラッグして割り当て</div>'+
+          '<input type="hidden" id="m-sub"></div>'+
+      '</div></div>'+
     '<div class="frow"><label>カテゴリ</label><select id="m-cat">'+cats.map(function(c){return'<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
     '<div class="frow"><label>期限</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div>'+
     '<div class="frow"><label>ステータス</label><select id="m-status">'+
@@ -1191,6 +1199,45 @@ function openTaskModal(id){
     '</select></div>'+
     '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTask()">保存</button></div>');
+  initModalAvatars(owner,sub);
+}
+function initModalAvatars(owner,sub){
+  var pool=document.getElementById('m-av-pool');
+  if(!pool)return;
+  var arr=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
+  pool.innerHTML=arr.map(function(n){
+    var c=nameColor(n);
+    return '<div class="av-chip" draggable="true" style="background:'+c+';font-size:.78rem;padding:5px 10px 5px 6px" '+
+      'ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
+      '<div class="av-init" style="width:20px;height:20px;font-size:.66rem">'+esc(nameInit(n))+'</div>'+esc(n)+'</div>';
+  }).join('');
+  setModalZone('owner',owner);
+  setModalZone('sub',sub);
+}
+function setModalZone(role,name){
+  var zone=document.getElementById('m-'+role+'-zone');
+  var inp=document.getElementById('m-'+role);
+  if(!zone||!inp)return;
+  inp.value=name||'';
+  if(name){
+    var c=nameColor(name);
+    var isOwner=role==='owner';
+    zone.innerHTML='<div class="asgn-chip '+(isOwner?'asgn-owner':'asgn-sub')+'" style="background:'+c+'22;color:'+c+';cursor:pointer" onclick="setModalZone(\''+role+'\',\'\')">'+
+      '<div class="asgn-dot" style="background:'+c+';">'+(isOwner?'<span style="font-size:.84rem">':'<span style="font-size:.74rem">')+esc(nameInit(name))+'</span></div>'+
+      '<span class="asgn-name">'+esc(name)+'</span>'+
+      '<span class="asgn-x">✕</span></div>';
+    zone.classList.remove('dg-over');
+  }else{
+    zone.innerHTML='ドラッグして割り当て';
+  }
+}
+function onModalAssignDrop(e,role){
+  e.preventDefault();
+  var zone=document.getElementById('m-'+role+'-zone');
+  if(zone)zone.classList.remove('dg-over');
+  var name=avDragName||e.dataTransfer.getData('text/plain');
+  if(!name)return;
+  setModalZone(role,name);
 }
 function saveTask(){
   var title=getV('m-title'),id=getV('m-id');
