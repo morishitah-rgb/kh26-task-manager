@@ -1488,10 +1488,10 @@ function addReceipt(gid, mode){
 }
 function _extractYenAmounts(text){
   var candidates=[];
-  var re=/[¥￥\\]?\s*([0-9,，０-９]+)\s*円?|合計[^\d]*([0-9,，０-９]+)|計[^\d]*([0-9,，０-９]+)|TOTAL[^\d]*([0-9,，０-９]+)/gi;
+  var re=/[¥￥\\]?\s*([0-9,，０-９]+)\s*円|合計[^0-9０-９]*([0-9,，０-９]+)|小計[^0-9０-９]*([0-9,，０-９]+)|TOTAL[^0-9０-９]*([0-9,，０-９]+)|([0-9,，０-９]+)\s*円/gi;
   var m;
   while((m=re.exec(text))!==null){
-    var raw=m[1]||m[2]||m[3]||m[4]||'';
+    var raw=m[1]||m[2]||m[3]||m[4]||m[5]||'';
     raw=raw.replace(/[,，\s]/g,'').replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);});
     var n=parseInt(raw,10);
     if(n>=10&&n<=9999999&&candidates.indexOf(n)<0)candidates.push(n);
