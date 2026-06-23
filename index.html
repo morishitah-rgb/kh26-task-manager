@@ -228,6 +228,7 @@ a{color:var(--red)}
 
 <nav class="tabnav">
   <div class="tnb active" data-tab="board"    onclick="goTab('board')">   📌 掲示板</div>
+  <div class="tnb"        data-tab="schedule" onclick="goTab('schedule')"> ① スケジュール</div>
   <div class="tnb"        data-tab="tasks"    onclick="goTab('tasks')">   ② タスク</div>
   <div class="tnb"        data-tab="gantt"    onclick="goTab('gantt')">   ③ ガントチャート</div>
   <div class="tnb"        data-tab="budget"   onclick="goTab('budget')">  ④ 予算管理</div>
@@ -247,6 +248,15 @@ a{color:var(--red)}
   <div class="sect-head"><h2>📌 掲示板・お知らせ</h2></div>
   <div id="cw-sync-bar"></div>
   <div id="board-list"></div>
+</div>
+
+<!-- スケジュール -->
+<div class="page" id="page-schedule">
+  <div class="sect-head">
+    <h2>① スケジュール</h2>
+    <button class="btn btn-r" onclick="openScheduleModal()">＋ 予定を追加</button>
+  </div>
+  <div id="schedule-timeline"></div>
 </div>
 
 <!-- タスク -->
@@ -565,19 +575,21 @@ tasks:[
   {id:'t7',title:'パートタイム従業員参加可否確認',assignee:'松下さん',category:'その他',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'社長へ確認'},
   {id:'t8',title:'会場飲食規約確認',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'コーヒー等の持ち込み可否'},
   {id:'t9',title:'天龍コーヒー発注内容決定',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'紅茶の提供有無・数量を決定'},
-  {id:'t10',title:'会場下見',assignee:'秀之さん',category:'会場・備品',start:'2026-06-23',due:'2026-06-23',status:'todo',memo:'全体確認15分＋機材打合せ30〜60分'},
-  {id:'t11',title:'第6回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-06-26',due:'2026-06-26',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
-  {id:'t12',title:'第1回リハーサル',assignee:'委員会＋発表者',category:'MTG・リハーサル',start:'2026-07-01',due:'2026-07-01',status:'todo',memo:'9:00〜13:00 PGハウス曳馬'},
-  {id:'t13',title:'予算承認会議',assignee:'松下さん',category:'その他',start:'2026-07-10',due:'2026-07-10',status:'todo',memo:'15:30 社長への再提案・最終承認'},
-  {id:'t14',title:'第2回リハーサル',assignee:'委員会＋発表者',category:'MTG・リハーサル',start:'2026-07-13',due:'2026-07-13',status:'todo',memo:'9:00〜13:00 PGハウス曳馬'},
-  {id:'t15',title:'第7回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-07-16',due:'2026-07-16',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
-  {id:'t16',title:'第8回 委員会MTG',assignee:'委員会全員',category:'MTG・リハーサル',start:'2026-07-23',due:'2026-07-23',status:'todo',memo:'10:00〜12:00 アーチ鴨江事務所'},
   {id:'t17',title:'発表スライド提出期限',assignee:'全発表者',category:'タイムテーブル・スライド',start:'2026-07-24',due:'2026-07-24',status:'todo',memo:'最終版 昼12:00まで提出（松下さんへ）'},
-  {id:'t18',title:'🎉 経営方針発表会 本番',assignee:'全社員',category:'MTG・リハーサル',start:'2026-07-28',due:'2026-07-28',status:'todo',memo:'8:00委員集合 クリエート浜松ホール'},
   {id:'t19',title:'ロールアップバナー ラクスル発注',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-07-20',status:'todo',memo:'巻き取り式 ¥25,887/本・発注本数・仕様を確定次第発注'},
-  {id:'t20',title:'クリエート浜松 会場打合せ',assignee:'松下さん・秀之さん・山本さん',category:'会場・備品',start:'2026-07-08',due:'2026-07-08',status:'todo',memo:'9:30〜11:00 クリエート浜松 レイアウト・PA・飲食持込確認'},
   {id:'t21',title:'360°FBフォーム 全員へ配布',assignee:'髙松さん・岡さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'委員会メンバー各自がチームへ個別チャットで送付'},
   {id:'t22',title:'表彰アンケート 回収・集計',assignee:'グループ',category:'その他',start:'2026-06-17',due:'2026-06-30',status:'todo',memo:'6月末締め切り'},
+],
+schedule:[
+  {id:'sc1',title:'会場下見',date:'2026-06-23',startTime:'15:00',endTime:'16:30',location:'クリエート浜松',attendees:'秀之さん',type:'venue',memo:'全体確認15分＋機材打合せ30〜60分'},
+  {id:'sc2',title:'第6回 委員会MTG',date:'2026-06-26',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:'議題：タイムテーブル確定・看板見積確認・予算承認・360°FB進捗確認'},
+  {id:'sc3',title:'第1回リハーサル',date:'2026-07-01',startTime:'9:00',endTime:'13:00',location:'PGハウス曳馬',attendees:'委員会＋発表者',type:'rehearsal',memo:'スライド確認・時間調整'},
+  {id:'sc4',title:'クリエート浜松 会場打合せ',date:'2026-07-08',startTime:'9:30',endTime:'11:00',location:'クリエート浜松',attendees:'松下さん・秀之さん・山本さん',type:'venue',memo:'レイアウト・PA・飲食持込確認'},
+  {id:'sc5',title:'予算承認会議',date:'2026-07-10',startTime:'15:30',endTime:'',location:'社内',attendees:'松下さん',type:'mtg',memo:'社長への再提案・最終承認'},
+  {id:'sc6',title:'第2回リハーサル',date:'2026-07-13',startTime:'9:00',endTime:'13:00',location:'PGハウス曳馬',attendees:'委員会＋発表者',type:'rehearsal',memo:'スライド最終確認・タイム調整'},
+  {id:'sc7',title:'第7回 委員会MTG',date:'2026-07-16',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'sc8',title:'第8回 委員会MTG',date:'2026-07-23',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'sc9',title:'🎉 経営方針発表会 本番',date:'2026-07-28',startTime:'8:00',endTime:'17:00',location:'クリエート浜松 大ホール',attendees:'全社員',type:'main',memo:'8:00委員集合'},
 ],
 board:[
   {id:'b1',name:'委員会事務局',tag:'info',text:'このページは経営方針発表会’26委員会の情報共有ページです。タスク・予算・会場情報・議事録をまとめて管理します。気づいたことや連絡事項はここに投稿してください。',date:'2026-06-17'},
@@ -775,6 +787,12 @@ function loadLocal(){
   // 提携駐車場がプレースホルダーのままなら最新INITで上書き
   else if(D.parking[0]&&D.parking[0].name==='提携駐車場①（未設定）'){D.parking=cloneD(INIT.parking);}
   if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
+  // スケジュール初期化・マージ
+  if(!D.schedule){D.schedule=cloneD(INIT.schedule);}
+  else{INIT.schedule.forEach(function(item){if(!D.schedule.find(function(x){return x.id===item.id;}))D.schedule.push(cloneD(item));});}
+  // スケジュール移行：旧タスクからスケジュール系を除去
+  var scheduleTaskIds=['t10','t11','t12','t13','t14','t15','t16','t18','t20'];
+  if(D.tasks)D.tasks=D.tasks.filter(function(t){return scheduleTaskIds.indexOf(t.id)===-1;});
   if(!D.supplies){D.supplies=cloneD(INIT.supplies);}
   else{
     INIT.supplies.forEach(function(s){if(!D.supplies.find(function(x){return x.id===s.id;}))D.supplies.push(cloneD(s));});
@@ -861,6 +879,7 @@ function onAddBtn(){
 }
 function renderPage(n){
   if(n==='board')renderBoard();
+  else if(n==='schedule')renderSchedule();
   else if(n==='tasks')renderTasks();
   else if(n==='gantt')renderGantt();
   else if(n==='budget')renderBudget();
@@ -1661,6 +1680,120 @@ function returnToUnplaced(tag){
 function updateUnplacedCount(){
   var ua=document.getElementById('unplaced-area');
   if(ua)document.getElementById('unplaced-count').textContent=ua.children.length;
+}
+
+// ===== スケジュール =====
+var SC_TYPE={
+  mtg:     {label:'委員会MTG',   color:'#3498db', bg:'#ebf5fb'},
+  rehearsal:{label:'リハーサル', color:'#8e44ad', bg:'#f5eef8'},
+  venue:   {label:'会場関連',    color:'#27ae60', bg:'#eafaf1'},
+  main:    {label:'本番',        color:'#c0392b', bg:'#fdedec'},
+  other:   {label:'その他',      color:'#7f8c8d', bg:'#f2f3f4'},
+};
+function renderSchedule(){
+  var evts=(D.schedule||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;});
+  var today=new Date().toISOString().slice(0,10);
+  // 月ごとにグループ化
+  var months={};
+  evts.forEach(function(e){
+    var m=e.date.slice(0,7);
+    if(!months[m])months[m]=[];
+    months[m].push(e);
+  });
+  var html='<div style="max-width:680px;margin:0 auto;padding:8px 0">';
+  Object.keys(months).sort().forEach(function(m){
+    var d=new Date(m+'-01');
+    var label=(d.getMonth()+1)+'月';
+    html+='<div style="font-size:.8rem;font-weight:700;color:#888;letter-spacing:.1em;text-transform:uppercase;padding:18px 0 8px 4px;border-bottom:2px solid var(--line);margin-bottom:12px">──── 2026年 '+label+' ────</div>';
+    months[m].forEach(function(e){
+      var tc=SC_TYPE[e.type]||SC_TYPE.other;
+      var dt=new Date(e.date);
+      var days=['日','月','火','水','木','金','土'];
+      var dow=days[dt.getDay()];
+      var dayNum=e.date.slice(8,10);
+      var isToday=e.date===today;
+      var isPast=e.date<today;
+      var timeStr=e.startTime?(e.startTime+(e.endTime?'〜'+e.endTime:'')):'';
+      html+='<div style="display:flex;gap:0;margin-bottom:10px;opacity:'+(isPast?'.55':'1')+'">';
+      // 日付列
+      html+='<div style="width:56px;flex-shrink:0;text-align:center;padding-top:4px">';
+      html+='<div style="font-size:1.5rem;font-weight:800;color:'+(isToday?tc.color:'#2c3e50')+';line-height:1">'+(parseInt(dayNum,10))+'</div>';
+      html+='<div style="font-size:.75rem;color:#888;margin-top:1px">'+dow+'</div>';
+      if(isToday)html+='<div style="font-size:.62rem;background:'+tc.color+';color:#fff;border-radius:4px;padding:1px 4px;margin-top:3px">TODAY</div>';
+      html+='</div>';
+      // 縦線
+      html+='<div style="width:3px;background:'+tc.color+';border-radius:3px;margin:4px 14px 0 14px;flex-shrink:0"></div>';
+      // カード
+      html+='<div style="flex:1;background:'+tc.bg+';border:1px solid '+tc.color+'33;border-radius:10px;padding:12px 14px;position:relative">';
+      html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">';
+      html+='<div>';
+      html+='<span style="font-size:.7rem;background:'+tc.color+';color:#fff;border-radius:4px;padding:2px 7px;margin-bottom:6px;display:inline-block">'+tc.label+'</span>';
+      html+='<div style="font-size:1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px">'+esc(e.title)+'</div>';
+      if(timeStr)html+='<div style="font-size:.82rem;color:'+tc.color+';font-weight:600;margin-bottom:3px">🕐 '+esc(timeStr)+'</div>';
+      if(e.location)html+='<div style="font-size:.82rem;color:#555;margin-bottom:2px">📍 '+esc(e.location)+'</div>';
+      if(e.attendees)html+='<div style="font-size:.8rem;color:#666">👥 '+esc(e.attendees)+'</div>';
+      if(e.memo)html+='<div style="font-size:.78rem;color:#888;margin-top:6px;border-top:1px solid '+tc.color+'22;padding-top:6px">'+esc(e.memo)+'</div>';
+      html+='</div>';
+      html+='<div style="display:flex;gap:4px;flex-shrink:0">';
+      html+='<button class="bsm" onclick="openScheduleModal(\''+e.id+'\')">編集</button>';
+      html+='<button class="bsm" onclick="delScheduleEvent(\''+e.id+'\')">削除</button>';
+      html+='</div></div></div>';
+      html+='</div>';
+    });
+  });
+  if(evts.length===0)html+='<div style="text-align:center;color:#aaa;padding:48px 0">予定がありません。「＋ 予定を追加」から追加してください。</div>';
+  html+='</div>';
+  document.getElementById('schedule-timeline').innerHTML=html;
+}
+function openScheduleModal(id){
+  var e=id?((D.schedule||[]).find(function(x){return x.id===id;})):null;
+  var typeOpts=Object.keys(SC_TYPE).map(function(k){
+    return '<option value="'+k+'"'+(e&&e.type===k?' selected':(!e&&k==='mtg'?' selected':''))+'>'+SC_TYPE[k].label+'</option>';
+  }).join('');
+  openModal('<h2>'+(id?'予定を編集':'予定を追加')+'</h2>'+
+    '<input type="hidden" id="sc-id" value="'+(id||'')+'">'+
+    '<div class="frow"><label>タイトル <span style="color:red">*</span></label>'+
+    '<input id="sc-title" value="'+esc(e?e.title:'')+'"></div>'+
+    '<div class="frow"><label>種別</label>'+
+    '<select id="sc-type" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:4px">'+typeOpts+'</select></div>'+
+    '<div class="frow"><label>日付 <span style="color:red">*</span></label>'+
+    '<input id="sc-date" type="date" value="'+(e?e.date:'')+'"></div>'+
+    '<div class="frow" style="display:flex;gap:10px">'+
+    '<div style="flex:1"><label>開始時刻</label><input id="sc-start" type="time" value="'+(e?e.startTime:'')+'"></div>'+
+    '<div style="flex:1"><label>終了時刻</label><input id="sc-end" type="time" value="'+(e?e.endTime:'')+'"></div></div>'+
+    '<div class="frow"><label>場所</label>'+
+    '<input id="sc-location" value="'+esc(e?e.location:'')+'"></div>'+
+    '<div class="frow"><label>参加者</label>'+
+    '<input id="sc-attendees" value="'+esc(e?e.attendees:'')+'"></div>'+
+    '<div class="frow"><label>メモ</label>'+
+    '<input id="sc-memo" value="'+esc(e?e.memo:'')+'"></div>'+
+    '<div style="display:flex;gap:8px;margin-top:12px">'+
+    '<button class="btn btn-r" onclick="saveScheduleEvent()">保存</button>'+
+    '<button class="btn btn-gray" onclick="cm()">キャンセル</button></div>');
+}
+function saveScheduleEvent(){
+  var title=document.getElementById('sc-title').value.trim();
+  var date=document.getElementById('sc-date').value;
+  if(!title||!date){alert('タイトルと日付は必須です');return;}
+  var id=document.getElementById('sc-id').value;
+  var data={
+    title:title,date:date,
+    startTime:document.getElementById('sc-start').value,
+    endTime:document.getElementById('sc-end').value,
+    location:document.getElementById('sc-location').value.trim(),
+    attendees:document.getElementById('sc-attendees').value.trim(),
+    type:document.getElementById('sc-type').value,
+    memo:document.getElementById('sc-memo').value.trim()
+  };
+  if(!D.schedule)D.schedule=[];
+  if(id){var i=D.schedule.findIndex(function(x){return x.id===id;});if(i>=0)D.schedule[i]=Object.assign({},D.schedule[i],data);}
+  else{data.id=uid();D.schedule.push(data);}
+  persist();cm();renderSchedule();
+}
+function delScheduleEvent(id){
+  if(!confirm('この予定を削除しますか？'))return;
+  D.schedule=(D.schedule||[]).filter(function(x){return x.id!==id;});
+  persist();renderSchedule();
 }
 
 function autoSaveSeating(){
