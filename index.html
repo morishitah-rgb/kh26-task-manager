@@ -3058,11 +3058,11 @@ function renderTeams(){
         var clean=name.replace(/\s/g,'');
         var ph=MEMBER_PHOTOS&&(MEMBER_PHOTOS[clean]||MEMBER_PHOTOS[name]);
         var col=nameColor(clean);
-        var av=ph?'<img src="'+ph+'" style="width:30px;height:30px;object-fit:cover;object-position:center top;border-radius:50%;border:2px solid rgba(255,255,255,.6);flex-shrink:0">':
-          '<div style="width:30px;height:30px;border-radius:50%;background:'+col+';border:2px solid rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:900">'+clean.slice(0,1)+'</div>';
+        var av=ph?'<img src="'+ph+'" style="width:26px;height:26px;object-fit:cover;object-position:center top;border-radius:50%;border:2px solid rgba(255,255,255,.6);flex-shrink:0">':
+          '<div style="width:26px;height:26px;border-radius:50%;background:'+col+';border:2px solid rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.65rem;font-weight:900">'+clean.slice(0,1)+'</div>';
         var sei=name.split(/\s+/)[0]||clean;
-        return '<div onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')" title="タップで解除" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">'+
-          av+'<span style="font-size:.72rem;color:#fff;font-weight:800;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.5)">'+esc(sei)+'</span>'+
+        return '<div onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')" title="タップで解除" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;width:38px">'+
+          av+'<span style="font-size:.62rem;color:#fff;font-weight:800;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.5);overflow:hidden;max-width:38px;text-align:center">'+esc(sei)+'</span>'+
         '</div>';
       }).join('');
 
@@ -3074,7 +3074,7 @@ function renderTeams(){
           '</div>'+
           '<button style="background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:.75rem;padding:0 2px;line-height:1;flex-shrink:0" onclick="event.stopPropagation();delDrRole(\''+r.id+'\')" title="削除">✕</button>'+
         '</div>'+
-        '<div style="margin-top:8px;display:flex;align-items:center;min-height:28px;padding-left:8px">'+
+        '<div style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;min-height:28px">'+
           (hasAny?avs:'<span style="font-size:.7rem;color:rgba(255,255,255,.4);font-style:italic">未割当 — タップして追加</span>')+
         '</div>'+
       '</div>';
