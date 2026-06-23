@@ -822,6 +822,12 @@ function loadLocal(){
   })();
 }
 function persist(){localStorage.setItem(SK,JSON.stringify(D));autoSync();}
+function showToast(msg){
+  var t=document.getElementById('save-toast');
+  if(!t){t=document.createElement('div');t.id='save-toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#2ecc71;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:opacity .4s;pointer-events:none';document.body.appendChild(t);}
+  t.textContent=msg||'✓ 保存しました';t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';},1800);
+}
 async function autoSync(){
   if(!cfg.apiKey||!cfg.binId)return;
   try{await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});}catch(e){}
@@ -1488,7 +1494,12 @@ function renderRoster(){
 }
 function onRosterChange(no,val){
   var emp=EMPLOYEES.find(function(e){return e.no===no;});
-  if(emp){emp.attendance=val;updateRosterStats();}
+  if(emp){
+    emp.attendance=val;
+    updateRosterStats();
+    D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance};});
+    persist();showToast('✓ 名簿を保存しました');
+  }
 }
 function updateRosterStats(){
   var emps=EMPLOYEES.filter(function(e){return e.cat==='社員';});
@@ -1499,7 +1510,7 @@ function updateRosterStats(){
 }
 function saveRoster(){
   D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance};});
-  persist();alert('名簿を保存しました');
+  persist();showToast('✓ 名簿を保存しました');
 }
 
 // ===== 座席表 =====
@@ -1632,6 +1643,7 @@ function onSeatDrop(e){
   this.appendChild(seatingDragSrc);
   seatingDragSrc.dataset.seatId=toSeat;
   if(!fromSeat)updateUnplacedCount();
+  autoSaveSeating();
 }
 
 function returnToUnplaced(tag){
@@ -1643,6 +1655,7 @@ function returnToUnplaced(tag){
   }
   document.getElementById('unplaced-area').appendChild(tag);
   updateUnplacedCount();
+  autoSaveSeating();
 }
 
 function updateUnplacedCount(){
@@ -1650,14 +1663,17 @@ function updateUnplacedCount(){
   if(ua)document.getElementById('unplaced-count').textContent=ua.children.length;
 }
 
-function saveSeating(){
+function autoSaveSeating(){
   var seats={};
   document.querySelectorAll('[id^="seat-"] [data-emp-no]').forEach(function(tag){
     if(tag.dataset.seatId)seats[tag.dataset.seatId]=parseInt(tag.dataset.empNo);
   });
   if(!D.seating)D.seating={};
   D.seating.seats=seats;
-  persist();alert('座席表を保存しました');
+  persist();showToast('✓ 座席を保存しました');
+}
+function saveSeating(){
+  autoSaveSeating();
 }
 
 function resetSeating(){
