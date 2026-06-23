@@ -2582,6 +2582,10 @@ function setSupplyStatus(id,st){
   s.status=st;
   persist();renderSupplies();
 }
+function _fixGarbledName(s){
+  // UTF-8バイトをLatin-1として保存された文字化けを修復
+  try{return decodeURIComponent(escape(s));}catch(e){return s;}
+}
 function getChecklistUserName(){
   // 1) Googleログイン情報からメンバー名にマッチング
   try{
@@ -2589,6 +2593,9 @@ function getChecklistUserName(){
     if(g){
       var u=JSON.parse(g);
       if(u.name&&u.exp*1000>Date.now()){
+        // 文字化け自動修復
+        var fixed=_fixGarbledName(u.name);
+        if(fixed!==u.name){u.name=fixed;localStorage.setItem('kh26_gauth',JSON.stringify(u));}
         var gname=u.name;
         // D.membersの中でマッチするものを探す
         var members=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
@@ -3057,7 +3064,7 @@ function doLogout(){
 function onGoogleSignIn(resp){
   var b64=resp.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
   b64+='='.repeat((4-b64.length%4)%4);
-  var payload = JSON.parse(atob(b64));
+  var payload = JSON.parse(decodeURIComponent(atob(b64).split('').map(function(c){return'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join('')));
   var email = payload.email || '';
   if(!email.endsWith('@'+ALLOWED_DOMAIN)){
     document.getElementById('login-err').textContent = '@'+ALLOWED_DOMAIN+' のアカウントのみ利用できます（'+email+'）';
