@@ -3033,7 +3033,7 @@ function renderTeams(){
         var av=ph?'<img src="'+ph+'" style="width:30px;height:30px;object-fit:cover;object-position:center top;border-radius:50%;border:2px solid rgba(255,255,255,.6);flex-shrink:0">':
           '<div style="width:30px;height:30px;border-radius:50%;background:'+col+';border:2px solid rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:900">'+clean.slice(0,1)+'</div>';
         return '<div onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')" title="タップで解除" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">'+
-          av+'<span style="font-size:.6rem;color:rgba(255,255,255,.85);font-weight:700;white-space:nowrap;max-width:36px;overflow:hidden;text-overflow:ellipsis">'+esc(clean)+'</span>'+
+          av+'<span style="font-size:.65rem;color:#fff;font-weight:700;white-space:nowrap;line-height:1.2">'+esc(clean)+'</span>'+
         '</div>';
       }).join('');
 
