@@ -1612,14 +1612,24 @@ function renderSeating(){
 }
 
 function makeNameTag(emp,seatId){
-  var attBg={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
-  var catBg={'AI業務委託':'#fff3cd','入社予定':'#fff3cd','社外':'#e8d5f5','カメラマン':'#cfe2ff'};
-  var bg=catBg[emp.cat]||attBg[emp.attendance]||'#e2e3e5';
+  // 背景色・文字色（カテゴリ優先、次に出席状況）
+  var styles={
+    '出席':    {bg:'#27ae60',color:'#fff'},
+    '欠席':    {bg:'#e74c3c',color:'#fff'},
+    '未定':    {bg:'#95a5a6',color:'#fff'},
+  };
+  var catStyles={
+    'AI業務委託':{bg:'#f39c12',color:'#fff'},
+    '入社予定':  {bg:'#8e44ad',color:'#fff'},
+    '社外':      {bg:'#2980b9',color:'#fff'},
+    'カメラマン':{bg:'#16a085',color:'#fff'},
+  };
+  var st=catStyles[emp.cat]||styles[emp.attendance]||{bg:'#7f8c8d',color:'#fff'};
   var tag=document.createElement('div');
   tag.draggable=true;
   tag.dataset.empNo=emp.no;
   if(seatId)tag.dataset.seatId=seatId;
-  tag.style.cssText='position:relative;background:'+bg+';border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:4px 6px 4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px';
+  tag.style.cssText='position:relative;background:'+st.bg+';color:'+st.color+';border-radius:6px;padding:4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px;text-shadow:0 1px 1px rgba(0,0,0,.2)';
 
   var nameEl=document.createElement('div');
   nameEl.textContent=emp.name;
@@ -1627,20 +1637,9 @@ function makeNameTag(emp,seatId){
 
   if(emp.attendance==='欠席'){
     var abEl=document.createElement('span');
-    abEl.style.cssText='font-size:.65rem;color:#c0392b';
+    abEl.style.cssText='font-size:.62rem;opacity:.85';
     abEl.textContent='欠席';
     tag.appendChild(abEl);
-  }
-
-  // ×ボタン（席に配置されている場合のみ表示）
-  if(seatId){
-    var xBtn=document.createElement('span');
-    xBtn.textContent='×';
-    xBtn.title='未配置に戻す';
-    xBtn.style.cssText='position:absolute;top:-6px;right:-6px;width:16px;height:16px;background:#e74c3c;color:#fff;border-radius:50%;font-size:.65rem;line-height:16px;text-align:center;cursor:pointer;font-weight:900;z-index:10';
-    xBtn.addEventListener('mousedown',function(e){e.stopPropagation();});
-    xBtn.addEventListener('click',function(e){e.stopPropagation();returnToUnplaced(tag);});
-    tag.appendChild(xBtn);
   }
 
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
