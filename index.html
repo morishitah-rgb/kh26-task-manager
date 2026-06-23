@@ -3030,8 +3030,11 @@ function renderTeams(){
         var clean=name.replace(/\s/g,'');
         var ph=MEMBER_PHOTOS&&(MEMBER_PHOTOS[clean]||MEMBER_PHOTOS[name]);
         var col=nameColor(clean);
-        if(ph) return '<img src="'+ph+'" title="'+esc(name)+'" style="width:28px;height:28px;object-fit:cover;border-radius:50%;border:2px solid #fff;margin-left:-8px;flex-shrink:0" onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')">';
-        return '<span title="'+esc(name)+'" style="width:28px;height:28px;border-radius:50%;background:'+col+';border:2px solid #fff;margin-left:-8px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;font-weight:900;cursor:pointer" onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')">'+clean.slice(0,1)+'</span>';
+        var av=ph?'<img src="'+ph+'" style="width:30px;height:30px;object-fit:cover;object-position:center top;border-radius:50%;border:2px solid rgba(255,255,255,.6);flex-shrink:0">':
+          '<div style="width:30px;height:30px;border-radius:50%;background:'+col+';border:2px solid rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:900">'+clean.slice(0,1)+'</div>';
+        return '<div onclick="event.stopPropagation();removeDrAssignee(\''+r.id+'\',\''+esc(name)+'\')" title="タップで解除" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">'+
+          av+'<span style="font-size:.6rem;color:rgba(255,255,255,.85);font-weight:700;white-space:nowrap;max-width:36px;overflow:hidden;text-overflow:ellipsis">'+esc(clean)+'</span>'+
+        '</div>';
       }).join('');
 
       return '<div class="dr-role-card'+(hasAny?' dr-assigned':'')+'" data-drid="'+r.id+'" draggable="true" ondragstart="drDragStart(event,\''+r.id+'\','+r.phase+')" ondragend="drDragEnd(event)" ondragover="drDragOver(event,\''+r.id+'\')" ondrop="drDrop(event,\''+r.id+'\','+r.phase+')" onclick="openDrAssign(\''+r.id+'\')" title="クリックして担当者を割り当て" style="cursor:grab">'+
