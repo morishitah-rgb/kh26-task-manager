@@ -135,6 +135,38 @@ header .sub{font-size:.7rem;opacity:.8}
 .brec-add{display:inline-flex;align-items:center;gap:3px;background:#f5f5f5;color:#999;border-radius:12px;padding:3px 9px;font-size:.76rem;font-weight:700;cursor:pointer;border:1px dashed #ddd}
 .brec-add:hover{background:#e3f2fd;color:#1565c0;border-color:#90caf9}
 
+/* ── Checklist ── */
+.cl-user-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;border:1px solid var(--line);padding:12px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cl-user-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#fff;flex-shrink:0}
+.cl-user-name{font-weight:800;font-size:.95rem;color:var(--ink)}
+.cl-user-sub{font-size:.73rem;color:var(--sub);margin-top:2px}
+.cl-user-change{margin-left:auto;background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:5px 12px;font-size:.76rem;font-weight:700;cursor:pointer;color:var(--sub)}
+.cl-user-change:hover{background:#e3f2fd;color:#1565c0;border-color:#90caf9}
+.cl-prog-wrap{background:#fff;border-radius:12px;border:1px solid var(--line);padding:14px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cl-prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cl-prog-label{font-size:.78rem;font-weight:800;color:var(--sub)}
+.cl-prog-count{font-size:1.1rem;font-weight:900;color:var(--ink)}
+.cl-prog-bar{height:10px;background:#f0f0f0;border-radius:5px;overflow:hidden}
+.cl-prog-fill{height:100%;background:linear-gradient(90deg,#43a047,#66bb6a);border-radius:5px;transition:width .5s ease}
+.cl-section-label{font-size:.72rem;font-weight:800;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px;padding-left:4px}
+.cl-cards{display:flex;flex-direction:column;gap:8px}
+.cl-card{background:#fff;border-radius:14px;border:1px solid var(--line);border-left:5px solid #ddd;padding:14px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:all .15s;cursor:pointer}
+.cl-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.11);transform:translateY(-1px)}
+.cl-card.cl-done{background:#f1f8e9;border-left-color:#43a047;opacity:.85}
+.cl-check{width:32px;height:32px;border-radius:50%;border:2.5px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:1.1rem}
+.cl-card.cl-done .cl-check{background:#43a047;border-color:#43a047;color:#fff}
+.cl-body{flex:1;min-width:0}
+.cl-name{font-size:.95rem;font-weight:800;color:var(--ink);line-height:1.3}
+.cl-card.cl-done .cl-name{text-decoration:line-through;color:#aaa}
+.cl-meta{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.cl-tag{font-size:.67rem;font-weight:800;background:#f5f5f5;color:var(--sub);border-radius:5px;padding:2px 7px}
+.cl-qty{font-size:.73rem;color:var(--sub)}
+.cl-memo{font-size:.73rem;color:#888;margin-top:3px;line-height:1.4}
+.cl-by{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.cl-by-chip{display:flex;align-items:center;gap:5px;font-size:.73rem;font-weight:800;color:#2e7d32}
+.cl-by-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:#fff}
+.cl-by-time{font-size:.63rem;color:#aaa}
+
 /* ── Kanban Card Grid (Task / Supply) ── */
 .kcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:4px}
 .kcard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid var(--line);border-left:5px solid #ccc;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:box-shadow .15s,transform .12s}
@@ -606,22 +638,11 @@ a{color:var(--red)}
 <div class="page" id="page-checklist">
   <div class="sect-head">
     <h2>⑪ 持ち物事前チェック</h2>
+    <button class="btn btn-r" onclick="openChecklistAddModal()">＋ 持ち物を追加</button>
   </div>
-  <p style="font-size:.82rem;color:var(--sub);margin-bottom:6px">③備品タスクの備品を前日に確認するチェックリストです。チェックするとGoogleアカウントの名前が自動記録されます。</p>
-  <div id="checklist-user-info" style="font-size:.82rem;margin-bottom:10px;text-align:right;color:var(--sub)"></div>
-  <div class="card" style="overflow-x:auto">
-    <table class="dtbl">
-      <thead><tr>
-        <th style="width:80px;text-align:center">持参確認</th>
-        <th>カテゴリ</th>
-        <th>品名</th>
-        <th style="width:70px">数量</th>
-        <th style="width:120px"><span style="font-size:.75rem;color:var(--sub)">準備者</span></th>
-        <th>メモ</th>
-      </tr></thead>
-      <tbody id="checklist-body"></tbody>
-    </table>
-  </div>
+  <div id="cl-user-bar"></div>
+  <div id="cl-progress-bar" style="margin-bottom:16px"></div>
+  <div id="cl-list"></div>
 </div>
 
 <!-- 議事録 -->
@@ -2561,34 +2582,134 @@ function setSupplyStatus(id,st){
   s.status=st;
   persist();renderSupplies();
 }
-function renderChecklist(){
-  var uname=getCurrentUserName();
-  var ui=document.getElementById('checklist-user-info');
-  if(ui){
-    ui.innerHTML=uname
-      ?'<span style="color:#2e7d32">✓ ログイン中：<strong>'+esc(uname)+'</strong>（チェック時に自動記録）</span>'
-      :'<span style="color:var(--sub)">Googleアカウントでログインすると名前が自動記録されます</span>';
-  }
-  var el=document.getElementById('checklist-body');
-  if(!el)return;
-  el.innerHTML=(D.supplies||[]).map(function(s){
-    var chk=s.checked||false;
-    var chkCell=chk
-      ?'<div style="text-align:center;cursor:pointer" onclick="toggleSupplyCheck(\''+s.id+'\')" title="チェックを外す">'+
-        '<div style="font-size:1.4rem">✅</div>'+
-        '<div style="font-size:.68rem;color:#2e7d32;font-weight:700;margin-top:2px">'+esc(s.checkedBy||'')+'</div>'+
-        (s.checkedAt?'<div style="font-size:.62rem;color:#999">'+esc(s.checkedAt)+'</div>':'')+'</div>'
-      :'<div style="text-align:center;cursor:pointer" onclick="toggleSupplyCheck(\''+s.id+'\')" title="持参確認する">'+
-        '<div style="font-size:1.4rem;color:#ccc">☐</div></div>';
-    var rowBg=chk?'background:#f1f8e9':'';
-    return'<tr style="'+rowBg+'">'+
-      '<td>'+chkCell+'</td>'+
-      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.cat||'')+'</td>'+
-      '<td style="font-weight:700'+(chk?';text-decoration:line-through;color:#aaa':'')+'">'+esc(s.name)+'</td>'+
-      '<td style="text-align:center">'+esc(s.qty||'')+'</td>'+
-      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.assignee||'')+'</td>'+
-      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td></tr>';
+function getChecklistUserName(){
+  // 1) Googleログイン情報からメンバー名にマッチング
+  try{
+    var g=localStorage.getItem('kh26_gauth');
+    if(g){
+      var u=JSON.parse(g);
+      if(u.name&&u.exp*1000>Date.now()){
+        var gname=u.name;
+        // D.membersの中でマッチするものを探す
+        var members=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
+        // 完全一致
+        if(members.indexOf(gname)>=0)return gname;
+        // 部分一致（姓 or 名）
+        var matched=members.find(function(mn){
+          return gname.indexOf(mn)>=0||mn.indexOf(gname)>=0||
+            gname.split(/\s+/).some(function(part){return mn.indexOf(part)>=0&&part.length>=2;});
+        });
+        if(matched)return matched;
+        // マッチしなくてもGoogleの名前を返す
+        return gname;
+      }
+    }
+  }catch(e){}
+  return localStorage.getItem('kh26user')||'';
+}
+function getCurrentUserName(){return getChecklistUserName();}
+function setChecklistUser(name){
+  localStorage.setItem('kh26user',name);
+  renderChecklist();
+}
+function promptSelectMember(){
+  var members=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
+  var opts=members.map(function(n){
+    return '<button class="btn btn-gray" style="margin:4px;font-weight:800" onclick="setChecklistUser(\''+esc(n)+'\');cm()">'+esc(n)+'</button>';
   }).join('');
+  openModal('<h2>あなたの名前を選択</h2>'+
+    '<p style="font-size:.82rem;color:var(--sub);margin-bottom:14px">チェック時に自動記録されます</p>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px">'+opts+'</div>'+
+    '<div style="border-top:1px solid #eee;padding-top:12px">'+
+    '<label style="font-size:.78rem;font-weight:700;display:block;margin-bottom:6px">リストにない場合は入力</label>'+
+    '<div style="display:flex;gap:8px"><input id="cl-custom-name" placeholder="お名前" style="flex:1">'+
+    '<button class="btn btn-r" onclick="var v=document.getElementById(\'cl-custom-name\').value.trim();if(v){setChecklistUser(v);cm();}">決定</button></div></div>'
+  );
+}
+function renderChecklist(){
+  var uname=getChecklistUserName();
+  var supplies=D.supplies||[];
+  var total=supplies.length;
+  var done=supplies.filter(function(s){return s.checked;}).length;
+
+  // ユーザーバー
+  var bar=document.getElementById('cl-user-bar');
+  if(bar){
+    if(uname){
+      var c=nameColor(uname);
+      bar.innerHTML='<div class="cl-user-bar">'+
+        '<div class="cl-user-dot" style="background:'+c+'">'+esc(nameInit(uname))+'</div>'+
+        '<div><div class="cl-user-name">'+esc(uname)+'</div>'+
+        '<div class="cl-user-sub">チェック時にこの名前で記録されます</div></div>'+
+        '<button class="cl-user-change" onclick="promptSelectMember()">変更</button></div>';
+    }else{
+      bar.innerHTML='<div class="cl-user-bar" style="cursor:pointer" onclick="promptSelectMember()">'+
+        '<div class="cl-user-dot" style="background:#ccc">?</div>'+
+        '<div><div class="cl-user-name" style="color:#aaa">名前が未設定です</div>'+
+        '<div class="cl-user-sub">タップして名前を選んでください</div></div>'+
+        '<button class="cl-user-change" style="background:var(--red);color:#fff;border-color:var(--red)">設定する</button></div>';
+    }
+  }
+
+  // プログレスバー
+  var pct=total>0?Math.round(done/total*100):0;
+  var prog=document.getElementById('cl-progress-bar');
+  if(prog){
+    prog.innerHTML='<div class="cl-prog-wrap">'+
+      '<div class="cl-prog-top">'+
+        '<span class="cl-prog-label">持参確認の進捗</span>'+
+        '<span class="cl-prog-count"><b style="color:#43a047;font-size:1.3rem">'+done+'</b> / '+total+' 件　'+pct+'%</span>'+
+      '</div>'+
+      '<div class="cl-prog-bar"><div class="cl-prog-fill" style="width:'+pct+'%"></div></div>'+
+    '</div>';
+  }
+
+  // カードリスト（カテゴリでグループ化）
+  var list=document.getElementById('cl-list');
+  if(!list)return;
+  if(!total){
+    list.innerHTML='<div style="text-align:center;color:#ccc;padding:40px;font-size:.9rem">備品タスクに追加すると自動で表示されます</div>';
+    return;
+  }
+  var cats={};
+  supplies.forEach(function(s){
+    var c=s.cat||'その他';
+    if(!cats[c])cats[c]=[];
+    cats[c].push(s);
+  });
+  var html='';
+  Object.keys(cats).forEach(function(cat){
+    var items=cats[cat];
+    var catDone=items.filter(function(s){return s.checked;}).length;
+    html+='<div class="cl-section-label">'+esc(cat)+' ('+catDone+'/'+items.length+')</div>'+
+      '<div class="cl-cards">'+
+      items.map(function(s){
+        var chk=s.checked||false;
+        var checkMark=chk?'✓':'';
+        var byHtml='';
+        if(chk&&s.checkedBy){
+          var bc=nameColor(s.checkedBy);
+          byHtml='<div class="cl-by">'+
+            '<div class="cl-by-chip"><div class="cl-by-dot" style="background:'+bc+'">'+esc(nameInit(s.checkedBy))+'</div>'+esc(s.checkedBy)+'</div>'+
+            (s.checkedAt?'<div class="cl-by-time">'+esc(s.checkedAt)+'</div>':'')+
+            '</div>';
+        }
+        return '<div class="cl-card'+(chk?' cl-done':'')+'" onclick="toggleSupplyCheck(\''+s.id+'\')">'+
+          '<div class="cl-check">'+checkMark+'</div>'+
+          '<div class="cl-body">'+
+            '<div class="cl-name">'+esc(s.name)+'</div>'+
+            '<div class="cl-meta">'+
+              (s.qty?'<span class="cl-qty">x'+esc(s.qty)+'</span>':'')+
+              (s.owner?'<span class="cl-tag">'+esc(s.owner)+'</span>':'')+
+            '</div>'+
+            (s.memo?'<div class="cl-memo">'+esc(s.memo)+'</div>':'')+
+          '</div>'+
+          byHtml+
+        '</div>';
+      }).join('')+
+      '</div>';
+  });
+  list.innerHTML=html;
 }
 function toggleSupplyCheck(id){
   var s=(D.supplies||[]).find(function(x){return x.id===id;});
@@ -2597,26 +2718,39 @@ function toggleSupplyCheck(id){
     if(!confirm('「'+s.name+'」のチェックを外しますか？'))return;
     s.checked=false;s.checkedBy='';s.checkedAt='';
   }else{
-    var name=getCurrentUserName();
-    if(!name){
-      name=prompt('あなたの名前を入力してください（一度入力すると次回から自動入力されます）','');
-      if(name===null)return;
-      if(!name.trim()){alert('お名前を入力してください');return;}
-      name=name.trim();
-      localStorage.setItem('kh26user',name);
-    }
+    var name=getChecklistUserName();
+    if(!name){promptSelectMember();return;}
     var now=new Date();
     var ts=(now.getMonth()+1)+'/'+(now.getDate())+' '+(now.getHours())+':'+(String(now.getMinutes()).padStart(2,'0'));
     s.checked=true;s.checkedBy=name;s.checkedAt=ts;
   }
   persist();renderChecklist();
 }
-function getCurrentUserName(){
-  try{
-    var g=localStorage.getItem('kh26_gauth');
-    if(g){var u=JSON.parse(g);if(u.name&&u.exp*1000>Date.now())return u.name;}
-  }catch(e){}
-  return localStorage.getItem('kh26user')||'';
+function openChecklistAddModal(){
+  openModal('<h2>持ち物を追加</h2>'+
+    '<p style="font-size:.8rem;color:var(--sub);margin-bottom:14px">追加した持ち物は③備品タスクにも反映されます</p>'+
+    '<div class="frow"><label>品名 *</label><input id="cl-add-name" placeholder="例：マイク"></div>'+
+    '<div class="frow"><label>カテゴリ</label><input id="cl-add-cat" placeholder="例：音響、映像、書類"></div>'+
+    '<div class="frow"><label>数量</label><input id="cl-add-qty" placeholder="例：2"></div>'+
+    '<div class="frow"><label>担当者（オーナー）</label>'+
+      '<select id="cl-add-owner"><option value="">未設定</option>'+
+      (D.members||[]).map(function(m){var n=m.name.replace(/\s+/g,'');return'<option>'+esc(n)+'</option>';}).join('')+
+      '</select></div>'+
+    '<div class="frow"><label>メモ</label><input id="cl-add-memo"></div>'+
+    '<button class="btn btn-r" style="width:100%;margin-top:8px" onclick="_saveChecklistAdd()">追加する</button>'
+  );
+}
+function _saveChecklistAdd(){
+  var name=document.getElementById('cl-add-name').value.trim();
+  if(!name){alert('品名を入力してください');return;}
+  var item={id:uid(),name:name,cat:document.getElementById('cl-add-cat').value.trim()||'その他',
+    qty:document.getElementById('cl-add-qty').value.trim(),
+    owner:document.getElementById('cl-add-owner').value,
+    memo:document.getElementById('cl-add-memo').value.trim(),
+    status:'todo',checked:false,checkedBy:'',checkedAt:''};
+  if(!D.supplies)D.supplies=[];
+  D.supplies.push(item);
+  persist();cm();renderChecklist();renderSupplies();
 }
 function toggleCheck(id){
   var s=(D.supplies||[]).find(function(x){return x.id===id;});
