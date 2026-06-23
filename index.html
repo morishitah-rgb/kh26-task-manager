@@ -1589,7 +1589,7 @@ function renderSeating(){
         var cell=document.createElement('div');
         cell.id='seat-'+seatId;
         cell.dataset.seatId=seatId;
-        cell.style.cssText='width:72px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#adb5bd;transition:background .15s;overflow:hidden';
+        cell.style.cssText='width:80px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#adb5bd;transition:background .15s;overflow:hidden';
         cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
         cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-emp-no]');if(t)this.style.background='';});
         cell.addEventListener('drop',onSeatDrop);
@@ -1633,6 +1633,8 @@ function makeNameTag(emp,seatId){
 
   var nameEl=document.createElement('div');
   nameEl.textContent=emp.name;
+  var nameLen=emp.name.replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g,'').length;
+  nameEl.style.cssText='white-space:nowrap;font-size:'+(nameLen>=6?'.6rem':nameLen>=5?'.65rem':'.75rem');
   tag.appendChild(nameEl);
 
   if(emp.attendance==='欠席'){
