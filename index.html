@@ -281,7 +281,12 @@ header .sub{font-size:.7rem;opacity:.8}
 .prog-break-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;background:#ede7f6;color:#6a1b9a;border-radius:20px;font-size:.82rem;font-weight:700}
 .prog-coffee-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 12px;background:#e65100;color:#fff;border-radius:20px;font-size:.82rem;font-weight:700}
 .prog-del-btn{background:none;border:none;color:#ddd;cursor:pointer;font-size:.88rem;padding:2px 6px;border-radius:4px;transition:all .15s}
-.prog-del-btn:hover{color:#c62828;background:#ffebee}
+.prog-del-btn:hover{color:#e53935;background:#ffebee}
+.prog-del-btn.del-armed{color:#fff;background:#e53935;border-radius:4px;animation:armed-pulse .4s ease}
+@keyframes armed-pulse{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+.prog-ins-btn{background:none;border:none;color:#bbb;cursor:pointer;font-size:.75rem;padding:1px 5px;border-radius:3px;transition:all .15s;line-height:1}
+.prog-ins-btn:hover{color:#1565c0;background:#e8eeff}
+.prow-del-pending{background:#fff5f5 !important;outline:2px solid #ffcdd2}
 .prog-foot{padding:10px 8px;display:flex;justify-content:center}
 .prog-add-btn{background:#f8f8f8;border:2px dashed #ccc;color:#aaa;padding:7px 28px;border-radius:8px;cursor:pointer;font-size:.84rem;transition:all .2s}
 .prog-add-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f5}
@@ -2739,7 +2744,7 @@ function renderPrograms(){
     var prC=(isT||isE)?'':('<span onclick="progEdit(event,\''+p.id+'\',\'presenter\')" class="prog-editable">'+esc(p.presenter||'')+'</span>');
     var sfC='<span onclick="progEdit(event,\''+p.id+'\',\'staff\')" class="prog-editable">'+esc(p.staff||'')+'</span>';
 
-    return '<tr class="'+rowCls+'" data-id="'+p.id+'">'+
+    return '<tr class="'+rowCls+'" data-id="'+p.id+'" id="prow-'+p.id+'">'+
       '<td class="pc-no">'+noCell+'</td>'+
       '<td class="pc-st">'+stC+'</td>'+
       '<td class="pc-et">'+etC+'</td>'+
@@ -2747,7 +2752,10 @@ function renderPrograms(){
       '<td class="pc-title">'+tc+'</td>'+
       '<td class="pc-pres">'+prC+'</td>'+
       '<td class="pc-staff">'+sfC+'</td>'+
-      '<td class="pc-act"><button class="prog-del-btn" title="削除" onclick="delProg(\''+p.id+'\')">✕</button></td>'+
+      '<td class="pc-act" style="white-space:nowrap">'+
+        '<button class="prog-ins-btn" title="この下に行を追加" onclick="addProgRow(\''+p.id+'\')">＋</button>'+
+        '<button class="prog-del-btn" title="削除（2回押しで確定）" id="delbtn-'+p.id+'" onclick="armDel(event,\''+p.id+'\')">🗑</button>'+
+      '</td>'+
       '</tr>';
   }).join('');
 }
@@ -2803,20 +2811,63 @@ function progCascade(fromIdx){
   }
 }
 
-function addProgRow(){
-  var last=D.programs[D.programs.length-1];
-  var lastEnd=(last&&last.endTime)?last.endTime:'';
-  var sm=_t2m(lastEnd);
-  var np={id:uid(),no:0,title:'新しい種目',presenter:'',startTime:lastEnd,endTime:sm!==null?_m2t(sm+10):'',time:10,staff:'',type:'main'};
-  D.programs.push(np);
+function addProgRow(afterId){
+  var idx=afterId?D.programs.findIndex(function(x){return x.id===afterId;}):-1;
+  var ref=idx>=0?D.programs[idx]:D.programs[D.programs.length-1];
+  var baseTime=(ref&&ref.endTime)?ref.endTime:'';
+  var sm=_t2m(baseTime);
+  var np={id:uid(),no:0,title:'新しい種目',presenter:'',startTime:baseTime,endTime:sm!==null?_m2t(sm+10):'',time:10,staff:'',type:'main'};
+  if(idx>=0) D.programs.splice(idx+1,0,np);
+  else D.programs.push(np);
   persist();renderPrograms();
 }
 
-function delProg(id){
-  if(!confirm('この行を削除しますか？')) return;
-  D.programs=D.programs.filter(function(x){return x.id!==id;});
-  persist();renderPrograms();
+var _delArmed=null;
+var _delTimer=null;
+function armDel(e,id){
+  e.stopPropagation();
+  var btn=document.getElementById('delbtn-'+id);
+  if(!btn) return;
+  if(_delArmed===id){
+    // 2回目で削除確定
+    clearTimeout(_delTimer);
+    _delArmed=null;
+    D.programs=D.programs.filter(function(x){return x.id!==id;});
+    persist();renderPrograms();
+    return;
+  }
+  // 1回目：armed状態
+  if(_delArmed){
+    // 別の行をarmedにしていたらリセット
+    var prev=document.getElementById('delbtn-'+_delArmed);
+    if(prev){prev.classList.remove('del-armed');prev.textContent='🗑';}
+    var prow=document.getElementById('prow-'+_delArmed);
+    if(prow) prow.classList.remove('prow-del-pending');
+    clearTimeout(_delTimer);
+  }
+  _delArmed=id;
+  btn.classList.add('del-armed');
+  btn.textContent='✓削除';
+  var row=document.getElementById('prow-'+id);
+  if(row) row.classList.add('prow-del-pending');
+  _delTimer=setTimeout(function(){
+    if(_delArmed===id){
+      btn.classList.remove('del-armed');btn.textContent='🗑';
+      if(row) row.classList.remove('prow-del-pending');
+      _delArmed=null;
+    }
+  },3000);
 }
+// ページ内クリックでarmed解除
+document.addEventListener('click',function(e){
+  if(_delArmed&&!e.target.closest('#delbtn-'+_delArmed)){
+    var btn=document.getElementById('delbtn-'+_delArmed);
+    if(btn){btn.classList.remove('del-armed');btn.textContent='🗑';}
+    var row=document.getElementById('prow-'+_delArmed);
+    if(row) row.classList.remove('prow-del-pending');
+    clearTimeout(_delTimer);_delArmed=null;
+  }
+});
 
 function openProgModal(id){renderPrograms();}
 function saveProg(){cm();}
@@ -3304,25 +3355,31 @@ function printSchedule(){
       '</tr>';
   }).join('');
 
+  // 行数に応じて文字・余白を自動縮小して1枚に収める
+  var n=items.length;
+  var fs=n<=18?9.5:n<=22?8.5:n<=26?7.8:n<=30?7.2:6.8;
+  var td=n<=18?6:n<=22?5:n<=26?4:3;
+  var margin=n<=18?'14mm 12mm':n<=22?'11mm 10mm':'9mm 8mm';
+
   var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
     '<title>経営方針発表会 2026 タイムスケジュール</title>'+
     '<style>'+
-    '@page{size:A4 portrait;margin:14mm 12mm}'+
+    '@page{size:A4 portrait;margin:'+margin+'}'+
     '*{box-sizing:border-box;margin:0;padding:0}'+
-    'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222;font-size:9.5pt}'+
-    '.hd{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #b71c1c;padding-bottom:9px;margin-bottom:11px}'+
-    '.logo{font-size:12.5pt;font-weight:900;letter-spacing:.12em;color:#b71c1c;line-height:1}'+
-    '.logo-sub{font-size:7.5pt;color:#999;letter-spacing:.04em;margin-top:2px}'+
-    '.ev-title{font-size:14pt;font-weight:900;color:#1a1a1a;text-align:right;letter-spacing:.02em}'+
-    '.ev-sub{font-size:8.5pt;color:#666;text-align:right;margin-top:3px}'+
-    '.info-bar{display:flex;gap:18px;border-left:3px solid #b71c1c;padding:7px 12px;background:#fafafa;border-radius:0 6px 6px 0;margin-bottom:11px;font-size:8.5pt;flex-wrap:wrap}'+
+    'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222;font-size:'+fs+'pt}'+
+    '.hd{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #b71c1c;padding-bottom:7px;margin-bottom:8px}'+
+    '.logo{font-size:'+(fs+3)+'pt;font-weight:900;letter-spacing:.12em;color:#b71c1c;line-height:1}'+
+    '.logo-sub{font-size:'+(fs-2)+'pt;color:#999;letter-spacing:.04em;margin-top:2px}'+
+    '.ev-title{font-size:'+(fs+4.5)+'pt;font-weight:900;color:#1a1a1a;text-align:right;letter-spacing:.02em}'+
+    '.ev-sub{font-size:'+(fs-1)+'pt;color:#666;text-align:right;margin-top:3px}'+
+    '.info-bar{display:flex;gap:14px;border-left:3px solid #b71c1c;padding:5px 10px;background:#fafafa;border-radius:0 6px 6px 0;margin-bottom:8px;font-size:'+(fs-1)+'pt;flex-wrap:wrap}'+
     '.info-bar b{color:#b71c1c}'+
     'table{width:100%;border-collapse:collapse}'+
     'thead tr{background:#1a237e}'+
-    'thead th{color:#fff;padding:7px 8px;font-size:7.5pt;font-weight:700;text-align:left;white-space:nowrap;letter-spacing:.03em}'+
+    'thead th{color:#fff;padding:'+td+'px 7px;font-size:'+(fs-1.5)+'pt;font-weight:700;text-align:left;white-space:nowrap;letter-spacing:.03em}'+
     'tbody tr:last-child{border-bottom:2px solid #e0e0e0}'+
-    'td{padding:6px 8px;vertical-align:middle}'+
-    '.ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:7px;border-top:1px solid #e0e0e0;font-size:7.5pt;color:#aaa}'+
+    'td{padding:'+td+'px 7px;vertical-align:middle}'+
+    '.ft{display:flex;justify-content:space-between;align-items:center;margin-top:7px;padding-top:5px;border-top:1px solid #e0e0e0;font-size:'+(fs-2)+'pt;color:#aaa}'+
     '.ft-note{font-style:italic}'+
     '</style></head><body>'+
     '<div class="hd">'+
