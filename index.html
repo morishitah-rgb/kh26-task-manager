@@ -1028,6 +1028,36 @@ function setTaskFilter(st){
 function slbl(s){return{todo:'未着手',prog:'進行中',done:'完了'}[s]||s;}
 // ===== 担当者カラー・アバターパネル =====
 var NAME_COLORS=['#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#d35400','#1abc9c','#c0392b','#3498db','#9b59b6','#e91e63','#00838f','#6c3483'];
+// 担当者名の表記ゆれ→「姓+さん」へ正規化マップ
+var NAME_NORMALIZE={
+  '秀之さん':'森下さん','森下秀之':'森下さん','森下雄紀':'松下さん',
+  '松下雄紀':'松下さん',
+  '髙松柚子':'髙松さん','高松柚子':'髙松さん','高松さん':'髙松さん',
+  '岡真弥子':'岡さん',
+  '君塚菜穂':'君塚さん',
+  '波多野恵梨':'波多野さん',
+  '清水洋希':'清水さん',
+  '角谷啓佳':'角谷さん',
+  '山本英之':'山本さん',
+};
+function normName(n){n=(n||'').trim();return NAME_NORMALIZE[n]||n;}
+function migrateOwnerNames(){
+  function fixAssignee(v){if(!v)return'';return v.split(/[・、]/).map(normName).join('・');}
+  var changed=false;
+  (D.tasks||[]).forEach(function(t){
+    var o=t.owner?normName(t.owner):(t.assignee?normName(t.assignee.split(/[・、]/)[0]):'');
+    var s=t.sub?normName(t.sub):(t.assignee&&t.assignee.indexOf('・')>-1?normName(t.assignee.split(/[・、]/)[1]):'');
+    var a=fixAssignee(t.assignee);
+    if(t.owner!==o||t.sub!==s||t.assignee!==a){t.owner=o;t.sub=s;t.assignee=a;changed=true;}
+  });
+  (D.supplies||[]).forEach(function(s){
+    var o=s.owner?normName(s.owner):(s.assignee?normName(s.assignee.split(/[・、]/)[0]):'');
+    var sb=s.sub?normName(s.sub):'';
+    var a=fixAssignee(s.assignee);
+    if(s.owner!==o||s.sub!==sb||s.assignee!==a){s.owner=o;s.sub=sb;s.assignee=a;changed=true;}
+  });
+  if(changed)persist();
+}
 function nameColor(n){if(!n)return'#95a5a6';var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return NAME_COLORS[h%NAME_COLORS.length];}
 function nameInit(n){if(!n)return'?';return n.replace(/さん|様|さま|くん|君/g,'').charAt(0)||n.charAt(0);}
 var avDragName='';
@@ -2648,6 +2678,7 @@ async function appInit(){
       if(data.record&&(data.record.tasks||data.record.board)){D=Object.assign(cloneD(INIT),data.record);localStorage.setItem(SK,JSON.stringify(D));}
     }catch(e){}
   }
+  migrateOwnerNames();
   goTab('board');
 }
 
