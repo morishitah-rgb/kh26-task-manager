@@ -230,7 +230,7 @@ a{color:var(--red)}
   <div class="tnb active" data-tab="board"    onclick="goTab('board')">   📌 掲示板</div>
   <div class="tnb"        data-tab="schedule" onclick="goTab('schedule')"> ① スケジュール</div>
   <div class="tnb"        data-tab="tasks"    onclick="goTab('tasks')">   ② タスク</div>
-  <div class="tnb"        data-tab="supplies" onclick="goTab('supplies')">③ 備品</div>
+  <div class="tnb"        data-tab="supplies" onclick="goTab('supplies')">③ 備品タスク</div>
   <div class="tnb"        data-tab="gantt"    onclick="goTab('gantt')">   ④ ガントチャート</div>
   <div class="tnb"        data-tab="budget"   onclick="goTab('budget')">  ⑤ 予算管理</div>
   <div class="tnb"        data-tab="venue"    onclick="goTab('venue')">   ⑥ 会場情報</div>
@@ -238,9 +238,10 @@ a{color:var(--red)}
   <div class="tnb"        data-tab="roster"   onclick="goTab('roster')">  ⑧ 名簿</div>
   <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑨ タイムテーブル</div>
   <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑩ 当日役割</div>
-  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑪ 議事録</div>
-  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑫ メンバー</div>
-  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑬ リンク集</div>
+  <div class="tnb"        data-tab="checklist" onclick="goTab('checklist')">⑪ 持ち物事前チェック</div>
+  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑫ 議事録</div>
+  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑬ メンバー</div>
+  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑭ リンク集</div>
   <div class="tnb"        data-tab="settings" onclick="goTab('settings')">⚙ 設定</div>
 </nav>
 
@@ -286,18 +287,18 @@ a{color:var(--red)}
 <!-- 備品 -->
 <div class="page" id="page-supplies">
   <div class="sect-head">
-    <h2>③ 備品チェックリスト</h2>
+    <h2>③ 備品タスク</h2>
     <button class="btn btn-r" onclick="openSupplyModal()">＋ 追加</button>
   </div>
-  <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">手配済み・購入済みになったら ✓ をクリック。前日の持参確認にも活用できます。</p>
+  <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">備品の手配・購入状況を管理します。⑪持ち物事前チェックと連動しています。</p>
   <div class="card" style="overflow-x:auto">
     <table class="dtbl">
       <thead><tr>
-        <th style="width:72px;text-align:center">準備確認</th>
         <th>カテゴリ</th>
         <th>品名</th>
         <th style="width:70px">数量</th>
         <th style="width:120px"><span style="font-size:.75rem;color:var(--sub)">準備者</span></th>
+        <th style="width:170px">進捗</th>
         <th>メモ</th>
         <th style="width:56px"></th>
       </tr></thead>
@@ -524,21 +525,43 @@ a{color:var(--red)}
   </div>
 </div>
 
+<!-- 持ち物事前チェック -->
+<div class="page" id="page-checklist">
+  <div class="sect-head">
+    <h2>⑪ 持ち物事前チェック</h2>
+  </div>
+  <p style="font-size:.82rem;color:var(--sub);margin-bottom:6px">③備品タスクの備品を前日に確認するチェックリストです。チェックするとGoogleアカウントの名前が自動記録されます。</p>
+  <div id="checklist-user-info" style="font-size:.82rem;margin-bottom:10px;text-align:right;color:var(--sub)"></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="dtbl">
+      <thead><tr>
+        <th style="width:80px;text-align:center">持参確認</th>
+        <th>カテゴリ</th>
+        <th>品名</th>
+        <th style="width:70px">数量</th>
+        <th style="width:120px"><span style="font-size:.75rem;color:var(--sub)">準備者</span></th>
+        <th>メモ</th>
+      </tr></thead>
+      <tbody id="checklist-body"></tbody>
+    </table>
+  </div>
+</div>
+
 <!-- 議事録 -->
 <div class="page" id="page-minutes">
-  <div class="sect-head"><h2>⑪ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑫ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
   <div id="min-list"></div>
 </div>
 
 <!-- メンバー -->
 <div class="page" id="page-members">
-  <div class="sect-head"><h2>⑫ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
+  <div class="sect-head"><h2>⑬ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
   <div id="member-list"></div>
 </div>
 
 <!-- リンク集 -->
 <div class="page" id="page-links">
-  <div class="sect-head"><h2>⑬ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑭ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
   <div id="links-list"></div>
 </div>
 
@@ -764,6 +787,7 @@ links:[
   {id:'lk5',category:'🏛 会場',title:'クリエート浜松 アクセス・駐車場',url:'https://www.hcf.or.jp/facilities/create/access/',note:'提携駐車場 OGURIパーキング1・2'},
   {id:'lk6',category:'🏛 会場',title:'松ぼっくり（会場予約システム）',url:'https://yoyacool.e-harp.jp/hamamatsu',note:'利用者ログインID: 50026347'},
   {id:'lk7',category:'📦 発注・備品',title:'ラクスル ロールアップバナー',url:'https://raksul.com/banner-stand/rollup-banner/',note:'W600×H1800mm 巻き取り式 ¥25,887/本'},
+  {id:'lk25',category:'📦 発注・備品',title:'天龍コーヒー',url:'https://taro19930125.base.shop/',note:'アイスコーヒーケータリング 約80杯'},
   {id:'lk8',category:'🎬 動画アーカイブ',title:'2025年7月29日（第54期下期）動画フォルダ',url:'https://drive.google.com/drive/folders/199v4olS6jw2-ysaMA43LBM2mLHmOPHNQ',note:''},
   {id:'lk9',category:'🎬 動画アーカイブ',title:'2026年1月26日（第55期上期）動画・資料フォルダ',url:'https://drive.google.com/drive/folders/1RH81Llm94q6h412I8ks-DqrsobaRGmx2',note:''},
   {id:'lk10',category:'📄 資料・PDF',title:'第55期タイムスケジュールPDF（1月開催・Googleドライブ）',url:'https://drive.google.com/drive/folders/13R6UzwdksEBvAN1nxysxQYMIYXDVQpin',note:'LIFEFUND第55期経営方針発表会_スケジュール.pdf'},
@@ -911,6 +935,7 @@ function renderPage(n){
   else if(n==='schedule')renderSchedule();
   else if(n==='tasks')renderTasks();
   else if(n==='supplies')renderSupplies();
+  else if(n==='checklist')renderChecklist();
   else if(n==='gantt')renderGantt();
   else if(n==='budget')renderBudget();
   else if(n==='venue')renderVenue();
@@ -2105,13 +2130,47 @@ function renderSupplies(){
   var el=document.getElementById('supply-body');
   if(!el)return;
   el.innerHTML=(D.supplies||[]).map(function(s){
+    var st=s.status||'todo';
+    var isDone=st==='done';
+    var stBtns='<div class="status-btns">'+
+      '<button class="sbtn s-todo'+(st==='todo'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'todo\')">未着手</button>'+
+      '<button class="sbtn s-prog'+(st==='prog'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'prog\')">進行中</button>'+
+      '<button class="sbtn s-done'+(st==='done'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'done\')">完了</button>'+
+      '</div>';
+    return'<tr>'+
+      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.cat||'')+'</td>'+
+      '<td style="font-weight:700'+(isDone?';text-decoration:line-through;color:#aaa':'')+'">'+esc(s.name)+'</td>'+
+      '<td style="text-align:center">'+esc(s.qty||'')+'</td>'+
+      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.assignee||'')+'</td>'+
+      '<td>'+stBtns+'</td>'+
+      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td>'+
+      '<td style="text-align:center"><button class="bsm r" onclick="openSupplyModal(\''+s.id+'\')">編集</button></td></tr>';
+  }).join('');
+}
+function setSupplyStatus(id,st){
+  var s=(D.supplies||[]).find(function(x){return x.id===id;});
+  if(!s)return;
+  s.status=st;
+  persist();renderSupplies();
+}
+function renderChecklist(){
+  var uname=getCurrentUserName();
+  var ui=document.getElementById('checklist-user-info');
+  if(ui){
+    ui.innerHTML=uname
+      ?'<span style="color:#2e7d32">✓ ログイン中：<strong>'+esc(uname)+'</strong>（チェック時に自動記録）</span>'
+      :'<span style="color:var(--sub)">Googleアカウントでログインすると名前が自動記録されます</span>';
+  }
+  var el=document.getElementById('checklist-body');
+  if(!el)return;
+  el.innerHTML=(D.supplies||[]).map(function(s){
     var chk=s.checked||false;
     var chkCell=chk
-      ?'<div style="text-align:center;cursor:pointer" onclick="toggleCheck(\''+s.id+'\')" title="チェックを外す">'+
+      ?'<div style="text-align:center;cursor:pointer" onclick="toggleSupplyCheck(\''+s.id+'\')" title="チェックを外す">'+
         '<div style="font-size:1.4rem">✅</div>'+
         '<div style="font-size:.68rem;color:#2e7d32;font-weight:700;margin-top:2px">'+esc(s.checkedBy||'')+'</div>'+
         (s.checkedAt?'<div style="font-size:.62rem;color:#999">'+esc(s.checkedAt)+'</div>':'')+'</div>'
-      :'<div style="text-align:center;cursor:pointer" onclick="toggleCheck(\''+s.id+'\')" title="準備済みにする">'+
+      :'<div style="text-align:center;cursor:pointer" onclick="toggleSupplyCheck(\''+s.id+'\')" title="持参確認する">'+
         '<div style="font-size:1.4rem;color:#ccc">☐</div></div>';
     var rowBg=chk?'background:#f1f8e9':'';
     return'<tr style="'+rowBg+'">'+
@@ -2120,9 +2179,36 @@ function renderSupplies(){
       '<td style="font-weight:700'+(chk?';text-decoration:line-through;color:#aaa':'')+'">'+esc(s.name)+'</td>'+
       '<td style="text-align:center">'+esc(s.qty||'')+'</td>'+
       '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.assignee||'')+'</td>'+
-      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td>'+
-      '<td style="text-align:center"><button class="bsm r" onclick="openSupplyModal(\''+s.id+'\')">編集</button></td></tr>';
+      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td></tr>';
   }).join('');
+}
+function toggleSupplyCheck(id){
+  var s=(D.supplies||[]).find(function(x){return x.id===id;});
+  if(!s)return;
+  if(s.checked){
+    if(!confirm('「'+s.name+'」のチェックを外しますか？'))return;
+    s.checked=false;s.checkedBy='';s.checkedAt='';
+  }else{
+    var name=getCurrentUserName();
+    if(!name){
+      name=prompt('あなたの名前を入力してください（一度入力すると次回から自動入力されます）','');
+      if(name===null)return;
+      if(!name.trim()){alert('お名前を入力してください');return;}
+      name=name.trim();
+      localStorage.setItem('kh26user',name);
+    }
+    var now=new Date();
+    var ts=(now.getMonth()+1)+'/'+(now.getDate())+' '+(now.getHours())+':'+(String(now.getMinutes()).padStart(2,'0'));
+    s.checked=true;s.checkedBy=name;s.checkedAt=ts;
+  }
+  persist();renderChecklist();
+}
+function getCurrentUserName(){
+  try{
+    var g=localStorage.getItem('kh26_gauth');
+    if(g){var u=JSON.parse(g);if(u.name&&u.exp*1000>Date.now())return u.name;}
+  }catch(e){}
+  return localStorage.getItem('kh26user')||'';
 }
 function toggleCheck(id){
   var s=(D.supplies||[]).find(function(x){return x.id===id;});
