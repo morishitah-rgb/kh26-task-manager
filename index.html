@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231a1a2e'/><text x='50' y='72' text-anchor='middle' font-size='64' font-weight='700' font-family='serif' fill='%23e8b84b'>経</text></svg>">
 <script src="https://accounts.google.com/gsi/client" onload="if(window.onGsiLoad)onGsiLoad()" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1471,33 +1473,98 @@ function addReceipt(gid, mode){
     var rid=uid();
     _receipt={gid:gid,rid:rid,name:f.name,isPdf:isPdf,data:isPdf?'pdf:'+f.name:''};
     if(isPdf){
-      _showReceiptAmountModal(isPdf, f.name, '');
+      _showReceiptAmountModal(true, f.name, '', f);
     } else {
       var r=new FileReader();
       r.onerror=function(){alert('読み込みエラー。別のファイルをお試しください。');};
       r.onload=function(ev){
         _receipt.data=ev.target.result;
-        _showReceiptAmountModal(false, f.name, ev.target.result);
+        _showReceiptAmountModal(false, f.name, ev.target.result, null);
       };
       r.readAsDataURL(f);
     }
   };
   inp.click();
 }
-function _showReceiptAmountModal(isPdf, fname, dataUrl){
+function _extractYenAmounts(text){
+  var candidates=[];
+  var re=/[¥￥\\]?\s*([0-9,，０-９]+)\s*円?|合計[^\d]*([0-9,，０-９]+)|計[^\d]*([0-9,，０-９]+)|TOTAL[^\d]*([0-9,，０-９]+)/gi;
+  var m;
+  while((m=re.exec(text))!==null){
+    var raw=m[1]||m[2]||m[3]||m[4]||'';
+    raw=raw.replace(/[,，\s]/g,'').replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);});
+    var n=parseInt(raw,10);
+    if(n>=10&&n<=9999999&&candidates.indexOf(n)<0)candidates.push(n);
+  }
+  candidates.sort(function(a,b){return b-a;});
+  return candidates.slice(0,5);
+}
+function _runOcr(dataUrl,cb){
+  if(typeof Tesseract==='undefined'){cb([]);return;}
+  Tesseract.recognize(dataUrl,['jpn','eng'],{logger:function(){}})
+    .then(function(r){cb(_extractYenAmounts(r.data.text));})
+    .catch(function(){cb([]);});
+}
+function _runPdfOcr(file,cb){
+  if(typeof pdfjsLib==='undefined'){cb([]);return;}
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    var arr=new Uint8Array(ev.target.result);
+    pdfjsLib.getDocument({data:arr}).promise.then(function(pdf){
+      var pages=[];
+      for(var i=1;i<=Math.min(pdf.numPages,3);i++)pages.push(i);
+      var texts=[];
+      var done=0;
+      pages.forEach(function(pn){
+        pdf.getPage(pn).then(function(pg){
+          pg.getTextContent().then(function(tc){
+            texts.push(tc.items.map(function(s){return s.str;}).join(' '));
+            done++;
+            if(done===pages.length)cb(_extractYenAmounts(texts.join(' ')));
+          });
+        });
+      });
+    }).catch(function(){cb([]);});
+  };
+  fr.readAsArrayBuffer(file);
+}
+function _showReceiptAmountModal(isPdf, fname, dataUrl, pdfFile){
   var preview=isPdf
-    ?'<div style="text-align:center;font-size:3rem;padding:8px">📄</div><p style="text-align:center;font-size:.85rem;color:#666;margin-bottom:12px">'+esc(fname)+'</p>'
-    :'<img src="'+dataUrl+'" style="max-width:100%;max-height:180px;border-radius:8px;display:block;margin:0 auto 12px;border:1px solid #eee">';
+    ?'<div style="text-align:center;font-size:3rem;padding:8px">📄</div><p style="text-align:center;font-size:.85rem;color:#666;margin-bottom:8px">'+esc(fname)+'</p>'
+    :'<img src="'+dataUrl+'" style="max-width:100%;max-height:160px;border-radius:8px;display:block;margin:0 auto 10px;border:1px solid #eee">';
+  var ocrRow='<div id="ocr-row" style="margin-bottom:12px;min-height:36px">'+
+    '<div id="ocr-status" style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:#888">'+
+    '<span style="display:inline-block;width:14px;height:14px;border:2px solid #ddd;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite"></span>'+
+    '金額を読み取り中...</div></div>';
   openModal(
-    '<h2>💰 領収書の金額を入力</h2>'+preview+
+    '<h2>📷 領収書を添付</h2>'+preview+ocrRow+
     '<div class="frow"><label>金額（円）</label>'+
-    '<input type="number" id="r-amt" placeholder="例：3500" style="font-size:1.15rem;font-weight:700" autofocus></div>'+
+    '<input type="number" id="r-amt" placeholder="例：3500" style="font-size:1.15rem;font-weight:700"></div>'+
     '<p style="font-size:.77rem;color:#aaa;margin-bottom:14px">入力した金額が実績に加算されます。金額不要なら空欄でスキップ。</p>'+
     '<div style="display:flex;gap:8px">'+
     '<button class="btn btn-r" style="flex:1" onclick="_saveReceipt(true)">保存して実績に反映</button>'+
     '<button class="btn btn-gray" style="flex:1" onclick="_saveReceipt(false)">添付のみ（金額スキップ）</button>'+
     '</div>'
   );
+  function showCandidates(amts){
+    var row=document.getElementById('ocr-row');
+    if(!row)return;
+    if(!amts||!amts.length){
+      row.innerHTML='<p style="font-size:.8rem;color:#aaa;margin:0">金額を自動検出できませんでした。手動で入力してください。</p>';
+      return;
+    }
+    var btns=amts.map(function(a){
+      return '<button class="btn btn-gray" style="padding:5px 14px;font-weight:800" onclick="document.getElementById(\'r-amt\').value=\''+a+'\';Array.from(document.querySelectorAll(\'#ocr-row button\')).forEach(function(b){b.style.outline=\'none\'});this.style.outline=\'2px solid #1565c0\'">'+fmtN(a)+'円</button>';
+    }).join('');
+    row.innerHTML='<div style="font-size:.79rem;font-weight:700;color:#1565c0;margin-bottom:6px">💡 検出された金額（タップで自動入力）</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+btns+'</div>';
+    if(amts.length===1)document.getElementById('r-amt').value=amts[0];
+  }
+  if(isPdf&&pdfFile){
+    _runPdfOcr(pdfFile,showCandidates);
+  } else {
+    _runOcr(dataUrl,showCandidates);
+  }
 }
 function _saveReceipt(applyAmount){
   var g=D.budget.find(function(x){return x.id===_receipt.gid;});
