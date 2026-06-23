@@ -85,6 +85,54 @@ header .sub{font-size:.7rem;opacity:.8}
 .bsm{padding:4px 9px;border-radius:6px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:.74rem;font-weight:700;color:var(--sub)}
 .bsm:hover{background:var(--bg)}.bsm.r{border-color:var(--red);color:var(--red)}
 
+/* ── Budget Professional Layout ── */
+.bkpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:20px}
+.bkpi-card{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid var(--line);border-top:4px solid #1565c0}
+.bkpi-card.kpi-actual{border-top-color:#e65100}
+.bkpi-card.kpi-remain{border-top-color:#2e7d32}
+.bkpi-card.kpi-rate{border-top-color:#7b1fa2}
+.bkpi-label{font-size:.68rem;font-weight:800;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.bkpi-value{font-size:1.55rem;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.bkpi-unit{font-size:.82rem;font-weight:700;color:var(--sub);margin-left:2px}
+.bkpi-bar{height:5px;background:#f0f0f0;border-radius:3px;margin-top:12px}
+.bkpi-fill{height:100%;border-radius:3px;background:#7b1fa2;transition:width .6s ease}
+.bsec-wrap{display:flex;flex-direction:column;gap:16px}
+.bsec-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid var(--line);overflow:hidden}
+.bsec-head{padding:13px 20px;background:linear-gradient(135deg,#1a237e 0%,#283593 100%);color:#fff;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.bsec-head-jan{background:linear-gradient(135deg,#4a148c 0%,#6a1b9a 100%)}
+.bsec-title{font-size:.92rem;font-weight:900;letter-spacing:.02em;margin-right:auto}
+.bsec-nums{font-size:.8rem;opacity:.92;display:flex;gap:14px;flex-wrap:wrap}
+.bsec-nums .num-ok{color:#a5d6a7}
+.bsec-nums .num-ng{color:#ef9a9a}
+.bprog-bar{height:4px;background:rgba(255,255,255,.2)}
+.bprog-fill{height:100%;background:rgba(255,255,255,.75);transition:width .6s ease}
+.btbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.btbl thead th{background:#f5f7ff;padding:8px 12px;font-size:.69rem;font-weight:800;color:#455a64;border-bottom:2px solid #e0e5f5;text-align:left;white-space:nowrap}
+.btbl thead th.th-r{text-align:right}
+.btbl tbody tr{border-bottom:1px solid #f0f2f8;transition:background .1s}
+.btbl tbody tr:hover{background:#f8f9ff}
+.btbl tbody tr.spext{background:#fffde7}
+.btbl tbody tr.spext:hover{background:#fff9c4}
+.btbl td{padding:11px 12px;vertical-align:middle}
+.btbl tfoot td{padding:10px 12px;background:#eef0fb;font-weight:800;border-top:2px solid #c5cae9;font-size:.86rem}
+.bname{font-weight:800;font-size:.88rem;color:var(--ink);line-height:1.3}
+.bdetail{font-size:.73rem;color:var(--sub);margin-top:2px;line-height:1.4}
+.btag-auto{display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:.6rem;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.btag-ext{display:inline-block;background:#fff3e0;color:#e65100;font-size:.6rem;font-weight:800;padding:1px 5px;border-radius:3px;border:1px solid #ffb74d;margin-left:4px;vertical-align:middle}
+.bnum-r{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:.88rem;white-space:nowrap}
+.bnum-sub{text-align:right;font-size:.73rem;color:var(--sub);white-space:nowrap}
+.bact-wrap{text-align:right}
+.bact-num{font-variant-numeric:tabular-nums;font-weight:700;font-size:.88rem}
+.bact-bar-wrap{height:4px;background:#e8f5e9;border-radius:2px;margin-top:4px;min-width:56px}
+.bact-bar-fill{height:100%;border-radius:2px;background:#43a047;transition:width .4s}
+.bact-bar-fill.over{background:#e53935}
+.bdiff{text-align:right;font-variant-numeric:tabular-nums;font-weight:800;font-size:.86rem;white-space:nowrap}
+.brec-col{text-align:center}
+.brec-badge{display:inline-flex;align-items:center;gap:3px;background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:3px 9px;font-size:.76rem;font-weight:800;cursor:pointer;border:1px solid #c8e6c9}
+.brec-badge:hover{background:#c8e6c9}
+.brec-add{display:inline-flex;align-items:center;gap:3px;background:#f5f5f5;color:#999;border-radius:12px;padding:3px 9px;font-size:.76rem;font-weight:700;cursor:pointer;border:1px dashed #ddd}
+.brec-add:hover{background:#e3f2fd;color:#1565c0;border-color:#90caf9}
+
 /* ── Kanban Card Grid (Task / Supply) ── */
 .kcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:4px}
 .kcard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid var(--line);border-left:5px solid #ccc;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:box-shadow .15s,transform .12s}
@@ -341,13 +389,8 @@ a{color:var(--red)}
 <!-- 予算管理 -->
 <div class="page" id="page-budget">
   <div class="sect-head"><h2>⑤ 予算管理</h2><button class="btn btn-r" onclick="openBudgetModal()">＋ 費目追加</button></div>
-  <div class="card" style="overflow-x:auto">
-    <table class="dtbl">
-      <thead><tr><th>費目</th><th>内容・参考URL</th><th style="width:100px">予算（円）</th><th style="width:80px">単価（円）</th><th style="width:60px">数量</th><th style="width:110px">実績（円）</th><th style="width:80px">差額</th><th style="width:90px">領収書</th><th style="width:56px"></th></tr></thead>
-      <tbody id="budget-body"></tbody>
-      <tfoot><tr style="background:#f9f9f9"><td colspan="2" style="font-weight:700;padding:8px 10px">合計</td><td class="num-cell" id="bud-tot" style="padding:8px 10px;font-weight:700"></td><td colspan="2"></td><td class="num-cell" id="bud-act" style="padding:8px 10px;font-weight:700"></td><td class="num-cell" id="bud-dif" style="padding:8px 10px;font-weight:700"></td><td colspan="2"></td></tr></tfoot>
-    </table>
-  </div>
+  <div id="budget-kpi"></div>
+  <div id="budget-sections"></div>
 </div>
 
 <!-- 会場情報 -->
@@ -1322,50 +1365,97 @@ function calcActual(g){
 function renderBudget(){
   var tot=0,act=0;
   var sections=['7月','1月'];
-  var html='';
+  var secData=[];
   sections.forEach(function(sec){
-    var items=D.budget.filter(function(g){return (g.section||'7月')===sec;});
+    var items=D.budget.filter(function(g){return(g.section||'7月')===sec;});
     if(!items.length)return;
-    var secBud=0,secAct=0;
-    var rows=items.map(function(g){
-      if(!g.receipts)g.receipts=[];
-      var actualVal=calcActual(g);
-      secBud+=Number(g.budget||0);secAct+=actualVal;
-      var dif=Number(g.budget||0)-actualVal;
-      var up=Number(g.unitPrice||0),q=Number(g.qty||0);
-      var urlCell=g.url?'<div style="font-size:.76rem;margin-top:3px"><a href="'+esc(g.url)+'" target="_blank" style="color:var(--red)">🔗 参考URLを開く</a></div>':'';
-      var autoTag=(up>0&&q>0)?'<span style="background:#e8f5e9;color:#2e7d32;font-size:.68rem;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px">自動</span>':'';
-      var syncTag=g.spSync===false?'<span style="background:#fff3e0;color:#e65100;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;border:1px solid #ffb74d" title="スプレッドシートに未登録・要確認">⚠ スプシ外</span>':'';
-      var thumbs=g.receipts.map(function(r){
-        var isImg=r.data&&r.data.startsWith('data:image');
-        var thumb=isImg?'<img class="receipt-thumb" src="'+r.data+'" alt="'+esc(r.name)+'" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">':'<div class="receipt-thumb pdf-thumb" onclick="openLb(\''+r.id+'\',\''+g.id+'\')" title="'+esc(r.name)+'">📄<div style="font-size:.55rem;margin-top:2px;overflow:hidden;max-width:52px;text-overflow:ellipsis;white-space:nowrap">'+esc(r.name)+'</div></div>';
-        return thumb;
-      }).join('');
-      var addBtn='<div class="receipt-add" onclick="addReceipt(\''+g.id+'\',\'file\')" title="画像・PDFを添付">📎</div>'+
-                 '<div class="receipt-add" onclick="addReceipt(\''+g.id+'\',\'camera\')" title="カメラで撮影（スマホ）" style="background:#e3f2fd;color:#1565c0">📷</div>';
-      return'<tr'+(g.spSync===false?' style="background:#fffde7"':'')+'>'+
-        '<td style="font-weight:700">'+esc(g.name)+syncTag+'</td>'+
-        '<td style="font-size:.82rem">'+esc(g.detail)+urlCell+'</td>'+
-        '<td class="num-cell">'+fmtN(g.budget)+'</td>'+
-        '<td class="num-cell">'+(up>0?fmtN(up):'<span style="color:#ccc">-</span>')+'</td>'+
-        '<td class="num-cell">'+(q>0?q+'個':'<span style="color:#ccc">-</span>')+'</td>'+
-        '<td class="num-cell">'+fmtN(actualVal)+autoTag+'</td>'+
-        '<td class="num-cell '+(dif>=0?'diff-p':'diff-n')+'">'+(dif>=0?'+':'')+fmtN(dif)+'</td>'+
-        '<td><div class="receipt-wrap">'+thumbs+addBtn+'</div></td>'+
-        '<td style="text-align:center"><button class="bsm r" onclick="openBudgetModal(\''+g.id+'\')">編集</button></td></tr>';
-    }).join('');
-    tot+=secBud;act+=secAct;
-    var secDif=secBud-secAct;
-    var secLabel=sec==='7月'?'🗓 7月開催（社員のみ）':'🗓 1月開催（社員＋業者＋来賓）';
-    html+='<tr style="background:#f0f4ff"><td colspan="9" style="font-weight:700;padding:8px 10px;font-size:.88rem;color:#1a237e">'+secLabel+
-      '　予算小計: <b>'+fmtN(secBud)+'円</b>　実績: '+fmtN(secAct)+'円　差引: <span class="'+(secDif>=0?'diff-p':'diff-n')+'">'+(secDif>=0?'+':'')+fmtN(secDif)+'円</span></td></tr>';
-    html+=rows;
+    var sb=0,sa=0;
+    items.forEach(function(g){if(!g.receipts)g.receipts=[];sb+=Number(g.budget||0);sa+=calcActual(g);});
+    secData.push({sec:sec,items:items,sb:sb,sa:sa});
+    tot+=sb;act+=sa;
   });
-  document.getElementById('budget-body').innerHTML=html;
+
+  // KPI cards
+  var rate=tot>0?Math.round(act/tot*100):0;
   var dif=tot-act;
-  document.getElementById('bud-tot').textContent=fmtN(tot)+'円';
-  document.getElementById('bud-act').textContent=fmtN(act)+'円';
-  document.getElementById('bud-dif').innerHTML='<span class="'+(dif>=0?'diff-p':'diff-n')+'">'+(dif>=0?'+':'')+fmtN(dif)+'円</span>';
+  var kpiHtml='<div class="bkpi-row">'+
+    '<div class="bkpi-card"><div class="bkpi-label">総予算</div><div class="bkpi-value">'+fmtN(tot)+'<span class="bkpi-unit">円</span></div></div>'+
+    '<div class="bkpi-card kpi-actual"><div class="bkpi-label">実績合計</div><div class="bkpi-value" style="color:#e65100">'+fmtN(act)+'<span class="bkpi-unit">円</span></div></div>'+
+    '<div class="bkpi-card kpi-remain"><div class="bkpi-label">残額</div><div class="bkpi-value" style="color:'+(dif>=0?'#2e7d32':'#c62828')+'">'+fmtN(Math.abs(dif))+'<span class="bkpi-unit">円</span></div></div>'+
+    '<div class="bkpi-card kpi-rate"><div class="bkpi-label">執行率</div><div class="bkpi-value" style="color:#7b1fa2">'+rate+'<span class="bkpi-unit">%</span></div>'+
+    '<div class="bkpi-bar"><div class="bkpi-fill" style="width:'+Math.min(100,rate)+'%;background:'+(rate>100?'#e53935':'#7b1fa2')+'"></div></div></div>'+
+    '</div>';
+  document.getElementById('budget-kpi').innerHTML=kpiHtml;
+
+  // Section cards
+  var secHtml='<div class="bsec-wrap">';
+  secData.forEach(function(sd){
+    var secDif=sd.sb-sd.sa;
+    var secRate=sd.sb>0?Math.min(100,Math.round(sd.sa/sd.sb*100)):0;
+    var isJan=sd.sec==='1月';
+    var secLabel=isJan?'🗓 1月開催（社員＋業者＋来賓）':'🗓 7月開催（社員のみ）';
+
+    var rows=sd.items.map(function(g){
+      var actualVal=calcActual(g);
+      var dif2=Number(g.budget||0)-actualVal;
+      var up=Number(g.unitPrice||0),q=Number(g.qty||0);
+      var barPct=g.budget>0?Math.min(100,Math.round(actualVal/Number(g.budget)*100)):0;
+      var isOver=actualVal>Number(g.budget||0)&&actualVal>0;
+      var autoTag=(up>0&&q>0)?'<span class="btag-auto">自動</span>':'';
+      var syncTag=g.spSync===false?'<span class="btag-ext">⚠ 手動</span>':'';
+      var urlLink=g.url?'<a href="'+esc(g.url)+'" target="_blank" style="color:var(--red);font-size:.7rem;text-decoration:none;margin-right:4px">🔗</a>':'';
+      var recCount=g.receipts?g.receipts.length:0;
+      var recCell=recCount>0
+        ?'<span class="brec-badge" onclick="addReceipt(\''+g.id+'\',\'file\')">📎 '+recCount+'件</span>'
+        :'<span class="brec-add" onclick="addReceipt(\''+g.id+'\',\'file\')">＋ 添付</span>';
+      var actColor=isOver?'#e53935':actualVal>0?'#e65100':'#aaa';
+      return '<tr class="'+(g.spSync===false?'spext':'')+'">'
+        +'<td style="min-width:180px"><div class="bname">'+urlLink+esc(g.name)+syncTag+'</div>'
+          +(g.detail?'<div class="bdetail">'+esc(g.detail)+'</div>':'')+autoTag+'</td>'
+        +'<td class="bnum-r">'+fmtN(g.budget)+'円</td>'
+        +'<td class="bnum-sub">'+(up>0&&q>0?fmtN(up)+'×'+q:'—')+'</td>'
+        +'<td><div class="bact-wrap"><div class="bact-num" style="color:'+actColor+'">'+fmtN(actualVal)+'円</div>'
+          +'<div class="bact-bar-wrap"><div class="bact-bar-fill'+(isOver?' over':'')+'" style="width:'+barPct+'%"></div></div></div></td>'
+        +'<td class="bdiff"><span style="color:'+(dif2>=0?'#2e7d32':'#c62828')+'">'+(dif2>=0?'▲':'▼')+fmtN(Math.abs(dif2))+'円</span></td>'
+        +'<td class="brec-col">'+recCell+'</td>'
+        +'<td style="text-align:center"><button class="bsm r" onclick="openBudgetModal(\''+g.id+'\')">編集</button></td>'
+        +'</tr>';
+    }).join('');
+
+    secHtml+='<div class="bsec-card">'
+      +'<div class="bsec-head'+(isJan?' bsec-head-jan':'')+'">'
+        +'<span class="bsec-title">'+secLabel+'</span>'
+        +'<div class="bsec-nums">'
+          +'<span>予算 <b>'+fmtN(sd.sb)+'円</b></span>'
+          +'<span>実績 <b>'+fmtN(sd.sa)+'円</b></span>'
+          +'<span class="'+(secDif>=0?'num-ok':'num-ng')+'">残 '+(secDif>=0?'+':'')+fmtN(secDif)+'円</span>'
+          +'<span>執行率 <b>'+secRate+'%</b></span>'
+        +'</div>'
+      +'</div>'
+      +'<div class="bprog-bar"><div class="bprog-fill" style="width:'+secRate+'%;background:'+(secRate>100?'rgba(229,57,53,.8)':'rgba(255,255,255,.75)')+'"></div></div>'
+      +'<div style="overflow-x:auto"><table class="btbl">'
+        +'<thead><tr>'
+          +'<th>費目</th>'
+          +'<th class="th-r">予算</th>'
+          +'<th class="th-r">単価×数量</th>'
+          +'<th class="th-r">実績</th>'
+          +'<th class="th-r">差額</th>'
+          +'<th style="text-align:center;width:76px">領収書</th>'
+          +'<th style="width:46px"></th>'
+        +'</tr></thead>'
+        +'<tbody>'+rows+'</tbody>'
+        +'<tfoot><tr>'
+          +'<td>小計</td>'
+          +'<td class="bnum-r">'+fmtN(sd.sb)+'円</td>'
+          +'<td></td>'
+          +'<td class="bnum-r" style="color:'+(sd.sa>0?'#e65100':'inherit')+'">'+fmtN(sd.sa)+'円</td>'
+          +'<td class="bdiff"><span style="color:'+(secDif>=0?'#2e7d32':'#c62828')+'">'+(secDif>=0?'▲':'▼')+fmtN(Math.abs(secDif))+'円</span></td>'
+          +'<td colspan="2"></td>'
+        +'</tr></tfoot>'
+      +'</table></div></div>';
+  });
+  secHtml+='</div>';
+  document.getElementById('budget-sections').innerHTML=secHtml;
 }
 // 領収書追加（カメラ/画像/PDF対応）
 var _receipt={};
