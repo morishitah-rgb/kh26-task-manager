@@ -1057,16 +1057,18 @@ function removeAssign(id,role,dtype){
 }
 function renderAvatarPanel(panelId){
   var el=document.getElementById(panelId);if(!el)return;
-  var names=new Set();
-  (D.tasks||[]).forEach(function(t){[t.owner,t.sub,t.assignee].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&n!=='グループ')names.add(n);});});});
-  (D.supplies||[]).forEach(function(s){[s.owner,s.sub,s.assignee].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&n!=='グループ')names.add(n);});});});
-  var arr=Array.from(names).filter(Boolean).sort();
+  // ⑬メンバーリスト全員を基準（スペース除去）
+  var arr=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
+  // タスク・備品に存在するがメンバーリストにない名前を末尾に追加
+  var inList=new Set(arr);
+  (D.tasks||[]).forEach(function(t){[t.owner,t.sub].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&!inList.has(n)){arr.push(n);inList.add(n);}});});});
+  (D.supplies||[]).forEach(function(s){[s.owner,s.sub].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&!inList.has(n)){arr.push(n);inList.add(n);}});});});
   if(!arr.length){el.innerHTML='';return;}
   el.innerHTML='<div class="av-panel">'+
     '<div class="av-panel-hd">👤 担当者パネル &nbsp;—&nbsp; ドラッグしてカードの <strong>オーナー</strong> または <strong>サブ</strong> 欄へ</div>'+
     '<div class="av-pool">'+arr.map(function(n){
       var c=nameColor(n);
-      return '<div class="av-chip" draggable="true" style="background:'+c+'" ondragstart="avDragStart(event,\''+n.replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
+      return '<div class="av-chip" draggable="true" style="background:'+c+'" ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
         '<div class="av-init">'+esc(nameInit(n))+'</div>'+esc(n)+'</div>';
     }).join('')+'</div></div>';
 }
