@@ -1129,6 +1129,57 @@ function onAssignDrop(e,el){
   persist();
   if(dtype==='supply')renderSupplies();else renderTasks();
 }
+function _inlineSave(id,field,dtype,newVal){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=arr.find(function(x){return x.id===id;});
+  if(!item)return;
+  item[field]=newVal;
+  persist();
+  if(dtype==='supply')renderSupplies();else renderTasks();
+}
+function inlineEditText(e,id,field,dtype){
+  e.stopPropagation();
+  var el=e.currentTarget;
+  if(el.contentEditable==='true')return;
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=arr.find(function(x){return x.id===id;});
+  if(!item)return;
+  var orig=item[field]||'';
+  el.contentEditable='true';
+  el.style.outline='2px solid var(--red)';
+  el.style.borderRadius='4px';
+  el.style.padding='2px 4px';
+  el.style.cursor='text';
+  el.focus();
+  var range=document.createRange();range.selectNodeContents(el);
+  var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+  function commit(){
+    var nv=el.textContent.trim();
+    el.contentEditable='false';el.style.outline='';el.style.cursor='';
+    if(nv&&nv!==orig)_inlineSave(id,field,dtype,nv);
+  }
+  el.onblur=commit;
+  el.onkeydown=function(ev){
+    if(ev.key==='Enter'){ev.preventDefault();commit();}
+    if(ev.key==='Escape'){el.textContent=orig;el.contentEditable='false';el.style.outline='';el.style.cursor='';}
+  };
+}
+function inlineEditDate(e,id,dtype){
+  e.stopPropagation();
+  var el=e.currentTarget;
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=arr.find(function(x){return x.id===id;});
+  if(!item)return;
+  var inp=document.createElement('input');
+  inp.type='date';inp.value=item.due||'';
+  inp.style.cssText='font-size:.82rem;font-weight:800;border:none;background:transparent;outline:none;cursor:pointer;color:inherit;width:110px';
+  el.innerHTML='期限 ';el.appendChild(inp);
+  inp.focus();inp.showPicker&&inp.showPicker();
+  function commit(){item.due=inp.value;persist();if(dtype==='supply')renderSupplies();else renderTasks();}
+  inp.onchange=commit;
+  inp.onblur=function(){setTimeout(commit,100);};
+  inp.onkeydown=function(ev){if(ev.key==='Escape'){if(dtype==='supply')renderSupplies();else renderTasks();}};
+}
 function removeAssign(id,role,dtype){
   var arr=dtype==='supply'?D.supplies:D.tasks;
   var item=(arr||[]).find(function(x){return x.id===id;});
@@ -1185,18 +1236,26 @@ function taskCardHtml(t,dtype){
   var editFn=dtype==='supply'?'openSupplyModal':'openTaskModal';
   var delFn=dtype==='supply'?'delSupply':'delTask';
   var stFn=dtype==='supply'?'setSupplyStatus':'setTaskStatus';
+  var ie='onclick="inlineEditText(event,\''+t.id+'\',';
+  var ieDateAttr='onclick="inlineEditDate(event,\''+t.id+'\',\''+dtype+'\')" title="クリックで期限変更" style="cursor:pointer"';
   return '<div class="kcard '+t.status+(od?' kcard-od':'')+'">'+
     '<div class="kc-top">'+
-      '<span class="kc-cat">'+esc(t.cat||t.category||'その他')+'</span>'+
-      (t.due?'<span class="kc-due '+dueClass+'">🏁 '+esc(dueDisp)+esc(dueExtra)+'</span>':'')+
+      '<span class="kc-cat" '+ie+'\'cat\',\''+dtype+'\')" title="クリックでカテゴリ編集" style="cursor:pointer">'+esc(t.cat||t.category||'その他')+'</span>'+
+      (t.due
+        ?'<span class="kc-due '+dueClass+'" '+ieDateAttr+'>期限 '+esc(dueDisp)+esc(dueExtra)+'</span>'
+        :'<span class="kc-due" style="background:#f5f5f5;color:#bbb;cursor:pointer;font-size:.82rem" '+ieDateAttr+'>＋ 期限</span>'
+      )+
     '</div>'+
-    '<div class="kc-title">'+esc(t.name||t.title)+'</div>'+
+    '<div class="kc-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集" style="cursor:text">'+esc(t.name||t.title)+'</div>'+
     (dtype==='supply'&&t.qty?'<div style="font-size:.78rem;color:var(--sub);margin-top:-6px">数量：'+esc(t.qty)+'</div>':'')+
     '<div class="kc-assignees">'+
       '<div class="asgn-row"><span class="asgn-lbl">オーナー</span>'+ownerHtml+'</div>'+
       '<div class="asgn-row"><span class="asgn-lbl">サブ</span>'+subHtml+'</div>'+
     '</div>'+
-    (t.memo?'<div class="kc-memo">'+esc(t.memo)+'</div>':'')+
+    (t.memo
+      ?'<div class="kc-memo" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ編集" style="cursor:text">'+esc(t.memo)+'</div>'
+      :'<div class="kc-memo" style="color:#ccc;font-size:.73rem;cursor:text" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ追加">＋ メモ</div>'
+    )+
     '<div class="kc-footer">'+
       '<div class="status-btns">'+
         '<button class="sbtn s-todo'+(t.status==='todo'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'todo\')">未着手</button>'+
