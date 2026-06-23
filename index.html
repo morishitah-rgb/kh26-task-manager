@@ -566,18 +566,31 @@ a{color:var(--red)}
 // ===== 初期データ =====
 const INIT = {
 tasks:[
+  // ── 会場・設営 ──
+  {id:'ts1',title:'会場レイアウト確定',assignee:'角谷さん・松下さん',category:'会場・備品',start:'2026-06-10',due:'2026-07-10',status:'todo',memo:'席次・ステージ配置・導線'},
+  {id:'ts2',title:'備品・設備手配',assignee:'波多野さん・君塚さん',category:'会場・備品',start:'2026-06-04',due:'2026-07-24',status:'todo',memo:'マイク・プロジェクター・スクリーン等'},
+  {id:'ts3',title:'卓上名札作成',assignee:'波多野さん・君塚さん',category:'会場・備品',start:'2026-06-04',due:'2026-07-24',status:'todo',memo:'参加者分の卓上名札'},
+  {id:'ts4',title:'横断幕作成',assignee:'角谷さん・松下さん',category:'会場・備品',start:'2026-06-04',due:'2026-07-18',status:'todo',memo:''},
+  {id:'ts5',title:'当日の担当割り振り',assignee:'松下さん・秀之さん',category:'当日役割',start:'2026-06-04',due:'2026-06-30',status:'todo',memo:'司会・受付・音響・映像等の役割確定'},
+  {id:'ts6',title:'駐車場手配',assignee:'清水さん・山本さん',category:'会場・備品',start:'2026-06-04',due:'2026-07-08',status:'todo',memo:'参加者・来賓分の駐車場確保'},
+  {id:'ts7',title:'タイマー・タイムキーパー手配',assignee:'秀之さん',category:'当日役割',start:'2026-04-24',due:'2026-05-20',status:'prog',memo:'発表時間管理用'},
+  // ── 広報・看板 ──
   {id:'t1',title:'看板見積取得（鈴木工芸）',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-06-30',status:'prog',memo:'展示物サイズ・組み立てやすさを考慮'},
+  {id:'t19',title:'ロールアップバナー ラクスル発注',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-07-20',status:'todo',memo:'巻き取り式 ¥25,887/本・発注本数・仕様を確定次第発注'},
+  // ── コーヒー・ケータリング ──
+  {id:'t8',title:'会場飲食規約確認',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'コーヒー等の持ち込み可否'},
+  {id:'t9',title:'天龍コーヒー発注内容決定',assignee:'岡さん・松下さん',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-07-08',status:'todo',memo:'紅茶の提供有無・数量を決定'},
+  // ── 360°フィードバック ──
   {id:'t2',title:'360°FBアンケート叩き台作成',assignee:'岡さん・髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-06-21',status:'todo',memo:'今週中に提出目標'},
   {id:'t3',title:'デジタルアンケートフォーム作成',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-10',status:'todo',memo:'Googleフォーム'},
   {id:'t4',title:'360°FBスライド作成',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-10',status:'todo',memo:''},
   {id:'t5',title:'回答者リスト作成（360°FB）',assignee:'髙松さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'対象者の案をまとめる'},
-  {id:'t6',title:'タイムテーブル再調整・確定',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'12時開始に合わせて再調整'},
-  {id:'t7',title:'パートタイム従業員参加可否確認',assignee:'松下さん',category:'その他',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'社長へ確認'},
-  {id:'t8',title:'会場飲食規約確認',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'コーヒー等の持ち込み可否'},
-  {id:'t9',title:'天龍コーヒー発注内容決定',assignee:'グループ',category:'コーヒー・ケータリング',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'紅茶の提供有無・数量を決定'},
-  {id:'t17',title:'発表スライド提出期限',assignee:'全発表者',category:'タイムテーブル・スライド',start:'2026-07-24',due:'2026-07-24',status:'todo',memo:'最終版 昼12:00まで提出（松下さんへ）'},
-  {id:'t19',title:'ロールアップバナー ラクスル発注',assignee:'秀之さん',category:'広報・看板',start:'2026-06-17',due:'2026-07-20',status:'todo',memo:'巻き取り式 ¥25,887/本・発注本数・仕様を確定次第発注'},
   {id:'t21',title:'360°FBフォーム 全員へ配布',assignee:'髙松さん・岡さん',category:'360°フィードバック',start:'2026-06-17',due:'2026-07-01',status:'todo',memo:'委員会メンバー各自がチームへ個別チャットで送付'},
+  // ── タイムテーブル・スライド ──
+  {id:'t6',title:'タイムテーブル再調整・確定',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'12時開始に合わせて再調整'},
+  {id:'t17',title:'発表スライド提出期限',assignee:'全発表者',category:'タイムテーブル・スライド',start:'2026-07-24',due:'2026-07-24',status:'todo',memo:'最終版 昼12:00まで提出（松下さんへ）'},
+  // ── その他 ──
+  {id:'t7',title:'パートタイム従業員参加可否確認',assignee:'松下さん',category:'その他',start:'2026-06-17',due:'2026-06-26',status:'todo',memo:'社長へ確認'},
   {id:'t22',title:'表彰アンケート 回収・集計',assignee:'グループ',category:'その他',start:'2026-06-17',due:'2026-06-30',status:'todo',memo:'6月末締め切り'},
 ],
 schedule:[
@@ -1020,7 +1033,7 @@ function setTaskStatus(id,st){
 function delTask(id){if(!confirm('削除しますか？'))return;D.tasks=D.tasks.filter(function(x){return x.id!==id;});persist();renderTasks();}
 function openTaskModal(id){
   var t=id?D.tasks.find(function(x){return x.id===id;}):null;
-  var cats=['会場・備品','コーヒー・ケータリング','360°フィードバック','タイムテーブル・スライド','表彰・賞金','MTG・リハーサル','広報・看板','お弁当・飲料','その他'];
+  var cats=['会場・備品','当日役割','コーヒー・ケータリング','360°フィードバック','タイムテーブル・スライド','表彰・賞金','広報・看板','その他'];
   openModal('<h2>📋 タスク'+(t?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
     '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
