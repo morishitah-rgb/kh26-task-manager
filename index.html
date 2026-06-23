@@ -2985,6 +2985,34 @@ var PHASE_DEFS=[
   {id:4,label:'④片付け',color:'#e65100',bg:'linear-gradient(135deg,#bf360c,#f4511e)'}
 ];
 
+function editDrRoleName(e,id){
+  e.stopPropagation();
+  var r=(D.dayRoles||[]).find(function(x){return x.id===id;});
+  if(!r)return;
+  var el=e.currentTarget;
+  var orig=r.role;
+  el.contentEditable='true';
+  el.style.background='rgba(255,255,255,.18)';
+  el.style.borderRadius='4px';
+  el.style.padding='2px 5px';
+  el.style.outline='2px solid rgba(255,255,255,.5)';
+  el.focus();
+  var range=document.createRange();range.selectNodeContents(el);
+  var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+  function save(){
+    var v=el.innerText.trim();
+    el.contentEditable='false';
+    if(v&&v!==orig)r.role=v;
+    else if(!v)r.role=orig;
+    persist();renderTeams();
+  }
+  el.onblur=save;
+  el.onkeydown=function(ev){
+    if(ev.key==='Enter'){ev.preventDefault();save();}
+    if(ev.key==='Escape'){el.innerText=orig;save();}
+    ev.stopPropagation();
+  };
+}
 var _drDragId=null,_drDragPhase=null;
 function drDragStart(e,id,phase){
   _drDragId=id;_drDragPhase=phase;
@@ -3040,7 +3068,7 @@ function renderTeams(){
       return '<div class="dr-role-card'+(hasAny?' dr-assigned':'')+'" data-drid="'+r.id+'" draggable="true" ondragstart="drDragStart(event,\''+r.id+'\','+r.phase+')" ondragend="drDragEnd(event)" ondragover="drDragOver(event,\''+r.id+'\')" ondrop="drDrop(event,\''+r.id+'\','+r.phase+')" onclick="openDrAssign(\''+r.id+'\')" title="クリックして担当者を割り当て" style="cursor:grab">'+
         '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px">'+
           '<div style="flex:1">'+
-            '<div style="font-size:.8rem;font-weight:700;line-height:1.3;color:#fff">'+esc(r.role)+'</div>'+
+            '<div onclick="editDrRoleName(event,\''+r.id+'\')" title="クリックで役割名を編集" style="font-size:.8rem;font-weight:700;line-height:1.3;color:#fff;cursor:text">'+esc(r.role)+'</div>'+
             (r.note?'<div style="font-size:.66rem;color:rgba(255,255,255,.55);margin-top:2px">'+esc(r.note)+'</div>':'')+
           '</div>'+
           '<button style="background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:.75rem;padding:0 2px;line-height:1;flex-shrink:0" onclick="event.stopPropagation();delDrRole(\''+r.id+'\')" title="削除">✕</button>'+
