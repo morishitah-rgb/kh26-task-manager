@@ -85,6 +85,42 @@ header .sub{font-size:.7rem;opacity:.8}
 .bsm{padding:4px 9px;border-radius:6px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:.74rem;font-weight:700;color:var(--sub)}
 .bsm:hover{background:var(--bg)}.bsm.r{border-color:var(--red);color:var(--red)}
 
+/* ── Kanban Card Grid (Task / Supply) ── */
+.kcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:4px}
+.kcard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid var(--line);border-left:5px solid #ccc;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:box-shadow .15s,transform .12s}
+.kcard:hover{box-shadow:0 6px 26px rgba(0,0,0,.13);transform:translateY(-2px)}
+.kcard.todo{border-left-color:var(--todo)}.kcard.prog{border-left-color:var(--prog)}.kcard.done{border-left-color:var(--done);opacity:.72}.kcard.kcard-od{border-left-color:var(--od);background:#fff8f7}
+.kc-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.kc-cat{font-size:.67rem;font-weight:800;color:var(--sub);background:#f5f5f5;border-radius:5px;padding:3px 9px;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.kc-due{font-size:.8rem;font-weight:900;padding:5px 13px;border-radius:20px;white-space:nowrap;letter-spacing:.01em}
+.dc-norm{background:#e3f2fd;color:#1565c0}.dc-soon{background:#fff3e0;color:#e65100}.dc-od{background:#fce4ec;color:#c62828}.dc-done{background:#e8f5e9;color:#2e7d32}
+.kc-title{font-size:1.08rem;font-weight:900;color:var(--text);line-height:1.45}
+.kc-assignees{display:flex;flex-direction:column;gap:7px}
+.asgn-row{display:flex;align-items:center;gap:8px;min-height:36px}
+.asgn-lbl{font-size:.66rem;font-weight:800;color:#bbb;min-width:44px;flex-shrink:0}
+.asgn-chip{display:inline-flex;align-items:center;gap:7px;border-radius:24px;padding:5px 13px 5px 6px;cursor:pointer;user-select:none;transition:opacity .12s,transform .1s;max-width:220px}
+.asgn-chip:hover{opacity:.78;transform:scale(.97)}
+.asgn-owner{font-size:.95rem;font-weight:900}
+.asgn-sub{font-size:.82rem;font-weight:800}
+.asgn-dot{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;flex-shrink:0}
+.asgn-owner .asgn-dot{width:32px;height:32px;font-size:.84rem}
+.asgn-sub .asgn-dot{width:26px;height:26px;font-size:.74rem}
+.asgn-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asgn-x{font-size:.62rem;opacity:.45;margin-left:3px;flex-shrink:0}
+.asgn-drop{border:2px dashed #ddd;border-radius:12px;padding:7px 14px;font-size:.74rem;color:#ccc;font-weight:700;cursor:default;transition:border-color .15s,background .15s,color .15s;white-space:nowrap}
+.asgn-drop.dg-over{border-color:var(--red);background:#fff3f0;color:var(--red)}
+.kc-memo{font-size:.76rem;color:var(--sub);line-height:1.55;border-top:1px solid #f0f0f0;padding-top:9px}
+.kc-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:2px;border-top:1px solid #f5f5f5;margin-top:2px}
+.kcard-sep{margin:18px 0 10px;display:flex;align-items:center;gap:10px}
+/* Avatar Panel */
+.av-panel{background:#fff;border-radius:13px;border:1px solid var(--line);padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.av-panel-hd{font-size:.75rem;font-weight:800;color:var(--sub);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.av-pool{display:flex;gap:9px;flex-wrap:wrap}
+.av-chip{display:inline-flex;align-items:center;gap:7px;border-radius:22px;padding:7px 14px 7px 8px;font-size:.86rem;font-weight:900;cursor:grab;user-select:none;transition:transform .12s,box-shadow .12s;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.av-chip:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.av-chip:active{cursor:grabbing;transform:scale(.94)}
+.av-init{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:900}
+
 /* ガントチャート */
 .gantt-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--line)}
 .gtbl{min-width:900px;border-collapse:collapse;width:100%}
@@ -281,7 +317,8 @@ a{color:var(--red)}
     <select id="f-as" onchange="renderTasks()"><option value="">すべての担当者</option></select>
     <select id="f-ca" onchange="renderTasks()"><option value="">すべてのカテゴリ</option></select>
   </div>
-  <div id="task-list"></div>
+  <div id="task-avatar-panel"></div>
+  <div class="kcard-grid" id="task-list"></div>
 </div>
 
 <!-- 備品 -->
@@ -291,20 +328,8 @@ a{color:var(--red)}
     <button class="btn btn-r" onclick="openSupplyModal()">＋ 追加</button>
   </div>
   <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">備品の手配・購入状況を管理します。⑪持ち物事前チェックと連動しています。</p>
-  <div class="card" style="overflow-x:auto">
-    <table class="dtbl">
-      <thead><tr>
-        <th>カテゴリ</th>
-        <th>品名</th>
-        <th style="width:70px">数量</th>
-        <th style="width:120px"><span style="font-size:.75rem;color:var(--sub)">準備者</span></th>
-        <th style="width:170px">進捗</th>
-        <th>メモ</th>
-        <th style="width:56px"></th>
-      </tr></thead>
-      <tbody id="supply-body"></tbody>
-    </table>
-  </div>
+  <div id="supply-avatar-panel"></div>
+  <div class="kcard-grid" id="supply-list"></div>
 </div>
 
 <!-- ガントチャート -->
@@ -1001,72 +1026,144 @@ function setTaskFilter(st){
   renderTasks();
 }
 function slbl(s){return{todo:'未着手',prog:'進行中',done:'完了'}[s]||s;}
+// ===== 担当者カラー・アバターパネル =====
+var NAME_COLORS=['#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#d35400','#1abc9c','#c0392b','#3498db','#9b59b6','#e91e63','#00838f','#6c3483'];
+function nameColor(n){if(!n)return'#95a5a6';var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return NAME_COLORS[h%NAME_COLORS.length];}
+function nameInit(n){if(!n)return'?';return n.replace(/さん|様|さま|くん|君/g,'').charAt(0)||n.charAt(0);}
+var avDragName='';
+function avDragStart(e,name){avDragName=name;e.dataTransfer.setData('text/plain',name);}
+function onAssignDrop(e,el){
+  e.preventDefault();el.classList.remove('dg-over');
+  var name=avDragName||e.dataTransfer.getData('text/plain');
+  if(!name)return;
+  var id=el.dataset.id,role=el.dataset.role,dtype=el.dataset.dtype;
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=(arr||[]).find(function(x){return x.id===id;});
+  if(!item)return;
+  item[role]=name;
+  if(!item.owner&&!item.sub)item.assignee=name;
+  else item.assignee=(item.owner||'')+(item.sub?'・'+item.sub:'');
+  persist();
+  if(dtype==='supply')renderSupplies();else renderTasks();
+}
+function removeAssign(id,role,dtype){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=(arr||[]).find(function(x){return x.id===id;});
+  if(!item)return;
+  item[role]='';
+  item.assignee=(item.owner||'')+(item.sub?'・'+item.sub:'');
+  persist();
+  if(dtype==='supply')renderSupplies();else renderTasks();
+}
+function renderAvatarPanel(panelId){
+  var el=document.getElementById(panelId);if(!el)return;
+  var names=new Set();
+  (D.tasks||[]).forEach(function(t){[t.owner,t.sub,t.assignee].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&n!=='グループ')names.add(n);});});});
+  (D.supplies||[]).forEach(function(s){[s.owner,s.sub,s.assignee].forEach(function(v){if(v)v.split(/[・、,]+/).forEach(function(n){n=n.trim();if(n&&n!=='グループ')names.add(n);});});});
+  var arr=Array.from(names).filter(Boolean).sort();
+  if(!arr.length){el.innerHTML='';return;}
+  el.innerHTML='<div class="av-panel">'+
+    '<div class="av-panel-hd">👤 担当者パネル &nbsp;—&nbsp; ドラッグしてカードの <strong>オーナー</strong> または <strong>サブ</strong> 欄へ</div>'+
+    '<div class="av-pool">'+arr.map(function(n){
+      var c=nameColor(n);
+      return '<div class="av-chip" draggable="true" style="background:'+c+'" ondragstart="avDragStart(event,\''+n.replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
+        '<div class="av-init">'+esc(nameInit(n))+'</div>'+esc(n)+'</div>';
+    }).join('')+'</div></div>';
+}
+
+function taskCardHtml(t,dtype){
+  dtype=dtype||'task';
+  var today2=todayStr();
+  var od=t.status!=='done'&&t.due&&t.due<today2;
+  var owner=t.owner||(t.assignee?t.assignee.split(/[・、]/)[0].trim():'');
+  var sub=t.sub||(t.assignee&&t.assignee.indexOf('・')>-1?t.assignee.split(/[・、]/)[1].trim():'');
+  var daysLeft=t.due&&t.status!=='done'?Math.round((new Date(t.due)-new Date(today2))/864e5):null;
+  var dueClass=t.status==='done'?'dc-done':od?'dc-od':(daysLeft!==null&&daysLeft<=5?'dc-soon':'dc-norm');
+  var dueDisp=t.due?t.due.slice(5).replace('-','/'):'';
+  var dueExtra=daysLeft===0?' 今日':od?' ('+Math.abs(daysLeft)+'日超過)':daysLeft===1?' 明日':'';
+  var ownerHtml=owner
+    ?'<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\')">'+
+        '<div class="asgn-dot" style="background:'+nameColor(owner)+'">'+esc(nameInit(owner))+'</div>'+
+        '<span class="asgn-name">'+esc(owner)+'</span>'+
+        '<span class="asgn-x">✕</span></div>'
+    :'<div class="asgn-drop" data-id="'+t.id+'" data-role="owner" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)">ドロップで割り当て</div>';
+  var subHtml=sub
+    ?'<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\')">'+
+        '<div class="asgn-dot" style="background:'+nameColor(sub)+'">'+esc(nameInit(sub))+'</div>'+
+        '<span class="asgn-name">'+esc(sub)+'</span>'+
+        '<span class="asgn-x">✕</span></div>'
+    :'<div class="asgn-drop" style="font-size:.72rem;padding:5px 12px" data-id="'+t.id+'" data-role="sub" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)">ドロップ</div>';
+  var editFn=dtype==='supply'?'openSupplyModal':'openTaskModal';
+  var delFn=dtype==='supply'?'delSupply':'delTask';
+  var stFn=dtype==='supply'?'setSupplyStatus':'setTaskStatus';
+  return '<div class="kcard '+t.status+(od?' kcard-od':'')+'">'+
+    '<div class="kc-top">'+
+      '<span class="kc-cat">'+esc(t.cat||t.category||'その他')+'</span>'+
+      (t.due?'<span class="kc-due '+dueClass+'">🏁 '+esc(dueDisp)+esc(dueExtra)+'</span>':'')+
+    '</div>'+
+    '<div class="kc-title">'+esc(t.name||t.title)+'</div>'+
+    (dtype==='supply'&&t.qty?'<div style="font-size:.78rem;color:var(--sub);margin-top:-6px">数量：'+esc(t.qty)+'</div>':'')+
+    '<div class="kc-assignees">'+
+      '<div class="asgn-row"><span class="asgn-lbl">オーナー</span>'+ownerHtml+'</div>'+
+      '<div class="asgn-row"><span class="asgn-lbl">サブ</span>'+subHtml+'</div>'+
+    '</div>'+
+    (t.memo?'<div class="kc-memo">'+esc(t.memo)+'</div>':'')+
+    '<div class="kc-footer">'+
+      '<div class="status-btns">'+
+        '<button class="sbtn s-todo'+(t.status==='todo'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'todo\')">未着手</button>'+
+        '<button class="sbtn s-prog'+(t.status==='prog'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'prog\')">進行中</button>'+
+        '<button class="sbtn s-done'+(t.status==='done'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'done\')">完了</button>'+
+      '</div>'+
+      '<div class="tc-act2">'+
+        '<button class="bsm r" onclick="'+editFn+'(\''+t.id+'\')">編集</button>'+
+        '<button class="bsm" onclick="'+delFn+'(\''+t.id+'\')">削除</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
 function renderTasks(){
   var today=todayStr();
   var fa=getV('f-as'),fc=getV('f-ca');
-  var all=D.tasks.filter(function(t){return(!fa||t.assignee.includes(fa))&&(!fc||t.category===fc);});
+  var all=D.tasks.filter(function(t){
+    var owner=t.owner||(t.assignee?t.assignee.split(/[・、]/)[0].trim():'');
+    return(!fa||owner.includes(fa)||t.assignee.includes(fa))&&(!fc||t.category===fc);
+  });
   var list;
   if(taskFilter==='od'){list=all.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;});}
   else if(taskFilter){list=all.filter(function(t){return t.status===taskFilter;});}
   else{list=all;}
-  // 完了を下、その中は期限順
   list=list.slice().sort(function(a,b){
     var aod=a.status!=='done'&&a.due&&a.due<today,bod=b.status!=='done'&&b.due&&b.due<today;
     if(a.status==='done'&&b.status!=='done')return 1;
     if(a.status!=='done'&&b.status==='done')return -1;
-    if(aod&&!bod)return -1;
-    if(!aod&&bod)return 1;
+    if(aod&&!bod)return-1;if(!aod&&bod)return 1;
     return(a.due||'9999')<(b.due||'9999')?-1:1;
   });
-  function tcardHtml(t){
-    var od=t.status!=='done'&&t.due&&t.due<today;
-    var cls='tcard '+t.status+(od?' overdue':'');
-    return '<div class="'+cls+'">'+
-      '<div class="tc-info">'+
-        '<div class="tc-title">'+esc(t.title)+(od?'<span class="od-badge">⚠ 期限超過</span>':'')+'</div>'+
-        '<div class="tc-dates">'+
-          (t.start?'<span>📅 着手：'+t.start+'</span>':'')+(t.due?'<span class="'+(od?'due-od':'')+'">🏁 期限：'+t.due+'</span>':'')+'</div>'+
-        '<div class="tc-meta"><span>👤 '+esc(t.assignee)+'</span><span>🏷 '+esc(t.category)+'</span>'+(t.memo?'<span>📝 '+esc(t.memo)+'</span>':'')+'</div>'+
-      '</div>'+
-      '<div class="tc-right">'+
-        '<div class="status-btns">'+
-          '<button class="sbtn s-todo'+(t.status==='todo'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'todo\')">未着手</button>'+
-          '<button class="sbtn s-prog'+(t.status==='prog'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'prog\')">進行中</button>'+
-          '<button class="sbtn s-done'+(t.status==='done'?' active':'')+'" onclick="setTaskStatus(\''+t.id+'\',\'done\')">完了</button>'+
-        '</div>'+
-        '<div class="tc-act2">'+
-          '<button class="bsm r" onclick="openTaskModal(\''+t.id+'\')">編集</button>'+
-          '<button class="bsm" onclick="delTask(\''+t.id+'\')">削除</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
-  }
   var active=list.filter(function(t){return t.status!=='done';});
   var done=list.filter(function(t){return t.status==='done';});
   var html='';
-  if(active.length){html+=active.map(tcardHtml).join('');}
-  else if(!done.length){html='<div class="empty">タスクがありません</div>';}
+  if(active.length){html+=active.map(function(t){return taskCardHtml(t,'task');}).join('');}
+  else if(!done.length){html='<div class="empty" style="grid-column:1/-1">タスクがありません</div>';}
   if(done.length){
-    html+='<div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px">'+
+    html+='<div class="kcard-sep" style="grid-column:1/-1">'+
       '<div style="flex:1;height:2px;background:var(--line)"></div>'+
       '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 完了済み（'+done.length+'件）</span>'+
       '<div style="flex:1;height:2px;background:var(--line)"></div>'+
     '</div>';
-    html+=done.map(tcardHtml).join('');
+    html+=done.map(function(t){return taskCardHtml(t,'task');}).join('');
   }
   document.getElementById('task-list').innerHTML=html;
-  // カウント更新
   var odCount=D.tasks.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;}).length;
   document.getElementById('cn-todo').textContent=D.tasks.filter(function(t){return t.status==='todo';}).length;
   document.getElementById('cn-prog').textContent=D.tasks.filter(function(t){return t.status==='prog';}).length;
   document.getElementById('cn-done').textContent=D.tasks.filter(function(t){return t.status==='done';}).length;
   document.getElementById('cn-od').textContent=odCount;
-  // ドロップダウン補完
-  var as=[...new Set(D.tasks.map(function(t){return t.assignee;}))].sort();
+  var as=[...new Set(D.tasks.map(function(t){return t.owner||t.assignee||'';}))].filter(Boolean).sort();
   var cs=[...new Set(D.tasks.map(function(t){return t.category||'';}))].filter(Boolean).sort();
   var cfa=getV('f-as'),cfc=getV('f-ca');
   document.getElementById('f-as').innerHTML='<option value="">すべての担当者</option>'+as.map(function(a){return'<option'+(cfa===a?' selected':'')+'>'+esc(a)+'</option>';}).join('');
   document.getElementById('f-ca').innerHTML='<option value="">すべてのカテゴリ</option>'+cs.map(function(c){return'<option'+(cfc===c?' selected':'')+'>'+esc(c)+'</option>';}).join('');
+  renderAvatarPanel('task-avatar-panel');
 }
 function setTaskStatus(id,st){
   var t=D.tasks.find(function(x){return x.id===id;});
@@ -1076,12 +1173,15 @@ function delTask(id){if(!confirm('削除しますか？'))return;D.tasks=D.tasks
 function openTaskModal(id){
   var t=id?D.tasks.find(function(x){return x.id===id;}):null;
   var cats=['会場・備品','当日役割','コーヒー・ケータリング','360°フィードバック','タイムテーブル・スライド','表彰・賞金','広報・看板','その他'];
+  var owner=t?(t.owner||t.assignee.split(/[・、]/)[0].trim()||''):'';
+  var sub=t?(t.sub||(t.assignee&&t.assignee.indexOf('・')>-1?t.assignee.split(/[・、]/)[1].trim():'')):'';
   openModal('<h2>📋 タスク'+(t?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
     '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
-    '<div class="frow"><label>担当者 *</label><input id="m-assignee" value="'+(t?esc(t.assignee):'')+'"></div>'+
+    '<div class="frow frow2"><div><label>オーナー（主担当）</label><input id="m-owner" placeholder="例：松下さん" value="'+esc(owner)+'"></div>'+
+    '<div><label>サブ（副担当）</label><input id="m-sub" placeholder="例：岡さん" value="'+esc(sub)+'"></div></div>'+
     '<div class="frow"><label>カテゴリ</label><select id="m-cat">'+cats.map(function(c){return'<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
-    '<div class="frow frow2"><div><label>着手日</label><input type="date" id="m-start" value="'+(t?t.start||'':todayStr())+'"></div><div><label>完了予定日</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div></div>'+
+    '<div class="frow"><label>期限</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div>'+
     '<div class="frow"><label>ステータス</label><select id="m-status">'+
     '<option value="todo"'+((!t||t.status==='todo')?' selected':'')+'>未着手</option>'+
     '<option value="prog"'+(t&&t.status==='prog'?' selected':'')+'>進行中</option>'+
@@ -1091,11 +1191,13 @@ function openTaskModal(id){
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTask()">保存</button></div>');
 }
 function saveTask(){
-  var title=getV('m-title'),assignee=getV('m-assignee'),id=getV('m-id');
-  if(!title||!assignee){alert('タスク名と担当者は必須です');return;}
-  var data={title:title,assignee:assignee,category:getV('m-cat'),start:getV('m-start'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
+  var title=getV('m-title'),id=getV('m-id');
+  var owner=getV('m-owner').trim(),sub=getV('m-sub').trim();
+  if(!title){alert('タスク名は必須です');return;}
+  var assignee=owner+(sub?'・'+sub:'');
+  var data={title:title,owner:owner,sub:sub,assignee:assignee,category:getV('m-cat'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
   if(id){var i=D.tasks.findIndex(function(x){return x.id===id;});if(i>=0)D.tasks[i]=Object.assign({},D.tasks[i],data);}
-  else{data.id=uid();D.tasks.push(data);}
+  else{data.id=uid();data.start='';D.tasks.push(data);}
   persist();renderTasks();cm();
 }
 
@@ -2127,25 +2229,24 @@ function saveTeam(){
 
 // ===== 備品リスト =====
 function renderSupplies(){
-  var el=document.getElementById('supply-body');
+  var el=document.getElementById('supply-list');
   if(!el)return;
-  el.innerHTML=(D.supplies||[]).map(function(s){
-    var st=s.status||'todo';
-    var isDone=st==='done';
-    var stBtns='<div class="status-btns">'+
-      '<button class="sbtn s-todo'+(st==='todo'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'todo\')">未着手</button>'+
-      '<button class="sbtn s-prog'+(st==='prog'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'prog\')">進行中</button>'+
-      '<button class="sbtn s-done'+(st==='done'?' active':'')+'" onclick="setSupplyStatus(\''+s.id+'\',\'done\')">完了</button>'+
-      '</div>';
-    return'<tr>'+
-      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.cat||'')+'</td>'+
-      '<td style="font-weight:700'+(isDone?';text-decoration:line-through;color:#aaa':'')+'">'+esc(s.name)+'</td>'+
-      '<td style="text-align:center">'+esc(s.qty||'')+'</td>'+
-      '<td style="font-size:.78rem;color:var(--sub)">'+esc(s.assignee||'')+'</td>'+
-      '<td>'+stBtns+'</td>'+
-      '<td style="font-size:.82rem">'+esc(s.memo||'')+'</td>'+
-      '<td style="text-align:center"><button class="bsm r" onclick="openSupplyModal(\''+s.id+'\')">編集</button></td></tr>';
-  }).join('');
+  var list=(D.supplies||[]);
+  var active=list.filter(function(s){return s.status!=='done';});
+  var done=list.filter(function(s){return s.status==='done';});
+  var html='';
+  if(active.length)html+=active.map(function(s){return taskCardHtml(s,'supply');}).join('');
+  else if(!done.length)html='<div class="empty" style="grid-column:1/-1">備品がありません</div>';
+  if(done.length){
+    html+='<div class="kcard-sep" style="grid-column:1/-1">'+
+      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
+      '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 準備済み（'+done.length+'件）</span>'+
+      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
+    '</div>';
+    html+=done.map(function(s){return taskCardHtml(s,'supply');}).join('');
+  }
+  el.innerHTML=html;
+  renderAvatarPanel('supply-avatar-panel');
 }
 function setSupplyStatus(id,st){
   var s=(D.supplies||[]).find(function(x){return x.id===id;});
@@ -2232,18 +2333,21 @@ function toggleCheck(id){
   persist();renderSupplies();
 }
 function openSupplyModal(id){
-  var s=id?( D.supplies||[]).find(function(x){return x.id===id;}):null;
-  openModal('<h2>備品'+(s?'を編集':'を追加')+'</h2>'+
+  var s=id?(D.supplies||[]).find(function(x){return x.id===id;}):null;
+  var owner=s?(s.owner||s.assignee||''):'';
+  var sub=s?(s.sub||''):'';
+  openModal('<h2>📦 備品'+(s?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(s?s.id:'')+'">'+
     '<div class="frow frow2"><div><label>カテゴリ</label><input id="m-cat" value="'+(s?esc(s.cat||''):'')+'"></div>'+
     '<div><label>品名 *</label><input id="m-name" value="'+(s?esc(s.name):'')+'"></div></div>'+
     '<div class="frow frow2"><div><label>数量</label><input id="m-qty" value="'+(s?esc(s.qty||''):'')+'"></div>'+
-    '<div><label>担当者</label><input id="m-assignee" value="'+(s?esc(s.assignee||''):'')+'"></div></div>'+
-    '<div class="frow"><label>状態</label><select id="m-status">'+
+    '<div><label>状態</label><select id="m-status">'+
     '<option value="todo"'+((!s||s.status==='todo')?' selected':'')+'>未手配</option>'+
     '<option value="prog"'+(s&&s.status==='prog'?' selected':'')+'>手配中</option>'+
     '<option value="done"'+(s&&s.status==='done'?' selected':'')+'>準備済</option>'+
-    '</select></div>'+
+    '</select></div></div>'+
+    '<div class="frow frow2"><div><label>オーナー（主担当）</label><input id="m-owner" placeholder="例：松下さん" value="'+esc(owner)+'"></div>'+
+    '<div><label>サブ（副担当）</label><input id="m-sub" placeholder="例：髙松さん" value="'+esc(sub)+'"></div></div>'+
     '<div class="frow"><label>メモ</label><input id="m-memo" value="'+(s?esc(s.memo||''):'')+'"></div>'+
     '<div style="display:flex;justify-content:space-between;margin-top:8px">'+
     (s?'<button class="btn btn-gray" onclick="delSupply(\''+s.id+'\')">削除</button>':'<span></span>')+
@@ -2253,8 +2357,8 @@ function saveSupply(){
   var name=getV('m-name'),id=getV('m-id');
   if(!name){alert('品名を入力してください');return;}
   if(!D.supplies)D.supplies=[];
-  var data={cat:getV('m-cat'),name:name,qty:getV('m-qty'),assignee:getV('m-assignee'),status:getV('m-status'),memo:getV('m-memo')};
-  // checked/checkedBy/checkedAt は編集モーダルで上書きしない
+  var owner=getV('m-owner').trim(),sub=getV('m-sub').trim();
+  var data={cat:getV('m-cat'),name:name,qty:getV('m-qty'),owner:owner,sub:sub,assignee:owner+(sub?'・'+sub:''),status:getV('m-status'),memo:getV('m-memo')};
   if(id){var i=D.supplies.findIndex(function(x){return x.id===id;});if(i>=0)D.supplies[i]=Object.assign({},D.supplies[i],data);}
   else{data.id=uid();data.checked=false;data.checkedBy='';data.checkedAt='';D.supplies.push(data);}
   persist();renderSupplies();cm();
