@@ -162,8 +162,11 @@ header .sub{font-size:.7rem;opacity:.8}
 .kc-memo{font-size:.76rem;color:var(--sub);line-height:1.55;border-top:1px solid #f0f0f0;padding-top:9px}
 .kc-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:2px;border-top:1px solid #f5f5f5;margin-top:2px}
 .kcard-sep{margin:18px 0 10px;display:flex;align-items:center;gap:10px}
+/* Avatar Panel layout */
+.av-layout{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start}
+@media(max-width:700px){.av-layout{grid-template-columns:1fr}.av-layout .kcard-grid{grid-template-columns:1fr}}
 /* Avatar Panel */
-.av-panel{background:#fff;border-radius:13px;border:1px solid var(--line);padding:14px 18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.12);position:sticky;top:100px;z-index:30}
+.av-panel{background:#fff;border-radius:13px;border:1px solid var(--line);padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.12);position:sticky;top:100px;z-index:30}
 .av-panel-hd{font-size:.75rem;font-weight:800;color:var(--sub);margin-bottom:11px;display:flex;align-items:center;gap:6px}
 .av-pool{display:flex;gap:9px;flex-wrap:wrap}
 .av-chip{display:inline-flex;align-items:center;gap:7px;border-radius:22px;padding:7px 14px 7px 8px;font-size:.86rem;font-weight:900;cursor:grab;user-select:none;transition:transform .12s,box-shadow .12s;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
@@ -367,8 +370,10 @@ a{color:var(--red)}
     <select id="f-as" onchange="renderTasks()"><option value="">すべての担当者</option></select>
     <select id="f-ca" onchange="renderTasks()"><option value="">すべてのカテゴリ</option></select>
   </div>
-  <div id="task-avatar-panel"></div>
-  <div class="kcard-grid" id="task-list"></div>
+  <div class="av-layout">
+    <div id="task-avatar-panel"></div>
+    <div class="kcard-grid" id="task-list"></div>
+  </div>
 </div>
 
 <!-- 備品 -->
@@ -378,8 +383,10 @@ a{color:var(--red)}
     <button class="btn btn-r" onclick="openSupplyModal()">＋ 追加</button>
   </div>
   <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">備品の手配・購入状況を管理します。⑪持ち物事前チェックと連動しています。</p>
-  <div id="supply-avatar-panel"></div>
-  <div class="kcard-grid" id="supply-list"></div>
+  <div class="av-layout">
+    <div id="supply-avatar-panel"></div>
+    <div class="kcard-grid" id="supply-list"></div>
+  </div>
 </div>
 
 <!-- ガントチャート -->
@@ -1136,16 +1143,18 @@ function memberShortName(fullName){
 }
 function renderAvatarPanel(panelId){
   var el=document.getElementById(panelId);if(!el)return;
-  // ⑬メンバーリストのみを使用（姓+さん形式で統一、重複なし）
   var arr=(D.members||[]).map(function(m){return memberShortName(m.name);});
   if(!arr.length){el.innerHTML='';return;}
+  function chip(n,bg,init){
+    return '<div class="av-chip" draggable="true" style="background:'+bg+';margin-bottom:6px;width:100%;justify-content:flex-start;box-sizing:border-box" '+
+      'ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
+      '<div class="av-init">'+(init||esc(nameInit(n)))+'</div>'+esc(n)+'</div>';
+  }
+  var allChip=chip('全員','linear-gradient(135deg,#455a64,#607d8b)','全');
+  var memberChips=arr.map(function(n){return chip(n,nameColor(n));}).join('');
   el.innerHTML='<div class="av-panel">'+
-    '<div class="av-panel-hd">👤 担当者パネル &nbsp;—&nbsp; ドラッグしてカードの <strong>オーナー</strong> または <strong>サブ</strong> 欄へ</div>'+
-    '<div class="av-pool">'+arr.map(function(n){
-      var c=nameColor(n);
-      return '<div class="av-chip" draggable="true" style="background:'+c+'" ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
-        '<div class="av-init">'+esc(nameInit(n))+'</div>'+esc(n)+'</div>';
-    }).join('')+'</div></div>';
+    '<div class="av-panel-hd" style="font-size:.7rem">👤 ドラッグ→割り当て</div>'+
+    '<div class="av-pool" style="flex-direction:column;gap:0">'+allChip+memberChips+'</div></div>';
 }
 
 function taskCardHtml(t,dtype){
