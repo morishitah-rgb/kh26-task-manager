@@ -252,6 +252,38 @@ header .sub{font-size:.7rem;opacity:.8}
 /* Row separator */
 .gtbl tbody tr{border-bottom:1px solid #f4f5fb}
 
+/* ── タイムテーブル Professional ── */
+.prog-info-bar{display:flex;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:12px 18px;border-radius:12px;margin-bottom:16px;font-weight:700;font-size:.85rem}
+.prog-wrap{overflow-x:auto;border-radius:14px;box-shadow:0 2px 20px rgba(0,0,0,.09);border:1px solid #e0e0e0;background:#fff;margin-bottom:4px}
+.prog-tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.prog-tbl thead tr{background:linear-gradient(135deg,#1a237e,#283593)}
+.prog-tbl thead th{padding:11px 12px;color:#fff;font-weight:700;font-size:.78rem;text-align:left;white-space:nowrap;border:none}
+.prog-tbl tbody tr{border-bottom:1px solid #f2f2f2;transition:background .12s}
+.prog-tbl tbody tr.prow-main:hover{background:#fafbff}
+.prog-tbl tbody tr.prow-break{background:#fff8e1}
+.prog-tbl tbody tr.prow-break:hover{background:#fff3cd}
+.prog-tbl tbody tr.prow-transit{background:#fafafa}
+.prog-tbl tbody tr.prow-pre{background:#f3e5f5}
+.prog-tbl tbody tr.prow-end{background:#f5f5f5}
+.prog-tbl tbody tr.prow-coffee{background:linear-gradient(90deg,#fff8e1,#fff3e0)}
+.prog-tbl td{padding:8px 12px;vertical-align:middle}
+.pc-no{width:36px;text-align:center}
+.pc-st,.pc-et{width:54px;font-family:monospace;font-size:.82rem;color:var(--sub);white-space:nowrap}
+.pc-dur{width:44px;text-align:center;font-size:.78rem;color:var(--sub)}
+.pc-act{width:56px;text-align:right}
+.prog-no-bdg{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--red);color:#fff;border-radius:50%;font-weight:900;font-size:.72rem;flex-shrink:0}
+.prog-editable{cursor:pointer;padding:3px 5px;border-radius:4px;display:inline-block;min-width:20px;min-height:18px;transition:background .15s}
+.prog-editable:hover{background:#f0f4ff}
+.prog-time-inp{font-family:monospace;font-size:.82rem;padding:2px 4px;border:1px solid #1565c0;border-radius:4px;width:68px}
+.prog-text-inp{font-size:.84rem;padding:3px 5px;border:1px solid #1565c0;border-radius:4px;width:100%;box-sizing:border-box}
+.prog-break-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;background:#ede7f6;color:#6a1b9a;border-radius:20px;font-size:.75rem;font-weight:700}
+.prog-coffee-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;background:#e65100;color:#fff;border-radius:20px;font-size:.75rem;font-weight:700}
+.prog-del-btn{background:none;border:none;color:#ddd;cursor:pointer;font-size:.88rem;padding:2px 6px;border-radius:4px;transition:all .15s}
+.prog-del-btn:hover{color:#c62828;background:#ffebee}
+.prog-foot{padding:10px 8px;display:flex;justify-content:center}
+.prog-add-btn{background:#f8f8f8;border:2px dashed #ccc;color:#aaa;padding:7px 28px;border-radius:8px;cursor:pointer;font-size:.84rem;transition:all .2s}
+.prog-add-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f5}
+
 /* 掲示板 */
 .bpost{background:#fff;border-radius:11px;padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:10px}
 .bpost-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:7px}
@@ -631,35 +663,36 @@ a{color:var(--red)}
   <div class="sect-head">
     <h2>⑨ タイムテーブル</h2>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
-      <a class="btn btn-r" style="text-decoration:none" href="https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/edit?gid=1861154966" target="_blank">📊 スプレッドシートを開く</a>
-      <button class="btn btn-gray" onclick="downloadSchedulePDF()">🖨 スケジュール印刷用PDF</button>
-      <button class="btn btn-gray" onclick="openProgModal()">＋ 追加</button>
+      <button class="btn btn-r" onclick="printSchedule()">🖨 印刷用PDF</button>
+      <button class="btn btn-gray" onclick="addProgRow()">＋ 行を追加</button>
     </div>
   </div>
-  <!-- 日程・着座情報 -->
-  <div class="card" style="border-left:4px solid var(--red);padding:14px 16px;margin-bottom:12px">
-    <div style="font-weight:800;color:var(--red);font-size:1rem;margin-bottom:8px">📅 2026年7月28日（火）クリエート浜松 2階 大ホール</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem">
-      <span>⏰ <b>発表会：9:30〜15:05</b></span>
-      <span>🚪 <b>来場者着座：11:30まで</b></span>
-      <span>👥 <b>委員集合：8:00</b></span>
-    </div>
+  <div class="prog-info-bar">
+    <span>📅 2026年7月28日（火）</span>
+    <span>📍 クリエート浜松 2階 大ホール</span>
+    <span>⏰ 開会 12:00 → 閉会 17:15</span>
+    <span>👥 委員集合 8:00</span>
   </div>
-  <!-- スプレッドシート埋め込み -->
-  <div class="card" style="padding:10px;overflow:hidden;margin-bottom:12px">
-    <div style="font-size:.78rem;color:var(--sub);margin-bottom:6px;font-weight:700">📊 7月タイムテーブル（スプレッドシート・最新版）</div>
-    <iframe src="https://docs.google.com/spreadsheets/d/1x47VaWKngYcdpLjlzwBav0Ii7AmI1MVVgp79RAR5MIY/htmlview?gid=1148430505" style="width:100%;height:500px;border:none;border-radius:6px" title="7月タイムテーブル"></iframe>
+  <div class="prog-wrap">
+    <table class="prog-tbl">
+      <thead>
+        <tr>
+          <th class="pc-no">No</th>
+          <th class="pc-st">開始</th>
+          <th class="pc-et">終了</th>
+          <th class="pc-dur">時間</th>
+          <th class="pc-title">内容</th>
+          <th class="pc-pres">発表者</th>
+          <th class="pc-staff">司会・担当</th>
+          <th class="pc-act"></th>
+        </tr>
+      </thead>
+      <tbody id="prog-body"></tbody>
+    </table>
   </div>
-  <!-- 種目リスト（手動管理） -->
-  <details>
-    <summary style="cursor:pointer;padding:10px 14px;background:#fff;border-radius:10px;box-shadow:var(--shadow);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--sub);list-style:none">▶ 種目リスト（手動管理・編集可）</summary>
-    <div class="card" style="margin-top:6px;overflow-x:auto">
-      <table class="dtbl">
-        <thead><tr><th style="width:40px">No</th><th style="width:90px">時刻</th><th>種目名</th><th>発表者・担当</th><th style="width:60px">分</th><th>担当委員</th><th style="width:56px"></th></tr></thead>
-        <tbody id="prog-body"></tbody>
-      </table>
-    </div>
-  </details>
+  <div class="prog-foot">
+    <button class="prog-add-btn" onclick="addProgRow()">＋ 行を追加</button>
+  </div>
 </div>
 
 <!-- 当日役割 -->
@@ -2624,45 +2657,123 @@ function autoArrangeSeating(){
 }
 
 // ===== タイムテーブル =====
+function _t2m(t){if(!t)return null;var p=t.split(':');if(p.length<2)return null;return parseInt(p[0])*60+parseInt(p[1]);}
+function _m2t(m){if(m===null||m===undefined||isNaN(m))return '';var h=Math.floor(m/60),n=m%60;return('0'+h).slice(-2)+':'+('0'+n).slice(-2);}
+function _durStr(m){if(!m)return '';if(m<60)return m+'分';return Math.floor(m/60)+'時間'+(m%60?m%60+'分':'');}
+
 function renderPrograms(){
   document.getElementById('prog-body').innerHTML=D.programs.map(function(p){
-    var timeStr=(p.startTime&&p.endTime)?(p.startTime+'〜'+p.endTime):(p.startTime||'');
-    var isAux=p.type==='transit'||p.type==='break'||p.type==='pre'||p.type==='end';
-    var rowStyle=isAux?'background:#f5f5f5;':'';
-    var cellStyle=isAux?'color:#999;font-size:.78rem;':'';
-    var noCell=isAux?'':'<b>'+(p.no||'')+'</b>';
-    return'<tr style="'+rowStyle+'">'+
-      '<td style="text-align:center;'+cellStyle+'">'+noCell+'</td>'+
-      '<td style="white-space:nowrap;font-size:.78rem;color:var(--sub)">'+esc(timeStr)+'</td>'+
-      '<td style="'+(isAux?cellStyle:'font-weight:700')+'">'+esc(p.title)+'</td>'+
-      '<td style="'+cellStyle+'">'+esc(p.presenter||'')+'</td>'+
-      '<td class="num-cell" style="'+cellStyle+'">'+(p.time?p.time+'分':'')+'</td>'+
-      '<td style="'+cellStyle+'">'+esc(p.staff||'')+'</td>'+
-      '<td style="text-align:center"><button class="bsm r" onclick="openProgModal(\''+p.id+'\')">編集</button></td></tr>';
+    var isT=p.type==='transit',isB=p.type==='break',isP=p.type==='pre',isE=p.type==='end';
+    var hasCoffee=(p.title||'').indexOf('ケータリング')>-1;
+    var rowCls=isT?'prow-transit':isB?'prow-break':isP?'prow-pre':isE?'prow-end':'prow-main';
+    if(hasCoffee&&isT) rowCls='prow-coffee';
+
+    var noCell=(!isT&&!isE&&p.no)?'<span class="prog-no-bdg">'+p.no+'</span>':'';
+
+    // title cell
+    var tc;
+    if(isT){
+      if(hasCoffee) tc='<span class="prog-coffee-badge">☕ コーヒー提供開始</span>';
+      else tc='<span style="color:#ccc;font-size:.76rem;font-style:italic">— 入れ替わり —</span>';
+    } else if(isB){
+      tc='<span class="prog-break-badge">休憩</span>';
+      if(hasCoffee) tc+=' <span class="prog-coffee-badge">☕ コーヒー提供</span>';
+      var ex=(p.title||'').replace(/──\s*/g,'').replace(/\s*──/g,'').replace(/中休憩/,'').replace(/軽いストレッチ/,'・ストレッチ').trim();
+      if(ex&&ex.indexOf('ケータリング')<0&&ex.length>0) tc+=' <span style="color:#888;font-size:.8rem;margin-left:4px">'+esc(ex)+'</span>';
+    } else if(isP){
+      tc='<span onclick="progEdit(event,\''+p.id+'\',\'title\')" class="prog-editable" style="color:#6a1b9a;font-weight:700">'+esc(p.title)+'</span>';
+    } else if(isE){
+      tc='<span style="color:#999;font-style:italic;font-size:.84rem">'+esc(p.title)+'</span>';
+    } else {
+      tc='<span onclick="progEdit(event,\''+p.id+'\',\'title\')" class="prog-editable" style="font-weight:700">'+esc(p.title)+'</span>';
+    }
+
+    var stC='<span onclick="progEdit(event,\''+p.id+'\',\'startTime\')" class="prog-editable">'+esc(p.startTime||'')+'</span>';
+    var etC='<span onclick="progEdit(event,\''+p.id+'\',\'endTime\')" class="prog-editable">'+esc(p.endTime||'')+'</span>';
+    var prC=(isT||isE)?'':('<span onclick="progEdit(event,\''+p.id+'\',\'presenter\')" class="prog-editable">'+esc(p.presenter||'')+'</span>');
+    var sfC='<span onclick="progEdit(event,\''+p.id+'\',\'staff\')" class="prog-editable">'+esc(p.staff||'')+'</span>';
+
+    return '<tr class="'+rowCls+'" data-id="'+p.id+'">'+
+      '<td class="pc-no">'+noCell+'</td>'+
+      '<td class="pc-st">'+stC+'</td>'+
+      '<td class="pc-et">'+etC+'</td>'+
+      '<td class="pc-dur">'+_durStr(p.time)+'</td>'+
+      '<td class="pc-title">'+tc+'</td>'+
+      '<td class="pc-pres">'+prC+'</td>'+
+      '<td class="pc-staff">'+sfC+'</td>'+
+      '<td class="pc-act"><button class="prog-del-btn" title="削除" onclick="delProg(\''+p.id+'\')">✕</button></td>'+
+      '</tr>';
   }).join('');
 }
-function openProgModal(id){
-  var p=id?D.programs.find(function(x){return x.id===id;}):null;
-  openModal('<h2>⑦ タイムテーブル'+(p?'を編集':'に追加')+'</h2>'+
-    '<input type="hidden" id="m-id" value="'+(p?p.id:'')+'">'+
-    '<div class="frow frow2"><div><label>No</label><input type="number" id="m-no" value="'+(p?p.no:D.programs.length+1)+'"></div>'+
-    '<div><label>時間（分）</label><input type="number" id="m-time" value="'+(p?p.time:20)+'"></div></div>'+
-    '<div class="frow frow2"><div><label>開始時刻</label><input id="m-stime" placeholder="9:30" value="'+(p&&p.startTime?esc(p.startTime):'')+'"></div>'+
-    '<div><label>終了時刻</label><input id="m-etime" placeholder="9:45" value="'+(p&&p.endTime?esc(p.endTime):'')+'"></div></div>'+
-    '<div class="frow"><label>種目名 *</label><input id="m-title" value="'+(p?esc(p.title):'')+'"></div>'+
-    '<div class="frow"><label>発表者・担当</label><input id="m-presenter" value="'+(p?esc(p.presenter||''):'')+'"></div>'+
-    '<div class="frow"><label>担当委員</label><input id="m-staff" value="'+(p?esc(p.staff||''):'')+'"></div>'+
-    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveProg()">保存</button></div>');
+
+function progEdit(e,id,field){
+  e.stopPropagation();
+  var p=D.programs.find(function(x){return x.id===id;});
+  if(!p) return;
+  var span=e.currentTarget;
+  var isTime=(field==='startTime'||field==='endTime');
+  var inp=document.createElement('input');
+  inp.value=p[field]||'';
+  inp.className=isTime?'prog-time-inp':'prog-text-inp';
+  if(isTime) inp.type='time';
+  span.parentNode.replaceChild(inp,span);
+  inp.focus();if(!isTime)inp.select();
+  function save(){progApply(id,field,inp.value);}
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',function(ev){
+    if(ev.key==='Enter'){ev.preventDefault();inp.blur();}
+    if(ev.key==='Escape'){ev.preventDefault();renderPrograms();}
+  });
 }
-function saveProg(){
-  var title=getV('m-title'),id=getV('m-id');
-  if(!title){alert('種目名を入力してください');return;}
-  var data={no:Number(getV('m-no')),title:title,presenter:getV('m-presenter'),time:Number(getV('m-time')||0),staff:getV('m-staff'),startTime:getV('m-stime'),endTime:getV('m-etime')};
-  if(id){var i=D.programs.findIndex(function(x){return x.id===id;});if(i>=0)D.programs[i]=Object.assign({},D.programs[i],data);}
-  else{data.id=uid();D.programs.push(data);}
-  D.programs.sort(function(a,b){return(a.no||0)-(b.no||0);});
-  persist();renderPrograms();cm();
+
+function progApply(id,field,value){
+  var idx=D.programs.findIndex(function(x){return x.id===id;});
+  if(idx<0) return;
+  var p=D.programs[idx];
+  if(field==='startTime'){
+    p.startTime=value;
+    var sm=_t2m(value);
+    if(sm!==null&&p.time) p.endTime=_m2t(sm+Number(p.time));
+    progCascade(idx);
+  } else if(field==='endTime'){
+    p.endTime=value;
+    var sm=_t2m(p.startTime),em=_t2m(value);
+    if(sm!==null&&em!==null&&em>sm) p.time=em-sm;
+    progCascade(idx);
+  } else {
+    p[field]=value;
+  }
+  persist();renderPrograms();
 }
+
+function progCascade(fromIdx){
+  for(var i=fromIdx+1;i<D.programs.length;i++){
+    var prev=D.programs[i-1],cur=D.programs[i];
+    if(prev.endTime){
+      cur.startTime=prev.endTime;
+      var sm=_t2m(cur.startTime);
+      if(sm!==null&&cur.time) cur.endTime=_m2t(sm+Number(cur.time));
+    }
+  }
+}
+
+function addProgRow(){
+  var last=D.programs[D.programs.length-1];
+  var lastEnd=(last&&last.endTime)?last.endTime:'';
+  var sm=_t2m(lastEnd);
+  var np={id:uid(),no:0,title:'新しい種目',presenter:'',startTime:lastEnd,endTime:sm!==null?_m2t(sm+10):'',time:10,staff:'',type:'main'};
+  D.programs.push(np);
+  persist();renderPrograms();
+}
+
+function delProg(id){
+  if(!confirm('この行を削除しますか？')) return;
+  D.programs=D.programs.filter(function(x){return x.id!==id;});
+  persist();renderPrograms();
+}
+
+function openProgModal(id){renderPrograms();}
+function saveProg(){cm();}
 
 // ===== 当日役割 =====
 function renderTeams(){
@@ -3091,46 +3202,107 @@ function saveLinkData(){
   persist();renderLinks();cm();
 }
 
-// ===== スケジュールPDFダウンロード =====
-function downloadSchedulePDF(){
+// ===== 印刷用PDF =====
+function printSchedule(){
   var progs=D.programs||[];
-  var rows=progs.map(function(p){
-    return'<tr><td style="padding:6px 10px;border-bottom:1px solid #ddd;white-space:nowrap">'+
-      esc(p.startTime||'')+(p.endTime?'〜'+esc(p.endTime):'')+'</td>'+
-      '<td style="padding:6px 10px;border-bottom:1px solid #ddd">'+esc(p.name||'')+'</td>'+
-      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;color:#555">'+esc(p.presenter||'')+'</td>'+
-      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;text-align:center;white-space:nowrap">'+
-      (p.duration?esc(String(p.duration))+'分':'')+'</td>'+
-      '<td style="padding:6px 10px;border-bottom:1px solid #ddd;color:#555">'+esc(p.committee||'')+'</td></tr>';
+  // 印刷用：入れ替わり行を除く
+  var items=progs.filter(function(p){return p.type!=='transit';});
+
+  var rows=items.map(function(p){
+    var isB=p.type==='break',isP=p.type==='pre',isE=p.type==='end';
+    var hasCoffee=(p.title||'').indexOf('ケータリング')>-1;
+
+    var rowBg='';
+    if(isP) rowBg='background:#f8f4ff;';
+    if(isB&&!hasCoffee) rowBg='background:#fafafa;';
+    if(hasCoffee) rowBg='background:#fff3e0;';
+    if(isE) rowBg='background:#f5f5f5;';
+
+    var noCell='';
+    if(!isB&&!isP&&!isE&&p.no) noCell='<b style="color:#b71c1c">'+p.no+'</b>';
+
+    var timeStr=(p.startTime&&p.endTime)?p.startTime+'〜'+p.endTime:(p.startTime||'');
+    var durStr=p.time?(p.time+'分'):'';
+
+    var titleStr='';
+    if(isP) titleStr='来場者着座・前説';
+    else if(isE) titleStr=p.title||'';
+    else if(isB){
+      var bt='【休憩】';
+      if((p.title||'').indexOf('ストレッチ')>-1) bt='【休憩・ストレッチ】';
+      if(hasCoffee) bt='【休憩 ／ ☕ コーヒー提供】';
+      titleStr=bt;
+    } else {
+      titleStr=p.title||'';
+    }
+
+    var titleStyle='';
+    if(isE) titleStyle='color:#999;font-style:italic;';
+    if(isB||isP) titleStyle='color:#555;';
+    if(hasCoffee) titleStyle='color:#e65100;font-weight:600;';
+    if(!isB&&!isP&&!isE) titleStyle='font-weight:600;';
+
+    var presStr=(!isE&&p.presenter)?esc(p.presenter):'';
+
+    return '<tr style="'+rowBg+'border-bottom:1px solid #ebebeb">'+
+      '<td style="text-align:center;width:28px">'+noCell+'</td>'+
+      '<td style="font-family:monospace;font-size:8.5pt;color:#444;white-space:nowrap;width:88px">'+esc(timeStr)+'</td>'+
+      '<td style="text-align:center;color:#999;font-size:7.5pt;width:36px">'+esc(durStr)+'</td>'+
+      '<td style="'+titleStyle+'">'+esc(titleStr)+'</td>'+
+      '<td style="color:#555;font-size:8.5pt;width:100px">'+presStr+'</td>'+
+      '</tr>';
   }).join('');
+
   var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
-    '<title>LIFEFUND 経営方針発表会\'26 タイムスケジュール</title>'+
-    '<style>body{font-family:"Meiryo","Yu Gothic",sans-serif;margin:20mm 15mm;color:#222}'+
-    'h1{font-size:18pt;color:#C8232A;border-bottom:3px solid #C8232A;padding-bottom:8px;margin-bottom:4px}'+
-    '.sub{font-size:10pt;color:#555;margin-bottom:16px}'+
-    'table{width:100%;border-collapse:collapse;font-size:10pt}'+
-    'th{background:#C8232A;color:#fff;padding:7px 10px;text-align:left}'+
-    'tr:nth-child(even) td{background:#fdf4f4}'+
-    '.info-box{border:1.5px solid #C8232A;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:flex;gap:24px;font-size:10pt}'+
-    '.info-box b{color:#C8232A}'+
-    '@media print{@page{size:A4;margin:15mm}button{display:none}}'+
+    '<title>経営方針発表会 2026 タイムスケジュール</title>'+
+    '<style>'+
+    '@page{size:A4 portrait;margin:14mm 12mm}'+
+    '*{box-sizing:border-box;margin:0;padding:0}'+
+    'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222;font-size:9.5pt}'+
+    '.hd{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #b71c1c;padding-bottom:9px;margin-bottom:11px}'+
+    '.logo{font-size:12.5pt;font-weight:900;letter-spacing:.12em;color:#b71c1c;line-height:1}'+
+    '.logo-sub{font-size:7.5pt;color:#999;letter-spacing:.04em;margin-top:2px}'+
+    '.ev-title{font-size:14pt;font-weight:900;color:#1a1a1a;text-align:right;letter-spacing:.02em}'+
+    '.ev-sub{font-size:8.5pt;color:#666;text-align:right;margin-top:3px}'+
+    '.info-bar{display:flex;gap:18px;border-left:3px solid #b71c1c;padding:7px 12px;background:#fafafa;border-radius:0 6px 6px 0;margin-bottom:11px;font-size:8.5pt;flex-wrap:wrap}'+
+    '.info-bar b{color:#b71c1c}'+
+    'table{width:100%;border-collapse:collapse}'+
+    'thead tr{background:#1a237e}'+
+    'thead th{color:#fff;padding:7px 8px;font-size:7.5pt;font-weight:700;text-align:left;white-space:nowrap;letter-spacing:.03em}'+
+    'tbody tr:last-child{border-bottom:2px solid #e0e0e0}'+
+    'td{padding:6px 8px;vertical-align:middle}'+
+    '.ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:7px;border-top:1px solid #e0e0e0;font-size:7.5pt;color:#aaa}'+
+    '.ft-note{font-style:italic}'+
     '</style></head><body>'+
-    '<h1>LIFEFUND 経営方針発表会\'26 タイムスケジュール</h1>'+
-    '<div class="sub">第56期 経営方針発表会　2026年7月28日（火）クリエート浜松 2階 大ホール</div>'+
-    '<div class="info-box">'+
-      '<span>📅 <b>開催日</b>：2026年7月28日（火）</span>'+
-      '<span>⏰ <b>発表会</b>：9:30〜15:05</span>'+
-      '<span>🚪 <b>来場者着座</b>：11:30まで</span>'+
-      '<span>👥 <b>委員集合</b>：8:00</span>'+
+    '<div class="hd">'+
+      '<div><div class="logo">LIFEFUND</div><div class="logo-sub">株式会社ライフファンド</div></div>'+
+      '<div><div class="ev-title">経営方針発表会 2026</div><div class="ev-sub">第56期 経営方針発表会</div></div>'+
     '</div>'+
-    '<table><thead><tr><th style="width:120px">時刻</th><th>種目</th><th style="width:140px">発表者・担当</th><th style="width:50px">時間</th><th style="width:120px">担当委員</th></tr></thead>'+
-    '<tbody>'+rows+'</tbody></table>'+
-    '<div style="margin-top:20px;font-size:8pt;color:#999;text-align:right">印刷：ファイル→印刷→PDFに保存</div>'+
-    '<script>window.onload=function(){window.print();}<\/script>'+
+    '<div class="info-bar">'+
+      '<span>📅 <b>2026年7月28日（火）</b></span>'+
+      '<span>📍 <b>クリエート浜松 2階 大ホール</b></span>'+
+      '<span>⏰ <b>開会 12:00 ／ 閉会 17:15</b></span>'+
+    '</div>'+
+    '<table>'+
+      '<thead><tr>'+
+        '<th style="width:28px">No</th>'+
+        '<th style="width:88px">時刻</th>'+
+        '<th style="width:36px;text-align:center">時間</th>'+
+        '<th>内容</th>'+
+        '<th style="width:100px">発表者</th>'+
+      '</tr></thead>'+
+      '<tbody>'+rows+'</tbody>'+
+    '</table>'+
+    '<div class="ft">'+
+      '<span class="ft-note">☕ コーヒーはケータリング提供（☕マーク行）</span>'+
+      '<span>2026年7月28日　LIFEFUND 経営方針発表会</span>'+
+    '</div>'+
+    '<script>window.onload=function(){window.print();};<\/script>'+
     '</body></html>';
+
   var win=window.open('','_blank');
   if(win){win.document.write(html);win.document.close();}
-  else{alert('ポップアップがブロックされています。ブラウザの設定でこのサイトのポップアップを許可してください。');}
+  else{alert('ポップアップがブロックされています。ブラウザの設定でポップアップを許可してください。');}
 }
 
 // ===== 設定 =====
