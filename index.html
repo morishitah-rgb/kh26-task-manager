@@ -1457,6 +1457,53 @@ function renderAvatarPanel(panelId){
     '<div class="av-pool" style="flex-direction:column;gap:0">'+allChip+memberChips+'</div></div>';
 }
 
+function openMobAssignModal(taskId,role,dtype){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=arr.find(function(x){return x.id===taskId;});
+  if(!item)return;
+  var current=item[role]||'';
+  var roleLabel=role==='owner'?'オーナー':'サブ';
+  var chips=(D.members||[]).map(function(m){
+    var clean=m.name.replace(/\s/g,'');
+    var ph=MEMBER_PHOTOS&&(MEMBER_PHOTOS[clean]||MEMBER_PHOTOS[m.name]);
+    var col=nameColor(clean);
+    var sei=m.name.split(/\s+/)[0]||clean;
+    var sel=current&&(current===m.name||current.indexOf(sei)>=0);
+    var av=ph
+      ?'<img src="'+ph+'" style="width:48px;height:48px;object-fit:cover;object-position:center top;border-radius:50%;border:3px solid '+(sel?'#1565c0':'#ddd')+'">'
+      :'<div style="width:48px;height:48px;border-radius:50%;background:'+col+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;border:3px solid '+(sel?'#1565c0':'transparent')+'">'+clean.slice(0,1)+'</div>';
+    return '<div onclick="mobAssignPick(\''+taskId+'\',\''+role+'\',\''+dtype+'\',\''+esc(m.name)+'\')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:10px;background:'+(sel?'#e3f2fd':'transparent')+';cursor:pointer">'+
+      av+'<span style="font-size:.72rem;font-weight:700;color:'+(sel?'#1565c0':'#333')+'">'+esc(sei)+'</span>'+
+    '</div>';
+  }).join('');
+  var old=document.getElementById('mob-assign-modal');if(old)old.remove();
+  var modal=document.createElement('div');
+  modal.id='mob-assign-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end';
+  modal.innerHTML='<div style="background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px 16px 36px;max-height:80vh;overflow-y:auto">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
+      '<div style="font-size:1rem;font-weight:900;color:#222">'+esc(roleLabel)+'を選択</div>'+
+      '<button onclick="closeMobAssignModal()" style="background:#f5f5f5;border:none;border-radius:50%;width:32px;height:32px;font-size:1.1rem;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px">'+chips+'</div>'+
+    (current?'<button onclick="mobAssignPick(\''+taskId+'\',\''+role+'\',\''+dtype+'\',\'\')" style="width:100%;padding:13px;background:#fff3f3;border:1.5px solid #ffcdd2;border-radius:12px;color:#c62828;font-weight:700;font-size:.9rem;cursor:pointer">解除</button>':'')+
+  '</div>';
+  modal.onclick=function(e){if(e.target===modal)closeMobAssignModal();};
+  document.body.appendChild(modal);
+}
+function closeMobAssignModal(){
+  var m=document.getElementById('mob-assign-modal');if(m)m.remove();
+}
+function mobAssignPick(taskId,role,dtype,name){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var item=arr.find(function(x){return x.id===taskId;});
+  if(!item)return;
+  item[role]=name;
+  item.assignee=(item.owner||'')+(item.sub?'・'+item.sub:'');
+  persist();
+  closeMobAssignModal();
+  if(dtype==='supply')renderSupplies();else renderTasks();
+}
 function taskCardHtml(t,dtype){
   dtype=dtype||'task';
   var today2=todayStr();
@@ -1467,17 +1514,17 @@ function taskCardHtml(t,dtype){
   var dueClass=t.status==='done'?'dc-done':od?'dc-od':(daysLeft!==null&&daysLeft<=5?'dc-soon':'dc-norm');
   var dueDisp=t.due?t.due.slice(5).replace('-','/'):'';
   var dueExtra=daysLeft===0?' 今日':od?' ('+Math.abs(daysLeft)+'日超過)':daysLeft===1?' 明日':'';
-  var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)" onclick="onMobileTap(event,this)"';
+  var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)" onclick="if(isMobile()){openMobAssignModal(this.dataset.id,this.dataset.role,this.dataset.dtype);event.stopPropagation();}"';
   var ownerHtml=owner
     ?'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(owner)+'44;padding:0">'+
-        '<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation()">'+
+        '<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="if(isMobile()){openMobAssignModal(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation();}else{removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation();}">'+
           '<div class="asgn-dot" style="background:'+nameColor(owner)+'">'+esc(nameInit(owner))+'</div>'+
           '<span class="asgn-name">'+esc(owner)+'</span>'+
           '<span class="asgn-x">✕</span></div></div>'
     :'<div class="asgn-drop" data-role="owner"'+dzAttrs+'>タップ / ドロップで割り当て</div>';
   var subHtml=sub
     ?'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(sub)+'44;padding:0;font-size:.72rem">'+
-        '<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation()">'+
+        '<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="if(isMobile()){openMobAssignModal(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation();}else{removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation();}">'+
           '<div class="asgn-dot" style="background:'+nameColor(sub)+'">'+esc(nameInit(sub))+'</div>'+
           '<span class="asgn-name">'+esc(sub)+'</span>'+
           '<span class="asgn-x">✕</span></div></div>'
