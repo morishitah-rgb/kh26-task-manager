@@ -196,7 +196,7 @@ header .sub{font-size:.7rem;opacity:.8}
 .kcard-sep{margin:18px 0 10px;display:flex;align-items:center;gap:10px}
 /* Avatar Panel layout */
 .av-layout{display:grid;grid-template-columns:200px 1fr;gap:16px}
-@media(max-width:700px){.av-layout{grid-template-columns:1fr}.av-layout .kcard-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.av-layout{grid-template-columns:1fr}.av-layout .kcard-grid{grid-template-columns:1fr}#task-avatar-panel,#supply-avatar-panel{display:none}}
 /* Avatar Panel */
 .av-panel{background:#fff;border-radius:13px;border:1px solid var(--line);padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.12);position:sticky;top:100px;z-index:30}
 .av-panel-hd{font-size:.75rem;font-weight:800;color:var(--sub);margin-bottom:11px;display:flex;align-items:center;gap:6px}
@@ -1465,13 +1465,10 @@ function openMobAssignModal(taskId,role,dtype){
   var roleLabel=role==='owner'?'オーナー':'サブ';
   var chips=(D.members||[]).map(function(m){
     var clean=m.name.replace(/\s/g,'');
-    var ph=MEMBER_PHOTOS&&(MEMBER_PHOTOS[clean]||MEMBER_PHOTOS[m.name]);
     var col=nameColor(clean);
     var sei=m.name.split(/\s+/)[0]||clean;
     var sel=current&&(current===m.name||current.indexOf(sei)>=0);
-    var av=ph
-      ?'<img src="'+ph+'" style="width:48px;height:48px;object-fit:cover;object-position:center top;border-radius:50%;border:3px solid '+(sel?'#1565c0':'#ddd')+'">'
-      :'<div style="width:48px;height:48px;border-radius:50%;background:'+col+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;border:3px solid '+(sel?'#1565c0':'transparent')+'">'+clean.slice(0,1)+'</div>';
+    var av='<div style="width:48px;height:48px;border-radius:50%;background:'+col+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;border:3px solid '+(sel?'#1565c0':'transparent')+'">'+clean.slice(0,1)+'</div>';
     return '<div onclick="mobAssignPick(\''+taskId+'\',\''+role+'\',\''+dtype+'\',\''+esc(m.name)+'\')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:10px;background:'+(sel?'#e3f2fd':'transparent')+';cursor:pointer">'+
       av+'<span style="font-size:.72rem;font-weight:700;color:'+(sel?'#1565c0':'#333')+'">'+esc(sei)+'</span>'+
     '</div>';
