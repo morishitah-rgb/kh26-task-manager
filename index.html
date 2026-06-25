@@ -654,11 +654,17 @@ a{color:var(--red)}
   <div style="overflow-x:auto">
     <div style="min-width:700px;padding:16px;background:#f0f2f5;border-radius:12px;border:2px solid var(--line)">
       <!-- スクリーン -->
-      <div style="background:#7f8c8d;color:#fff;text-align:center;padding:6px;border-radius:4px;margin:0 auto 4px;max-width:300px;font-size:.75rem;letter-spacing:2px">スクリーン</div>
-      <!-- ステージ -->
-      <div style="background:#2c3e50;color:#fff;text-align:center;padding:10px;border-radius:6px;margin:0 auto 20px;max-width:400px;font-weight:700;font-size:.85rem;letter-spacing:3px">演台</div>
+      <div style="background:#7f8c8d;color:#fff;text-align:center;padding:6px;border-radius:4px;margin:0 auto 12px;max-width:300px;font-size:.75rem;letter-spacing:2px">スクリーン</div>
       <!-- 座席グリッド -->
       <div id="seating-grid-wrap" style="display:flex;gap:4px;justify-content:center;align-items:flex-start">
+        <!-- 左側会場マーカー -->
+        <div style="display:flex;flex-direction:column;gap:6px;margin-right:4px;align-self:stretch;justify-content:space-between;min-width:58px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="border:2.5px solid #e74c3c;border-radius:6px;padding:12px 6px;color:#e74c3c;font-size:.62rem;font-weight:700;transform:rotate(8deg);text-align:center;line-height:1.4">司会者</div>
+            <div style="border:2.5px solid #3498db;border-radius:4px;padding:10px 8px;color:#3498db;font-size:.62rem;font-weight:700;text-align:center;line-height:1.4">発表者</div>
+          </div>
+          <div style="border:2.5px solid #e67e22;border-radius:6px;padding:20px 6px;color:#e67e22;font-size:.62rem;font-weight:700;writing-mode:vertical-rl;text-orientation:mixed;text-align:center;letter-spacing:.1em">コーヒーカウンター</div>
+        </div>
         <!-- 行ラベル -->
         <div id="seating-row-labels" style="display:flex;flex-direction:column;gap:6px;padding-top:2px"></div>
         <!-- ブロック左（列1-2） -->
