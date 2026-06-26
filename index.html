@@ -1682,7 +1682,7 @@ function taskCardHtml(t,dtype,childDepth){
       blockerHtml+
       '<div class="k2-head">'+
         '<span class="k2-st-icon" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')" title="クリックでステータス変更" style="cursor:pointer">'+icon+'</span>'+
-        '<div class="k2-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.name||t.title)+'</div>'+
+        '<div class="k2-title" '+ie+'\'title\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.title||t.name)+'</div>'+
         (t.status==='done'
           ?'<div class="k2-badge-done-wrap"><button class="k2-badge k2-st-done" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button><span class="k2-badge-tip">押すと未着手に戻す</span></div>'
           :'<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'
