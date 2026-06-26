@@ -1873,6 +1873,50 @@ function closeAssignDropdown(){
   var dd=document.getElementById('asgn-dd');
   if(dd)dd.remove();
 }
+function openCardAssignDD(e,id,role,dtype){
+  e.stopPropagation();
+  closeAssignDropdown();
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var t=arr.find(function(x){return x.id===id;});
+  if(!t)return;
+  var current=role==='owner'?(t.owner||''):(t.sub||'');
+  var members=(D.members||[]).map(function(m){return{name:m.name.replace(/\s+/g,''),role:m.role||'',cat:m.cat||''};});
+  var html='<div class="asgn-dd-item" onclick="applyCardAssign(\''+id+'\',\''+role+'\',\'\',\''+dtype+'\')">'+
+    '<div class="asgn-dd-av" style="background:#ccc;font-size:.7rem">—</div>'+
+    '<div class="asgn-dd-info"><div class="asgn-dd-name">（なし）</div></div>'+
+    (current===''?'<span class="asgn-dd-check">✓</span>':'')+
+  '</div>';
+  members.forEach(function(m){
+    var c=nameColor(m.name);
+    var ns=m.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    var rl=m.role||m.cat||'';
+    html+='<div class="asgn-dd-item'+(current===m.name?' selected':'')+'" onclick="applyCardAssign(\''+id+'\',\''+role+'\',\''+ns+'\',\''+dtype+'\')">'+
+      '<div class="asgn-dd-av" style="background:'+c+'">'+esc(nameInit(m.name))+'</div>'+
+      '<div class="asgn-dd-info"><div class="asgn-dd-name">'+esc(m.name)+'</div>'+(rl?'<div class="asgn-dd-role">'+esc(rl)+'</div>':'')+
+      '</div>'+(current===m.name?'<span class="asgn-dd-check">✓</span>':'')+
+    '</div>';
+  });
+  var dd=document.createElement('div');
+  dd.id='asgn-dd';dd.className='asgn-dd-wrap';dd.innerHTML=html;
+  document.body.appendChild(dd);
+  var btn=e.currentTarget;
+  var rect=btn.getBoundingClientRect();
+  var top=rect.bottom+4,left=rect.left;
+  if(top+320>window.innerHeight)top=rect.top-324;
+  if(left+220>window.innerWidth)left=window.innerWidth-224;
+  dd.style.top=top+'px';dd.style.left=left+'px';dd.style.width='220px';
+  setTimeout(function(){document.addEventListener('click',closeAssignDropdown,{once:true});},0);
+}
+function applyCardAssign(id,role,name,dtype){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var t=arr.find(function(x){return x.id===id;});
+  if(!t)return;
+  if(role==='owner'){t.owner=name;t.assignee=name+(t.sub?'・'+t.sub:'');}
+  else{t.sub=name;t.assignee=(t.owner||'')+(name?'・'+name:'');}
+  persist();
+  if(dtype==='supply')renderSupplies();else renderTasks();
+  closeAssignDropdown();
+}
 function saveTask(){
   var title=getV('m-title'),id=getV('m-id');
   var owner=getV('m-owner').trim(),sub=getV('m-sub').trim();
