@@ -458,6 +458,7 @@ a{color:var(--red)}
     <h1>🎤 経営方針発表会 2026</h1>
   </div>
   <div class="hbtns">
+    <span id="sync-badge" style="font-size:.72rem;padding:4px 8px;border-radius:12px;background:rgba(255,255,255,.15);color:#fff;white-space:nowrap;transition:background .3s" title="同期状態">⚫ オフライン</span>
     <button class="btn btn-w" id="add-btn" onclick="onAddBtn()">＋ 追加</button>
     <button class="btn btn-ol" onclick="goTab('settings')">⚙</button>
     <button class="btn btn-ol" onclick="doLogout()" style="font-size:.75rem">ログアウト</button>
@@ -1195,16 +1196,52 @@ function loadLocal(){
     if(history.replaceState)history.replaceState(null,'',location.pathname);
   })();
 }
-function persist(){localStorage.setItem(SK,JSON.stringify(D));autoSync();}
+function persist(){D._t=Date.now();localStorage.setItem(SK,JSON.stringify(D));autoSync();}
 function showToast(msg){
   var t=document.getElementById('save-toast');
   if(!t){t=document.createElement('div');t.id='save-toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#2ecc71;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:opacity .4s;pointer-events:none';document.body.appendChild(t);}
   t.textContent=msg||'✓ 保存しました';t.style.opacity='1';
   clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';},1800);
 }
+function setSyncBadge(state){
+  var el=document.getElementById('sync-badge');if(!el)return;
+  var map={online:'🟢 同期中',syncing:'🔄 送信中',updating:'📥 受信中',offline:'⚫ オフライン',error:'🔴 エラー'};
+  el.textContent=map[state]||state;
+}
+var _autoSyncTimer=null;
 async function autoSync(){
   if(!cfg.apiKey||!cfg.binId)return;
-  try{await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});}catch(e){}
+  clearTimeout(_autoSyncTimer);
+  _autoSyncTimer=setTimeout(async function(){
+    setSyncBadge('syncing');
+    try{
+      await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});
+      setSyncBadge('online');
+    }catch(e){setSyncBadge('error');}
+  },600);
+}
+
+// ===== ポーリング（5秒ごとにクラウドの変更を検知して自動反映）=====
+var _polling=false;
+function startPolling(){
+  if(_polling)return;
+  _polling=true;
+  setInterval(async function(){
+    if(!cfg.apiKey||!cfg.binId)return;
+    if(_autoSyncTimer)return; // 送信中はスキップ
+    try{
+      var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
+      var data=await r.json();
+      if(data.record&&data.record._t&&data.record._t>(D._t||0)){
+        setSyncBadge('updating');
+        D=Object.assign(cloneD(INIT),data.record);
+        localStorage.setItem(SK,JSON.stringify(D));
+        renderPage(curTab);
+        showToast('📥 他のユーザーの変更を反映しました');
+        setSyncBadge('online');
+      }
+    }catch(e){}
+  },5000);
 }
 function cloneD(x){return JSON.parse(JSON.stringify(x));}
 function uid(){return 'i'+Date.now()+Math.random().toString(36).slice(2,6);}
@@ -3849,6 +3886,8 @@ async function appInit(){
   }
   migrateOwnerNames();
   goTab('board');
+  if(cfg.apiKey&&cfg.binId){setSyncBadge('online');}
+  startPolling();
 }
 
 // ===== Google OAuth 認証 =====
