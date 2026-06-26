@@ -1694,7 +1694,7 @@ function cycleTaskStatus(id,dtype){
 }
 function renderTasks(){
   var today=todayStr();
-  var fa=getV('f-as'),fc=getV('f-ca');
+  var fa=_avFilter,fc=getV('f-ca');
   var all=D.tasks.filter(function(t){
     var owner=(t.owner||(t.assignee?t.assignee.split(/[・、]/)[0].trim():'')).trim();
     var sub=(t.sub||(t.assignee&&t.assignee.indexOf('・')>-1?t.assignee.split(/[・、]/)[1].trim():'')).trim();
@@ -1745,7 +1745,7 @@ function renderTasks(){
   // アバターフィルターチップ
   var avRow=document.getElementById('av-filter-row');
   if(avRow){
-    var curFa=getV('f-as');
+    var curFa=_avFilter;
     var members=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');}).filter(Boolean);
     var allCls='avf-chip-all'+(curFa===''?' active':'');
     var chips='<span class="'+allCls+'" onclick="setAvFilter(\'\')">すべて</span>';
