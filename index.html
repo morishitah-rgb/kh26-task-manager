@@ -261,6 +261,8 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2-od-badge{font-size:.7rem;font-weight:900;background:#fce4ec;color:#c62828;border-radius:6px;padding:3px 8px;margin-bottom:6px;display:inline-block}
 .k2-memo{font-size:.75rem;color:var(--sub);line-height:1.5;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:text}
 .k2-memo-add{font-size:.7rem;color:#ccc;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:pointer}
+.k2-edit-btn{background:none;border:none;font-size:.9rem;cursor:pointer;color:#bbb;padding:3px 5px;border-radius:6px;transition:all .12s;flex-shrink:0;line-height:1}
+.k2-edit-btn:hover{color:#5c6bc0;background:#f0f4ff}
 .k2-del-btn{background:#fff0f0;border:1.5px solid #ffcdd2;color:#e57373;font-size:.82rem;font-weight:900;cursor:pointer;padding:3px 9px;border-radius:20px;transition:all .12s;flex-shrink:0;line-height:1.4}
 .k2-del-btn:hover{background:#fce4ec;color:#c62828;border-color:#ef9a9a}
 /* Avatar filter chips */
@@ -1678,6 +1680,7 @@ function taskCardHtml(t,dtype,childDepth){
           ?'<div class="k2-badge-done-wrap"><button class="k2-badge k2-st-done" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button><span class="k2-badge-tip">押すと未着手に戻す</span></div>'
           :'<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'
         )+
+        '<button class="k2-edit-btn" onclick="'+editFn+'(\''+t.id+'\')" title="編集（前提タスク等）">⚙</button>'+
         '<button class="k2-del-btn" onclick="'+delFn+'(\''+t.id+'\')" title="削除">×</button>'+
       '</div>'+
       '<div class="k2-meta">'+metaHtml+'</div>'+
