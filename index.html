@@ -228,6 +228,20 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2-cat{font-size:.66rem;font-weight:800;background:#f0f4ff;color:#3949ab;border-radius:6px;padding:3px 8px}
 .k2-due{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:8px}.k2-due-add{font-size:.7rem;color:#ccc;cursor:pointer}
 .k2-blocker{font-size:.72rem;font-weight:800;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 10px;margin-bottom:8px;display:inline-flex;align-items:center;gap:4px}
+/* --- assignee click-select --- */
+.asgn-sel-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--ink);transition:border-color .12s;position:relative;text-align:left}
+.asgn-sel-btn:hover{border-color:#90caf9}
+.asgn-sel-btn .asgn-clear{margin-left:auto;font-size:.8rem;color:#bbb;line-height:1;padding:2px 4px;border-radius:4px;background:none;border:none;cursor:pointer}
+.asgn-sel-btn .asgn-clear:hover{background:#fee;color:#e53935}
+.asgn-dd-wrap{position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:220px;max-height:320px;overflow-y:auto;padding:6px 0}
+.asgn-dd-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:.85rem;font-weight:700;color:var(--ink);transition:background .1s}
+.asgn-dd-item:hover{background:#f5f8ff}
+.asgn-dd-item.selected{background:#e8f5e9}
+.asgn-dd-item .asgn-dd-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.8rem;flex-shrink:0}
+.asgn-dd-item .asgn-dd-info{flex:1;min-width:0}
+.asgn-dd-item .asgn-dd-name{font-size:.85rem;font-weight:800;color:var(--ink)}
+.asgn-dd-item .asgn-dd-role{font-size:.7rem;color:var(--sub);margin-top:1px}
+.asgn-dd-item .asgn-dd-check{color:#4caf50;font-size:1rem;margin-left:auto}
 .k2-od-badge{font-size:.7rem;font-weight:900;background:#fce4ec;color:#c62828;border-radius:6px;padding:3px 8px;margin-bottom:6px;display:inline-block}
 .k2-memo{font-size:.75rem;color:var(--sub);line-height:1.5;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:text}
 .k2-memo-add{font-size:.7rem;color:#ccc;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:pointer}
@@ -1768,14 +1782,11 @@ function openTaskModal(id){
     '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
     '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
     '<div class="frow"><label style="margin-bottom:8px;display:block">担当者</label>'+
-      '<div id="m-av-pool" style="display:flex;gap:7px;flex-wrap:wrap;padding:10px;background:#f8f8f8;border-radius:10px;border:1px solid var(--line);margin-bottom:10px"></div>'+
       '<div style="display:flex;gap:10px">'+
         '<div style="flex:1"><div style="font-size:.72rem;font-weight:800;color:var(--sub);margin-bottom:5px">オーナー（主担当）</div>'+
-          '<div id="m-owner-zone" class="asgn-drop" style="min-height:40px;display:flex;align-items:center;justify-content:center" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onModalAssignDrop(event,\'owner\')">ドラッグして割り当て</div>'+
-          '<input type="hidden" id="m-owner"></div>'+
+          '<button type="button" class="asgn-sel-btn" id="m-owner-btn" onclick="openAssignDropdown(\'owner\',this)"><span id="m-owner-display">担当者を選択</span><input type="hidden" id="m-owner"></button></div>'+
         '<div style="flex:1"><div style="font-size:.72rem;font-weight:800;color:var(--sub);margin-bottom:5px">サブ（副担当）</div>'+
-          '<div id="m-sub-zone" class="asgn-drop" style="min-height:40px;display:flex;align-items:center;justify-content:center" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onModalAssignDrop(event,\'sub\')">ドラッグして割り当て</div>'+
-          '<input type="hidden" id="m-sub"></div>'+
+          '<button type="button" class="asgn-sel-btn" id="m-sub-btn" onclick="openAssignDropdown(\'sub\',this)"><span id="m-sub-display">担当者を選択</span><input type="hidden" id="m-sub"></button></div>'+
       '</div></div>'+
     '<div class="frow"><label>カテゴリ</label><select id="m-cat">'+cats.map(function(c){return'<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
     '<div class="frow"><label>期限</label><input type="date" id="m-due" value="'+(t?t.due||'':'')+'"></div>'+
@@ -1793,45 +1804,71 @@ function openTaskModal(id){
       '</select></div>'+
     '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTask()">保存</button></div>');
-  initModalAvatars(owner,sub);
+  initModalAssignBtns(owner,sub);
 }
-function initModalAvatars(owner,sub){
-  var pool=document.getElementById('m-av-pool');
-  if(!pool)return;
-  var arr=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');});
-  pool.innerHTML=arr.map(function(n){
-    var c=nameColor(n);
-    return '<div class="av-chip" draggable="true" style="background:'+c+';font-size:.78rem;padding:5px 10px 5px 6px" '+
-      'ondragstart="avDragStart(event,\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" title="'+esc(n)+'">'+
-      '<div class="av-init" style="width:20px;height:20px;font-size:.66rem">'+esc(nameInit(n))+'</div>'+esc(n)+'</div>';
-  }).join('');
-  setModalZone('owner',owner);
-  setModalZone('sub',sub);
+function initModalAssignBtns(owner,sub){
+  renderAssignBtn('owner',owner);
+  renderAssignBtn('sub',sub);
 }
-function setModalZone(role,name){
-  var zone=document.getElementById('m-'+role+'-zone');
+function renderAssignBtn(role,name){
+  var disp=document.getElementById('m-'+role+'-display');
   var inp=document.getElementById('m-'+role);
-  if(!zone||!inp)return;
+  if(!disp||!inp)return;
   inp.value=name||'';
   if(name){
     var c=nameColor(name);
-    var isOwner=role==='owner';
-    zone.innerHTML='<div class="asgn-chip '+(isOwner?'asgn-owner':'asgn-sub')+'" style="background:'+c+'22;color:'+c+';cursor:pointer" onclick="setModalZone(\''+role+'\',\'\')">'+
-      '<div class="asgn-dot" style="background:'+c+';">'+(isOwner?'<span style="font-size:.84rem">':'<span style="font-size:.74rem">')+esc(nameInit(name))+'</span></div>'+
-      '<span class="asgn-name">'+esc(name)+'</span>'+
-      '<span class="asgn-x">✕</span></div>';
-    zone.classList.remove('dg-over');
+    disp.innerHTML='<div style="width:22px;height:22px;border-radius:50%;background:'+c+';display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.65rem;flex-shrink:0">'+esc(nameInit(name))+'</div>'+
+      '<span style="flex:1">'+esc(name)+'</span>'+
+      '<button class="asgn-clear" onclick="event.stopPropagation();renderAssignBtn(\''+role+'\',\'\')">✕</button>';
   }else{
-    zone.innerHTML='ドラッグして割り当て';
+    disp.innerHTML='<span style="color:#bbb">担当者を選択</span>';
   }
 }
-function onModalAssignDrop(e,role){
-  e.preventDefault();
-  var zone=document.getElementById('m-'+role+'-zone');
-  if(zone)zone.classList.remove('dg-over');
-  var name=avDragName||e.dataTransfer.getData('text/plain');
-  if(!name)return;
-  setModalZone(role,name);
+var _asgnDDRole='';
+function openAssignDropdown(role,btn){
+  closeAssignDropdown();
+  _asgnDDRole=role;
+  var members=(D.members||[]).map(function(m){return{name:m.name.replace(/\s+/g,''),role:m.role||'',cat:m.cat||''};});
+  var current=document.getElementById('m-'+role).value;
+  var html='<div class="asgn-dd-item" onclick="selectAssignee(\''+role+'\',\'\')">'+
+    '<div class="asgn-dd-av" style="background:#ccc;font-size:.7rem">—</div>'+
+    '<div class="asgn-dd-info"><div class="asgn-dd-name">（なし）</div></div>'+
+    (current===''?'<span class="asgn-dd-check">✓</span>':'')+
+  '</div>';
+  members.forEach(function(m){
+    var c=nameColor(m.name);
+    var ns=m.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    var roleLabel=m.role||m.cat||'';
+    html+='<div class="asgn-dd-item'+(current===m.name?' selected':'')+'" onclick="selectAssignee(\''+role+'\',\''+ns+'\')">'+
+      '<div class="asgn-dd-av" style="background:'+c+'">'+esc(nameInit(m.name))+'</div>'+
+      '<div class="asgn-dd-info"><div class="asgn-dd-name">'+esc(m.name)+'</div>'+
+        (roleLabel?'<div class="asgn-dd-role">'+esc(roleLabel)+'</div>':'')+
+      '</div>'+
+      (current===m.name?'<span class="asgn-dd-check">✓</span>':'')+
+    '</div>';
+  });
+  var dd=document.createElement('div');
+  dd.id='asgn-dd';
+  dd.className='asgn-dd-wrap';
+  dd.innerHTML=html;
+  document.body.appendChild(dd);
+  var rect=btn.getBoundingClientRect();
+  var top=rect.bottom+4;
+  var left=rect.left;
+  if(top+320>window.innerHeight)top=rect.top-324;
+  if(left+220>window.innerWidth)left=window.innerWidth-224;
+  dd.style.top=top+'px';
+  dd.style.left=left+'px';
+  dd.style.width=Math.max(rect.width,220)+'px';
+  setTimeout(function(){document.addEventListener('click',closeAssignDropdown,{once:true});},0);
+}
+function selectAssignee(role,name){
+  renderAssignBtn(role,name);
+  closeAssignDropdown();
+}
+function closeAssignDropdown(){
+  var dd=document.getElementById('asgn-dd');
+  if(dd)dd.remove();
 }
 function saveTask(){
   var title=getV('m-title'),id=getV('m-id');
