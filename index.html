@@ -214,14 +214,20 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2card.k2-child::before{content:'↳';position:absolute;left:-22px;top:50%;transform:translateY(-50%);font-size:1rem;color:#bbb}
 .k2-bar{display:none}
 .k2card.done{border-left-color:#d8dce4!important;background:#f9fafb;box-shadow:none;border-color:#eaecf0}
-.k2card.done .k2-body{padding:7px 18px}
-.k2card.done .k2-head{margin-bottom:3px}
+.k2card.done .k2-body{padding:6px 18px}
+.k2card.done .k2-head{margin-bottom:0}
 .k2card.done .k2-title{font-size:.82rem;font-weight:600;color:#b0b8c4;text-decoration:line-through}
 .k2card.done .k2-st-icon{font-size:.85rem;opacity:.6}
-.k2card.done .k2-badge{opacity:.5;font-size:.68rem;padding:2px 8px}
-.k2card.done .k2-meta{font-size:.68rem;opacity:.5;margin-bottom:0}
+.k2card.done .k2-badge{opacity:.6;font-size:.68rem;padding:2px 8px}
+.k2card.done .k2-meta{display:none}
 .k2card.done .k2-memo,.k2card.done .k2-memo-add{display:none}
+.k2card.done .k2-od-badge,.k2card.done .k2-blocker{display:none}
 .k2card.done:hover{box-shadow:none;transform:none}
+/* 完了バッジのツールチップ */
+.k2-badge-done-wrap{position:relative;display:inline-flex}
+.k2-badge-done-wrap .k2-badge-tip{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:#333;color:#fff;font-size:.68rem;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:100}
+.k2-badge-done-wrap .k2-badge-tip::after{content:'';position:absolute;top:100%;right:12px;border:5px solid transparent;border-top-color:#333}
+.k2-badge-done-wrap:hover .k2-badge-tip{display:block}
 .k2-body{flex:1;padding:14px 18px;min-width:0}
 .k2-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .k2-st-icon{font-size:1.1rem;flex-shrink:0;line-height:1}
@@ -1671,7 +1677,10 @@ function taskCardHtml(t,dtype,childDepth){
       '<div class="k2-head">'+
         '<span class="k2-st-icon" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')" title="クリックでステータス変更" style="cursor:pointer">'+icon+'</span>'+
         '<div class="k2-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.name||t.title)+'</div>'+
-        '<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'+
+        (t.status==='done'
+          ?'<div class="k2-badge-done-wrap"><button class="k2-badge k2-st-done" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button><span class="k2-badge-tip">押すと未着手に戻す</span></div>'
+          :'<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'
+        )+
         '<button class="k2-del-btn" onclick="'+delFn+'(\''+t.id+'\')" title="削除">×</button>'+
       '</div>'+
       '<div class="k2-meta">'+metaHtml+'</div>'+
