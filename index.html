@@ -228,6 +228,10 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2-cat{font-size:.66rem;font-weight:800;background:#f0f4ff;color:#3949ab;border-radius:6px;padding:3px 8px}
 .k2-due{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:8px}.k2-due-add{font-size:.7rem;color:#ccc;cursor:pointer}
 .k2-blocker{font-size:.72rem;font-weight:800;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 10px;margin-bottom:8px;display:inline-flex;align-items:center;gap:4px}
+/* --- card assignee tag --- */
+.asgn-tag{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 8px 3px 4px;cursor:pointer;font-size:.78rem;transition:opacity .12s;white-space:nowrap}
+.asgn-tag:hover{opacity:.75}
+.asgn-tag-empty{background:#f5f5f5!important;color:#aaa!important;border:1.5px dashed #ccc!important;font-size:.7rem}
 /* --- assignee click-select --- */
 .asgn-sel-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--ink);transition:border-color .12s;position:relative;text-align:left}
 .asgn-sel-btn:hover{border-color:#90caf9}
@@ -1636,27 +1640,26 @@ function taskCardHtml(t,dtype,childDepth){
     var s=sz==='sm'?'width:22px;height:22px;font-size:.6rem':'width:28px;height:28px;font-size:.72rem';
     return'<span class="k2-av" style="'+s+';background:'+col+'" title="'+esc(name)+'">'+esc(nameInit(name))+'</span>';
   }
-  var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)" onclick="if(isMobile()){openMobAssignModal(this.dataset.id,this.dataset.role,this.dataset.dtype);event.stopPropagation();}"';
-  var ownerHtml=owner
-    ?'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(owner)+'44;padding:0">'+
-        '<div class="asgn-chip asgn-owner" style="background:'+nameColor(owner)+'22;color:'+nameColor(owner)+'" onclick="if(isMobile()){openMobAssignModal(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation();}else{removeAssign(\''+t.id+'\',\'owner\',\''+dtype+'\');event.stopPropagation();}">'+
-          '<div class="asgn-dot" style="background:'+nameColor(owner)+'">'+esc(nameInit(owner))+'</div>'+
-          '<span class="asgn-name">'+esc(owner)+'</span>'+
-          '<span class="asgn-x">✕</span></div></div>'
-    :'<div class="asgn-drop" data-role="owner"'+dzAttrs+'>タップ / ドロップで割り当て</div>';
-  var subHtml=sub
-    ?'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(sub)+'44;padding:0;font-size:.72rem">'+
-        '<div class="asgn-chip asgn-sub" style="background:'+nameColor(sub)+'22;color:'+nameColor(sub)+'" onclick="if(isMobile()){openMobAssignModal(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation();}else{removeAssign(\''+t.id+'\',\'sub\',\''+dtype+'\');event.stopPropagation();}">'+
-          '<div class="asgn-dot" style="background:'+nameColor(sub)+'">'+esc(nameInit(sub))+'</div>'+
-          '<span class="asgn-name">'+esc(sub)+'</span>'+
-          '<span class="asgn-x">✕</span></div></div>'
-    :'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="font-size:.72rem;padding:5px 12px">サブ</div>';
-  // 新デザイン: k2card
-  var ownerAvatar=avChip(owner,'md');
-  var subAvatar=avChip(sub,'sm');
+  // タグクリックで担当者選択
+  var tid=t.id,dtp=dtype;
+  function assignTag(name,role,label){
+    var c=nameColor(name);
+    var ns=name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<button class="asgn-tag" style="background:'+c+'22;color:'+c+';border:1.5px solid '+c+'66" '+
+      'onclick="openCardAssignDD(event,\''+tid+'\',\''+role+'\',\''+dtp+'\')" title="クリックで'+label+'を変更">'+
+      '<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:'+c+';color:#fff;font-size:.6rem;font-weight:900;flex-shrink:0">'+esc(nameInit(name))+'</span>'+
+      '<span style="font-weight:800;font-size:.78rem">'+esc(name)+'</span>'+
+      '</button>';
+  }
+  function noAssignTag(role,label){
+    return '<button class="asgn-tag asgn-tag-empty" '+
+      'onclick="openCardAssignDD(event,\''+tid+'\',\''+role+'\',\''+dtp+'\')" title="'+label+'を設定">'+
+      '＋ '+label+
+      '</button>';
+  }
   var metaHtml=
-    (owner?ownerAvatar+'<span class="k2-owner-name">'+esc(owner)+'</span>':'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="font-size:.68rem;padding:4px 10px">タップして担当者を設定</div>')+
-    (sub?'<span style="color:#ccc;margin:0 2px">·</span>'+subAvatar+'<span class="k2-sub-name">'+esc(sub)+'</span>':'')+
+    (owner?assignTag(owner,'owner','担当者'):noAssignTag('owner','担当者'))+
+    (sub?assignTag(sub,'sub','サブ'):noAssignTag('sub','サブ'))+
     (t.cat||t.category?'<span class="k2-cat">'+esc(t.cat||t.category||'')+'</span>':'')+
     (t.due
       ?'<span class="k2-due '+dueClass+'" '+ieDateAttr+'>📅 '+esc(dueDisp)+esc(dueExtra)+'</span>'
