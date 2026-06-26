@@ -577,10 +577,7 @@ a{color:var(--red)}
     <select id="f-as" onchange="renderTasks()" style="display:none"></select>
     <select id="f-ca" onchange="renderTasks()"><option value="">すべてのカテゴリ</option></select>
   </div>
-  <div class="av-layout">
-    <div id="task-avatar-panel"></div>
-    <div class="k2list" id="task-list"></div>
-  </div>
+  <div class="k2list" id="task-list"></div>
 </div>
 
 <!-- 備品 -->
@@ -590,8 +587,7 @@ a{color:var(--red)}
     <button class="btn btn-r" onclick="openSupplyModal()">＋ 追加</button>
   </div>
   <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">備品の手配・購入状況を管理します。⑪持ち物事前チェックと連動しています。</p>
-  <div class="av-layout">
-    <div id="supply-avatar-panel"></div>
+  <div>
     <div class="kcard-grid" id="supply-list"></div>
   </div>
 </div>
@@ -1439,8 +1435,6 @@ function isMobile(){return window.innerWidth<=700;}
 function avDragStart(e,name){avDragName=name;e.dataTransfer.setData('text/plain',name);}
 function avMobileSelect(name){
   avMobileSelected=(avMobileSelected===name)?null:name;
-  renderAvatarPanel('task-avatar-panel');
-  renderAvatarPanel('supply-avatar-panel');
 }
 function doAssign(el,name){
   if(!name)return;
@@ -1465,8 +1459,6 @@ function onMobileTap(e,el){
   e.stopPropagation();
   doAssign(el,avMobileSelected);
   avMobileSelected=null;
-  renderAvatarPanel('task-avatar-panel');
-  renderAvatarPanel('supply-avatar-panel');
 }
 function _inlineSave(id,field,dtype,newVal){
   var arr=dtype==='supply'?D.supplies:D.tasks;
@@ -1763,7 +1755,6 @@ function renderTasks(){
   var cs=[...new Set(D.tasks.map(function(t){return t.category||'';}))].filter(Boolean).sort();
   var cfc=getV('f-ca');
   document.getElementById('f-ca').innerHTML='<option value="">すべてのカテゴリ</option>'+cs.map(function(c){return'<option'+(cfc===c?' selected':'')+'>'+esc(c)+'</option>';}).join('');
-  renderAvatarPanel('task-avatar-panel');
 }
 var _avFilter='';
 function setAvFilter(name){
@@ -3524,7 +3515,6 @@ function renderSupplies(){
     html+=done.map(function(s){return taskCardHtml(s,'supply');}).join('');
   }
   el.innerHTML=html;
-  renderAvatarPanel('supply-avatar-panel');
 }
 function setSupplyStatus(id,st){
   var s=(D.supplies||[]).find(function(x){return x.id===id;});
