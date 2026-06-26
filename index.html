@@ -205,6 +205,44 @@ header .sub{font-size:.7rem;opacity:.8}
 .av-chip:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
 .av-chip:active{cursor:grabbing;transform:scale(.94)}
 .av-init{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:900}
+/* ── Task v2 (shitoro-inspired) ── */
+.k2list{display:flex;flex-direction:column;gap:0}
+.k2card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);border:1px solid #e8eaf0;display:flex;align-items:stretch;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s,transform .1s;position:relative}
+.k2card:hover{box-shadow:0 6px 22px rgba(0,0,0,.12);transform:translateY(-1px)}
+.k2card.k2-child{margin-left:28px}
+.k2card.k2-child::before{content:'↳';position:absolute;left:-22px;top:50%;transform:translateY(-50%);font-size:1rem;color:#bbb}
+.k2-bar{width:5px;flex-shrink:0}
+.k2card.todo .k2-bar{background:var(--todo)}.k2card.prog .k2-bar{background:var(--prog)}.k2card.done .k2-bar{background:var(--done)}.k2card.k2-od .k2-bar{background:var(--od)}
+.k2card.done{opacity:.7}
+.k2-body{flex:1;padding:14px 16px;min-width:0}
+.k2-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.k2-title{flex:1;font-size:1rem;font-weight:900;color:var(--ink);line-height:1.4;cursor:text}
+.k2card.done .k2-title{text-decoration:line-through;color:#aaa}
+.k2-badge{font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:12px;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:opacity .12s;border:none}
+.k2-badge:hover{opacity:.78}
+.k2-st-todo{background:#f0f0f0;color:#777}.k2-st-prog{background:#fff3e0;color:#e65100}.k2-st-done{background:#e8f5e9;color:#2e7d32}
+.k2-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+.k2-av{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;flex-shrink:0}
+.k2-owner-name{font-size:.78rem;font-weight:800;color:var(--ink)}
+.k2-sub-name{font-size:.72rem;color:var(--sub)}
+.k2-cat{font-size:.66rem;font-weight:800;background:#f0f4ff;color:#3949ab;border-radius:6px;padding:3px 8px}
+.k2-due{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:8px}.k2-due-add{font-size:.7rem;color:#ccc;cursor:pointer}
+.k2-blocker{font-size:.72rem;font-weight:800;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 10px;margin-bottom:8px;display:inline-flex;align-items:center;gap:4px}
+.k2-od-badge{font-size:.7rem;font-weight:900;background:#fce4ec;color:#c62828;border-radius:6px;padding:3px 8px;margin-bottom:6px;display:inline-block}
+.k2-memo{font-size:.75rem;color:var(--sub);line-height:1.5;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:text}
+.k2-memo-add{font-size:.7rem;color:#ccc;padding-top:6px;border-top:1px solid #f5f5f5;margin-top:4px;cursor:pointer}
+.k2-actions{display:flex;flex-direction:column;justify-content:flex-start;gap:4px;padding:10px 10px 10px 0;flex-shrink:0}
+.k2-edit-btn{background:none;border:none;font-size:.9rem;cursor:pointer;opacity:.4;padding:4px 6px;border-radius:6px;transition:opacity .12s}
+.k2-edit-btn:hover{opacity:1;background:#f0f4ff}
+.k2-del-btn{background:none;border:1.5px solid #ffcdd2;color:#e57373;font-size:.85rem;font-weight:900;cursor:pointer;padding:3px 7px;border-radius:6px;transition:all .12s}
+.k2-del-btn:hover{background:#fce4ec;color:#c62828;border-color:#ef9a9a}
+/* Avatar filter chips */
+.av-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:#fff;border-radius:12px;border:1px solid var(--line);box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.avf-chip{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:4px 10px 4px 4px;font-size:.75rem;font-weight:800;cursor:pointer;color:#fff;opacity:.5;border:2px solid transparent;transition:all .12s}
+.avf-chip.active{opacity:1;border-color:rgba(255,255,255,.6);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.avf-chip-all{background:#607d8b;border-radius:20px;padding:5px 12px;font-size:.75rem;font-weight:800;cursor:pointer;color:#fff;opacity:.5;transition:all .12s;border:2px solid transparent}
+.avf-chip-all.active{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.avf-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:900}
 
 /* ── Gantt Chart Professional ── */
 .gantt-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
@@ -516,13 +554,14 @@ a{color:var(--red)}
     <button class="fpill" data-st="done" onclick="setTaskFilter('done')">✅ 完了</button>
     <button class="fpill" data-st="od" onclick="setTaskFilter('od')">⚠ 期限超過</button>
   </div>
+  <div id="av-filter-row" class="av-filter-row"></div>
   <div class="fbar2">
-    <select id="f-as" onchange="renderTasks()"><option value="">すべての担当者</option></select>
+    <select id="f-as" onchange="renderTasks()" style="display:none"></select>
     <select id="f-ca" onchange="renderTasks()"><option value="">すべてのカテゴリ</option></select>
   </div>
   <div class="av-layout">
     <div id="task-avatar-panel"></div>
-    <div class="kcard-grid" id="task-list"></div>
+    <div class="k2list" id="task-list"></div>
   </div>
 </div>
 
@@ -1549,8 +1588,9 @@ function mobAssignPick(taskId,role,dtype,name){
   closeMobAssignModal();
   if(dtype==='supply')renderSupplies();else renderTasks();
 }
-function taskCardHtml(t,dtype){
+function taskCardHtml(t,dtype,childDepth){
   dtype=dtype||'task';
+  childDepth=childDepth||0;
   var today2=todayStr();
   var od=t.status!=='done'&&t.due&&t.due<today2;
   var owner=t.owner||(t.assignee?t.assignee.split(/[・、]/)[0].trim():'');
@@ -1559,6 +1599,29 @@ function taskCardHtml(t,dtype){
   var dueClass=t.status==='done'?'dc-done':od?'dc-od':(daysLeft!==null&&daysLeft<=5?'dc-soon':'dc-norm');
   var dueDisp=t.due?t.due.slice(5).replace('-','/'):'';
   var dueExtra=daysLeft===0?' 今日':od?' ('+Math.abs(daysLeft)+'日超過)':daysLeft===1?' 明日':'';
+  // ブロッカー確認
+  var blockerHtml='';
+  if(t.blockerId){
+    var bl=D.tasks.find(function(x){return x.id===t.blockerId;});
+    if(bl&&bl.status!=='done'){
+      blockerHtml='<div class="k2-blocker">🔒「'+esc(bl.title||bl.name)+'」完了後</div>';
+    }
+  }
+  // ステータスバッジ
+  var stMap={todo:{label:'未着手',cls:'k2-st-todo'},prog:{label:'進行中',cls:'k2-st-prog'},done:{label:'完了',cls:'k2-st-done'}};
+  var stInfo=stMap[t.status]||stMap.todo;
+  var stFn=dtype==='supply'?'setSupplyStatus':'setTaskStatus';
+  var editFn=dtype==='supply'?'openSupplyModal':'openTaskModal';
+  var delFn=dtype==='supply'?'delSupply':'delTask';
+  var ie='onclick="inlineEditText(event,\''+t.id+'\',';
+  var ieDateAttr='onclick="inlineEditDate(event,\''+t.id+'\',\''+dtype+'\')" title="クリックで期限変更" style="cursor:pointer"';
+  // アバターチップ
+  function avChip(name,sz){
+    if(!name)return'';
+    var col=nameColor(name);
+    var s=sz==='sm'?'width:22px;height:22px;font-size:.6rem':'width:28px;height:28px;font-size:.72rem';
+    return'<span class="k2-av" style="'+s+';background:'+col+'" title="'+esc(name)+'">'+esc(nameInit(name))+'</span>';
+  }
   var dzAttrs=' data-id="'+t.id+'" data-dtype="'+dtype+'" ondragover="event.preventDefault();this.classList.add(\'dg-over\')" ondragleave="this.classList.remove(\'dg-over\')" ondrop="onAssignDrop(event,this)" onclick="if(isMobile()){openMobAssignModal(this.dataset.id,this.dataset.role,this.dataset.dtype);event.stopPropagation();}"';
   var ownerHtml=owner
     ?'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="border-style:solid;border-color:'+nameColor(owner)+'44;padding:0">'+
@@ -1574,41 +1637,47 @@ function taskCardHtml(t,dtype){
           '<span class="asgn-name">'+esc(sub)+'</span>'+
           '<span class="asgn-x">✕</span></div></div>'
     :'<div class="asgn-drop" data-role="sub"'+dzAttrs+' style="font-size:.72rem;padding:5px 12px">サブ</div>';
-  var editFn=dtype==='supply'?'openSupplyModal':'openTaskModal';
-  var delFn=dtype==='supply'?'delSupply':'delTask';
-  var stFn=dtype==='supply'?'setSupplyStatus':'setTaskStatus';
-  var ie='onclick="inlineEditText(event,\''+t.id+'\',';
-  var ieDateAttr='onclick="inlineEditDate(event,\''+t.id+'\',\''+dtype+'\')" title="クリックで期限変更" style="cursor:pointer"';
-  return '<div class="kcard '+t.status+(od?' kcard-od':'')+'">'+
-    '<div class="kc-top">'+
-      '<span class="kc-cat" '+ie+'\'cat\',\''+dtype+'\')" title="クリックでカテゴリ編集" style="cursor:pointer">'+esc(t.cat||t.category||'その他')+'</span>'+
-      (t.due
-        ?'<span class="kc-due '+dueClass+'" '+ieDateAttr+'>期限 '+esc(dueDisp)+esc(dueExtra)+'</span>'
-        :'<span class="kc-due" style="background:#f5f5f5;color:#bbb;cursor:pointer;font-size:.82rem" '+ieDateAttr+'>＋ 期限</span>'
+  // 新デザイン: k2card
+  var ownerAvatar=avChip(owner,'md');
+  var subAvatar=avChip(sub,'sm');
+  var metaHtml=
+    (owner?ownerAvatar+'<span class="k2-owner-name">'+esc(owner)+'</span>':'<div class="asgn-drop" data-role="owner"'+dzAttrs+' style="font-size:.68rem;padding:4px 10px">タップして担当者を設定</div>')+
+    (sub?'<span style="color:#ccc;margin:0 2px">·</span>'+subAvatar+'<span class="k2-sub-name">'+esc(sub)+'</span>':'')+
+    (t.cat||t.category?'<span class="k2-cat">'+esc(t.cat||t.category||'')+'</span>':'')+
+    (t.due
+      ?'<span class="k2-due '+dueClass+'" '+ieDateAttr+'>📅 '+esc(dueDisp)+esc(dueExtra)+'</span>'
+      :'<span class="k2-due-add" '+ieDateAttr+'>＋ 期限</span>'
+    );
+  return '<div class="k2card '+t.status+(od?' k2-od':'')+(childDepth>0?' k2-child':'')+'">'+
+    '<div class="k2-bar"></div>'+
+    '<div class="k2-body">'+
+      (od?'<div class="k2-od-badge">⚠ 期限超過 '+Math.abs(daysLeft)+'日</div>':'')+
+      blockerHtml+
+      '<div class="k2-head">'+
+        '<div class="k2-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.name||t.title)+'</div>'+
+        '<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'+
+      '</div>'+
+      '<div class="k2-meta">'+metaHtml+'</div>'+
+      (dtype==='supply'&&t.qty?'<div style="font-size:.76rem;color:var(--sub);margin-bottom:4px">数量：'+esc(t.qty)+'</div>':'')+
+      (t.memo
+        ?'<div class="k2-memo" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ編集">📝 '+esc(t.memo)+'</div>'
+        :'<div class="k2-memo-add" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ追加">＋ メモ</div>'
       )+
     '</div>'+
-    '<div class="kc-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集" style="cursor:text">'+esc(t.name||t.title)+'</div>'+
-    (dtype==='supply'&&t.qty?'<div style="font-size:.78rem;color:var(--sub);margin-top:-6px">数量：'+esc(t.qty)+'</div>':'')+
-    '<div class="kc-assignees">'+
-      '<div class="asgn-row"><span class="asgn-lbl">オーナー</span>'+ownerHtml+'</div>'+
-      '<div class="asgn-row"><span class="asgn-lbl">サブ</span>'+subHtml+'</div>'+
-    '</div>'+
-    (t.memo
-      ?'<div class="kc-memo" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ編集" style="cursor:text">'+esc(t.memo)+'</div>'
-      :'<div class="kc-memo" style="color:#ccc;font-size:.73rem;cursor:text" '+ie+'\'memo\',\''+dtype+'\')" title="クリックでメモ追加">＋ メモ</div>'
-    )+
-    '<div class="kc-footer">'+
-      '<div class="status-btns">'+
-        '<button class="sbtn s-todo'+(t.status==='todo'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'todo\')">未着手</button>'+
-        '<button class="sbtn s-prog'+(t.status==='prog'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'prog\')">進行中</button>'+
-        '<button class="sbtn s-done'+(t.status==='done'?' active':'')+'" onclick="'+stFn+'(\''+t.id+'\',\'done\')">完了</button>'+
-      '</div>'+
-      '<div class="tc-act2">'+
-        '<button class="bsm r" onclick="'+editFn+'(\''+t.id+'\')">編集</button>'+
-        '<button class="bsm" onclick="'+delFn+'(\''+t.id+'\')">削除</button>'+
-      '</div>'+
+    '<div class="k2-actions">'+
+      '<button class="k2-edit-btn" onclick="'+editFn+'(\''+t.id+'\')" title="編集">✏️</button>'+
+      '<button class="k2-del-btn" onclick="'+delFn+'(\''+t.id+'\')" title="削除">×</button>'+
     '</div>'+
   '</div>';
+}
+function cycleTaskStatus(id,dtype){
+  var arr=dtype==='supply'?D.supplies:D.tasks;
+  var t=arr.find(function(x){return x.id===id;});
+  if(!t)return;
+  var next={todo:'prog',prog:'done',done:'todo'};
+  t.status=next[t.status]||'todo';
+  persist();
+  if(dtype==='supply')renderSupplies();else renderTasks();
 }
 function renderTasks(){
   var today=todayStr();
@@ -1628,18 +1697,30 @@ function renderTasks(){
     if(aod&&!bod)return-1;if(!aod&&bod)return 1;
     return(a.due||'9999')<(b.due||'9999')?-1:1;
   });
-  var active=list.filter(function(t){return t.status!=='done';});
-  var done=list.filter(function(t){return t.status==='done';});
+  // 依存ツリー順に並べ替え（親の直下に子を配置）
+  var taskIdSet={};list.forEach(function(t){taskIdSet[t.id]=t;});
+  var roots=list.filter(function(t){return!t.blockerId||!taskIdSet[t.blockerId];});
+  var ordered=[];var visited={};
+  function addTree(t,depth){
+    if(visited[t.id])return;visited[t.id]=true;
+    ordered.push({t:t,depth:depth});
+    list.filter(function(c){return c.blockerId===t.id;}).forEach(function(c){addTree(c,depth+1);});
+  }
+  roots.forEach(function(r){addTree(r,0);});
+  list.forEach(function(t){if(!visited[t.id])ordered.push({t:t,depth:0});});
+
+  var active=ordered.filter(function(x){return x.t.status!=='done';});
+  var done=ordered.filter(function(x){return x.t.status==='done';});
   var html='';
-  if(active.length){html+=active.map(function(t){return taskCardHtml(t,'task');}).join('');}
-  else if(!done.length){html='<div class="empty" style="grid-column:1/-1">タスクがありません</div>';}
+  if(active.length){html+=active.map(function(x){return taskCardHtml(x.t,'task',x.depth);}).join('');}
+  else if(!done.length){html='<div class="empty">タスクがありません</div>';}
   if(done.length){
-    html+='<div class="kcard-sep" style="grid-column:1/-1">'+
+    html+='<div class="kcard-sep">'+
       '<div style="flex:1;height:2px;background:var(--line)"></div>'+
       '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 完了済み（'+done.length+'件）</span>'+
       '<div style="flex:1;height:2px;background:var(--line)"></div>'+
     '</div>';
-    html+=done.map(function(t){return taskCardHtml(t,'task');}).join('');
+    html+=done.map(function(x){return taskCardHtml(x.t,'task',x.depth);}).join('');
   }
   document.getElementById('task-list').innerHTML=html;
   var odCount=D.tasks.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;}).length;
@@ -1647,12 +1728,31 @@ function renderTasks(){
   document.getElementById('cn-prog').textContent=D.tasks.filter(function(t){return t.status==='prog';}).length;
   document.getElementById('cn-done').textContent=D.tasks.filter(function(t){return t.status==='done';}).length;
   document.getElementById('cn-od').textContent=odCount;
-  var as=[...new Set(D.tasks.map(function(t){return t.owner||t.assignee||'';}))].filter(Boolean).sort();
+  // アバターフィルターチップ
+  var avRow=document.getElementById('av-filter-row');
+  if(avRow){
+    var curFa=getV('f-as');
+    var members=(D.members||[]).map(function(m){return m.name.replace(/\s+/g,'');}).filter(Boolean);
+    var allCls='avf-chip-all'+(curFa===''?' active':'');
+    var chips='<span class="'+allCls+'" onclick="setAvFilter(\'\')">すべて</span>';
+    chips+=members.map(function(n){
+      var col=nameColor(n);var init=nameInit(n);
+      var cls='avf-chip'+(curFa===n?' active':'');
+      return'<span class="'+cls+'" style="background:'+col+'" onclick="setAvFilter(\''+esc(n)+'\')">'+
+        '<span class="avf-dot">'+esc(init)+'</span>'+esc(n)+'</span>';
+    }).join('');
+    avRow.innerHTML=chips;
+  }
   var cs=[...new Set(D.tasks.map(function(t){return t.category||'';}))].filter(Boolean).sort();
-  var cfa=getV('f-as'),cfc=getV('f-ca');
-  document.getElementById('f-as').innerHTML='<option value="">すべての担当者</option>'+as.map(function(a){return'<option'+(cfa===a?' selected':'')+'>'+esc(a)+'</option>';}).join('');
+  var cfc=getV('f-ca');
   document.getElementById('f-ca').innerHTML='<option value="">すべてのカテゴリ</option>'+cs.map(function(c){return'<option'+(cfc===c?' selected':'')+'>'+esc(c)+'</option>';}).join('');
   renderAvatarPanel('task-avatar-panel');
+}
+var _avFilter='';
+function setAvFilter(name){
+  _avFilter=name;
+  document.getElementById('f-as').value=name;
+  renderTasks();
 }
 function setTaskStatus(id,st){
   var t=D.tasks.find(function(x){return x.id===id;});
@@ -1684,6 +1784,13 @@ function openTaskModal(id){
     '<option value="prog"'+(t&&t.status==='prog'?' selected':'')+'>進行中</option>'+
     '<option value="done"'+(t&&t.status==='done'?' selected':'')+'>完了</option>'+
     '</select></div>'+
+    '<div class="frow"><label>🔒 前提タスク（完了後に着手可）</label>'+
+      '<select id="m-blocker">'+
+        '<option value="">なし（独立したタスク）</option>'+
+        D.tasks.filter(function(x){return!t||x.id!==t.id;}).map(function(x){
+          return'<option value="'+x.id+'"'+(t&&t.blockerId===x.id?' selected':'')+'>'+esc(x.title||x.name)+'</option>';
+        }).join('')+
+      '</select></div>'+
     '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveTask()">保存</button></div>');
   initModalAvatars(owner,sub);
@@ -1731,7 +1838,7 @@ function saveTask(){
   var owner=getV('m-owner').trim(),sub=getV('m-sub').trim();
   if(!title){alert('タスク名は必須です');return;}
   var assignee=owner+(sub?'・'+sub:'');
-  var data={title:title,owner:owner,sub:sub,assignee:assignee,category:getV('m-cat'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo')};
+  var data={title:title,owner:owner,sub:sub,assignee:assignee,category:getV('m-cat'),due:getV('m-due'),status:getV('m-status'),memo:getV('m-memo'),blockerId:getV('m-blocker')||''};
   if(id){var i=D.tasks.findIndex(function(x){return x.id===id;});if(i>=0)D.tasks[i]=Object.assign({},D.tasks[i],data);}
   else{data.id=uid();data.start='';D.tasks.push(data);}
   persist();renderTasks();cm();
