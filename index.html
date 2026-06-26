@@ -213,15 +213,15 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2card.k2-child{margin-left:28px}
 .k2card.k2-child::before{content:'↳';position:absolute;left:-22px;top:50%;transform:translateY(-50%);font-size:1rem;color:#bbb}
 .k2-bar{display:none}
-.k2card.done{opacity:1;border-left-color:#ccc!important}
-.k2card.done .k2-body{padding:8px 18px}
-.k2card.done .k2-head{margin-bottom:4px}
-.k2card.done .k2-title{font-size:.84rem;font-weight:700;color:#999;text-decoration:line-through}
-.k2card.done .k2-st-icon{font-size:.9rem}
-.k2card.done .k2-meta{font-size:.68rem;opacity:.6;margin-bottom:2px}
-.k2card.done .k2-memo{display:none}
-.k2card.done .k2-memo-add{display:none}
-.k2card.done:hover{box-shadow:0 2px 10px rgba(0,0,0,.07);transform:none}
+.k2card.done{border-left-color:#d8dce4!important;background:#f9fafb;box-shadow:none;border-color:#eaecf0}
+.k2card.done .k2-body{padding:7px 18px}
+.k2card.done .k2-head{margin-bottom:3px}
+.k2card.done .k2-title{font-size:.82rem;font-weight:600;color:#b0b8c4;text-decoration:line-through}
+.k2card.done .k2-st-icon{font-size:.85rem;opacity:.6}
+.k2card.done .k2-badge{opacity:.5;font-size:.68rem;padding:2px 8px}
+.k2card.done .k2-meta{font-size:.68rem;opacity:.5;margin-bottom:0}
+.k2card.done .k2-memo,.k2card.done .k2-memo-add{display:none}
+.k2card.done:hover{box-shadow:none;transform:none}
 .k2-body{flex:1;padding:14px 18px;min-width:0}
 .k2-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .k2-st-icon{font-size:1.1rem;flex-shrink:0;line-height:1}
@@ -1723,19 +1723,9 @@ function renderTasks(){
   roots.forEach(function(r){addTree(r,0);});
   list.forEach(function(t){if(!visited[t.id])ordered.push({t:t,depth:0});});
 
-  var active=ordered.filter(function(x){return x.t.status!=='done';});
-  var done=ordered.filter(function(x){return x.t.status==='done';});
   var html='';
-  if(active.length){html+=active.map(function(x){return taskCardHtml(x.t,'task',x.depth);}).join('');}
-  else if(!done.length){html='<div class="empty">タスクがありません</div>';}
-  if(done.length){
-    html+='<div class="kcard-sep">'+
-      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
-      '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 完了済み（'+done.length+'件）</span>'+
-      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
-    '</div>';
-    html+=done.map(function(x){return taskCardHtml(x.t,'task',x.depth);}).join('');
-  }
+  if(ordered.length){html+=ordered.map(function(x){return taskCardHtml(x.t,'task',x.depth);}).join('');}
+  else{html='<div class="empty">タスクがありません</div>';}
   document.getElementById('task-list').innerHTML=html;
   var odCount=D.tasks.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;}).length;
   document.getElementById('cn-todo').textContent=D.tasks.filter(function(t){return t.status==='todo';}).length;
