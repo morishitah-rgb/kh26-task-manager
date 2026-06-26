@@ -557,12 +557,10 @@ a{color:var(--red)}
 <!-- タスク -->
 <div class="page" id="page-tasks">
   <div class="sect-head"><h2>② タスク管理</h2><button class="btn btn-r" onclick="openTaskModal()">＋ タスクを追加</button></div>
-  <div class="stats">
-    <div class="stat"><div class="num c-todo" id="cn-todo">-</div><div class="lbl">未着手</div></div>
-    <div class="stat"><div class="num c-prog" id="cn-prog">-</div><div class="lbl">進行中</div></div>
-    <div class="stat"><div class="num c-done" id="cn-done">-</div><div class="lbl">完了</div></div>
-    <div class="stat"><div class="num c-od"   id="cn-od">-</div><div class="lbl">⚠ 期限超過</div></div>
-  </div>
+  <span id="cn-todo" style="display:none"></span>
+  <span id="cn-prog" style="display:none"></span>
+  <span id="cn-done" style="display:none"></span>
+  <span id="cn-od"   style="display:none"></span>
   <div class="fpills">
     <button class="fpill active" data-st="" onclick="setTaskFilter('')">すべて</button>
     <button class="fpill" data-st="todo" onclick="setTaskFilter('todo')">📋 未着手</button>
