@@ -602,7 +602,7 @@ a{color:var(--red)}
   </div>
   <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">備品の手配・購入状況を管理します。⑪持ち物事前チェックと連動しています。</p>
   <div>
-    <div class="kcard-grid" id="supply-list"></div>
+    <div class="k2list" id="supply-list"></div>
   </div>
 </div>
 
@@ -1673,7 +1673,8 @@ function taskCardHtml(t,dtype,childDepth){
     );
   var stIcon={todo:'⬜',prog:'🔄',done:'✅'};
   var icon=stIcon[t.status]||'⬜';
-  return '<div class="k2card '+t.status+(od?' k2-od':'')+(childDepth>0?' k2-child':'')+(dtype==='task'?'" draggable="true" data-id="'+t.id+'" data-dtype="task" onmousedown="taskDragMouseDown(event,this)" ondragstart="taskDragStart(event,this)" ondragend="taskDragEnd(event,this)" ondragover="taskDragOver(event,this)" ondrop="taskDrop(event,this':'')+'" >'+
+  var dragAttrs=' draggable="true" data-id="'+t.id+'" data-dtype="'+dtype+'" onmousedown="taskDragMouseDown(event,this)" ondragstart="taskDragStart(event,this)" ondragend="taskDragEnd(event,this)" ondragover="taskDragOver(event,this)" ondrop="taskDrop(event,this)"';
+  return '<div class="k2card '+t.status+(od?' k2-od':'')+(childDepth>0?' k2-child':'')+'"'+dragAttrs+'>'+
     '<div class="k2-drag-handle" title="ドラッグで並び替え">⠿</div>'+
     '<div class="k2-bar"></div>'+
     '<div class="k2-body">'+
@@ -1698,14 +1699,16 @@ function taskCardHtml(t,dtype,childDepth){
     '</div>'+
   '</div>';
 }
-// ===== タスクドラッグ並び替え =====
+// ===== ドラッグ並び替え（タスク・備品共通） =====
 var _dragId=null;
+var _dragDtype=null;
 function taskDragMouseDown(e,el){
   // ハンドル以外からのドラッグを無効化
   if(!e.target.classList.contains('k2-drag-handle')){el.draggable=false;setTimeout(function(){el.draggable=true;},0);}
 }
 function taskDragStart(e,el){
   _dragId=el.dataset.id;
+  _dragDtype=el.dataset.dtype||'task';
   el.classList.add('dragging');
   e.dataTransfer.effectAllowed='move';
   e.dataTransfer.setData('text/plain',_dragId);
@@ -1727,15 +1730,17 @@ function taskDrop(e,el){
   document.querySelectorAll('.k2card').forEach(function(c){c.classList.remove('drag-over-top','drag-over-bottom');});
   var toId=el.dataset.id;
   if(!_dragId||_dragId===toId)return;
-  var fromIdx=D.tasks.findIndex(function(t){return t.id===_dragId;});
-  var toIdx=D.tasks.findIndex(function(t){return t.id===toId;});
+  var arr=_dragDtype==='supply'?D.supplies:D.tasks;
+  var fromIdx=arr.findIndex(function(t){return t.id===_dragId;});
+  var toIdx=arr.findIndex(function(t){return t.id===toId;});
   if(fromIdx<0||toIdx<0)return;
   var rect=el.getBoundingClientRect();
   var insertAfter=e.clientY>rect.top+rect.height/2;
-  var moved=D.tasks.splice(fromIdx,1)[0];
-  var newIdx=D.tasks.findIndex(function(t){return t.id===toId;});
-  D.tasks.splice(insertAfter?newIdx+1:newIdx,0,moved);
-  persist();renderTasks();
+  var moved=arr.splice(fromIdx,1)[0];
+  var newIdx=arr.findIndex(function(t){return t.id===toId;});
+  arr.splice(insertAfter?newIdx+1:newIdx,0,moved);
+  persist();
+  if(_dragDtype==='supply')renderSupplies();else renderTasks();
 }
 function cycleTaskStatus(id,dtype){
   var arr=dtype==='supply'?D.supplies:D.tasks;
@@ -3543,19 +3548,9 @@ function renderSupplies(){
   var el=document.getElementById('supply-list');
   if(!el)return;
   var list=(D.supplies||[]);
-  var active=list.filter(function(s){return s.status!=='done';});
-  var done=list.filter(function(s){return s.status==='done';});
   var html='';
-  if(active.length)html+=active.map(function(s){return taskCardHtml(s,'supply');}).join('');
-  else if(!done.length)html='<div class="empty" style="grid-column:1/-1">備品がありません</div>';
-  if(done.length){
-    html+='<div class="kcard-sep" style="grid-column:1/-1">'+
-      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
-      '<span style="font-size:.82rem;font-weight:700;color:var(--done);white-space:nowrap">✅ 準備済み（'+done.length+'件）</span>'+
-      '<div style="flex:1;height:2px;background:var(--line)"></div>'+
-    '</div>';
-    html+=done.map(function(s){return taskCardHtml(s,'supply');}).join('');
-  }
+  if(list.length)html+=list.map(function(s){return taskCardHtml(s,'supply');}).join('');
+  else html='<div class="empty">備品がありません</div>';
   el.innerHTML=html;
 }
 function setSupplyStatus(id,st){
