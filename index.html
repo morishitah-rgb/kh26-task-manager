@@ -1704,11 +1704,6 @@ function renderTasks(){
   if(taskFilter==='od'){list=all.filter(function(t){return t.status!=='done'&&t.due&&t.due<today;});}
   else if(taskFilter){list=all.filter(function(t){return t.status===taskFilter;});}
   else{list=all;}
-  list=list.slice().sort(function(a,b){
-    var aod=a.status!=='done'&&a.due&&a.due<today,bod=b.status!=='done'&&b.due&&b.due<today;
-    if(aod&&!bod)return-1;if(!aod&&bod)return 1;
-    return(a.due||'9999')<(b.due||'9999')?-1:1;
-  });
   // 依存ツリー順に並べ替え（親の直下に子を配置）
   var taskIdSet={};list.forEach(function(t){taskIdSet[t.id]=t;});
   var roots=list.filter(function(t){return!t.blockerId||!taskIdSet[t.blockerId];});
