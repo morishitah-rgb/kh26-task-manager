@@ -1628,7 +1628,7 @@ function taskCardHtml(t,dtype,childDepth){
   if(t.blockerId){
     var bl=D.tasks.find(function(x){return x.id===t.blockerId;});
     if(bl&&bl.status!=='done'){
-      blockerHtml='<div class="k2-blocker">🔒「'+esc(bl.title||bl.name)+'」完了後</div>';
+      blockerHtml='<div class="k2-blocker">🔒「'+esc(bl.name||bl.title)+'」完了後</div>';
     }
   }
   // ステータスバッジ
@@ -1681,7 +1681,7 @@ function taskCardHtml(t,dtype,childDepth){
       (od?'<div class="k2-od-badge">⚠ 期限超過 '+Math.abs(daysLeft)+'日</div>':'')+
       '<div class="k2-head">'+
         '<span class="k2-st-icon" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')" title="クリックでステータス変更" style="cursor:pointer">'+icon+'</span>'+
-        '<div class="k2-title" '+ie+'\'title\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.title||t.name)+'</div>'+
+        '<div class="k2-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.name||t.title)+'</div>'+
         blockerHtml+
         (t.status==='done'
           ?'<div class="k2-badge-done-wrap"><button class="k2-badge k2-st-done" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button><span class="k2-badge-tip">押すと未着手に戻す</span></div>'
@@ -1821,7 +1821,7 @@ function openTaskModal(id){
   var sub=t?(t.sub||(t.assignee&&t.assignee.indexOf('・')>-1?t.assignee.split(/[・、]/)[1].trim():'')):'';
   openModal('<h2>📋 タスク'+(t?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(t?t.id:'')+'">'+
-    '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.title):'')+'"></div>'+
+    '<div class="frow"><label>タスク名 *</label><input id="m-title" value="'+(t?esc(t.name||t.title||''):'')+'"></div>'+
     '<div class="frow"><label style="margin-bottom:8px;display:block">担当者</label>'+
       '<div style="display:flex;gap:10px">'+
         '<div style="flex:1"><div style="font-size:.72rem;font-weight:800;color:var(--sub);margin-bottom:5px">オーナー（主担当）</div>'+
@@ -1840,7 +1840,7 @@ function openTaskModal(id){
       '<select id="m-blocker">'+
         '<option value="">なし（独立したタスク）</option>'+
         D.tasks.filter(function(x){return!t||x.id!==t.id;}).map(function(x){
-          return'<option value="'+x.id+'"'+(t&&t.blockerId===x.id?' selected':'')+'>'+esc(x.title||x.name)+'</option>';
+          return'<option value="'+x.id+'"'+(t&&t.blockerId===x.id?' selected':'')+'>'+esc(x.name||x.title)+'</option>';
         }).join('')+
       '</select></div>'+
     '<div class="frow"><label>メモ</label><textarea id="m-memo">'+(t?esc(t.memo||''):'')+'</textarea></div>'+
