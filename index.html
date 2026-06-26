@@ -1674,7 +1674,8 @@ function taskCardHtml(t,dtype,childDepth){
   var stIcon={todo:'⬜',prog:'🔄',done:'✅'};
   var icon=stIcon[t.status]||'⬜';
   var dragAttrs=' draggable="true" data-id="'+t.id+'" data-dtype="'+dtype+'" onmousedown="taskDragMouseDown(event,this)" ondragstart="taskDragStart(event,this)" ondragend="taskDragEnd(event,this)" ondragover="taskDragOver(event,this)" ondrop="taskDrop(event,this)"';
-  return '<div class="k2card '+t.status+(od?' k2-od':'')+(childDepth>0?' k2-child':'')+'"'+dragAttrs+'>'+
+  var indentStyle=childDepth>0?' style="margin-left:'+(childDepth*24)+'px"':'';
+  return '<div class="k2card '+t.status+(od?' k2-od':'')+(childDepth>0?' k2-child':'')+'"'+dragAttrs+indentStyle+'>'+
     '<div class="k2-drag-handle" title="ドラッグで並び替え">⠿</div>'+
     '<div class="k2-bar"></div>'+
     '<div class="k2-body">'+
