@@ -239,7 +239,7 @@ header .sub{font-size:.7rem;opacity:.8}
 .k2-sub-name{font-size:.72rem;color:var(--sub)}
 .k2-cat{font-size:.66rem;font-weight:800;background:#f0f4ff;color:#3949ab;border-radius:6px;padding:3px 8px}
 .k2-due{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:8px}.k2-due-add{font-size:.7rem;color:#ccc;cursor:pointer}
-.k2-blocker{font-size:.68rem;font-weight:800;background:#fff8e1;color:#e65100;border-radius:20px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;flex-shrink:0}
+.k2-blocker{font-size:.68rem;font-weight:800;background:#fff8e1;color:#e65100;border-radius:20px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;flex-shrink:0;margin-bottom:5px}
 /* --- card assignee tag --- */
 .asgn-tag{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 8px 3px 4px;cursor:pointer;font-size:.78rem;transition:opacity .12s;white-space:nowrap}
 .asgn-tag:hover{opacity:.75}
@@ -1689,7 +1689,6 @@ function taskCardHtml(t,dtype,childDepth){
       '<div class="k2-head">'+
         '<span class="k2-st-icon" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')" title="クリックでステータス変更" style="cursor:pointer">'+icon+'</span>'+
         '<div class="k2-title" '+ie+'\'name\',\''+dtype+'\')" title="クリックでタイトル編集">'+esc(t.name||t.title)+'</div>'+
-        blockerHtml+
         (t.status==='done'
           ?'<div class="k2-badge-done-wrap"><button class="k2-badge k2-st-done" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button><span class="k2-badge-tip">押すと未着手に戻す</span></div>'
           :'<button class="k2-badge '+stInfo.cls+'" onclick="cycleTaskStatus(\''+t.id+'\',\''+dtype+'\')">'+stInfo.label+'</button>'
@@ -1697,6 +1696,7 @@ function taskCardHtml(t,dtype,childDepth){
         '<button class="k2-edit-btn" onclick="'+editFn+'(\''+t.id+'\')" title="編集（前提タスク等）">⚙</button>'+
         '<button class="k2-del-btn" onclick="'+delFn+'(\''+t.id+'\')" title="削除">×</button>'+
       '</div>'+
+      blockerHtml+
       '<div class="k2-meta">'+metaHtml+'</div>'+
       (dtype==='supply'&&t.qty?'<div style="font-size:.76rem;color:var(--sub);margin-bottom:4px">数量：'+esc(t.qty)+'</div>':'')+
       (t.memo
