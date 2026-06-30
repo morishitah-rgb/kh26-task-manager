@@ -526,8 +526,14 @@ a{color:var(--red)}
 
 <header>
   <div>
-    <div class="sub">株式会社LIFEFUND ／ 2026年7月28日（火）クリエート浜松2階 大ホール</div>
-    <h1>🎤 経営方針発表会 2026</h1>
+    <div class="sub" id="header-sub">株式会社LIFEFUND ／ 2026年7月28日（火）クリエート浜松2階 大ホール</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <h1 id="header-title">🎤 経営方針発表会 2026</h1>
+      <div style="display:flex;gap:4px">
+        <button id="period-btn-26" class="btn btn-w" style="font-size:.75rem;padding:5px 10px" onclick="switchPeriod('2026')">2026/7</button>
+        <button id="period-btn-27" class="btn btn-ol" style="font-size:.75rem;padding:5px 10px" onclick="switchPeriod('2027')">2027/1</button>
+      </div>
+    </div>
   </div>
   <div class="hbtns">
     <span id="sync-badge" style="font-size:.72rem;padding:4px 8px;border-radius:12px;background:rgba(255,255,255,.15);color:#fff;white-space:nowrap;transition:background .3s" title="同期状態">⚫ オフライン</span>
@@ -626,6 +632,7 @@ a{color:var(--red)}
 <!-- 予算管理 -->
 <div class="page" id="page-budget">
   <div class="sect-head"><h2>⑤ 予算管理</h2><button class="btn btn-r" onclick="openBudgetModal()">＋ 費目追加</button></div>
+  <div id="cross-period-budget" style="margin-bottom:12px"></div>
   <div id="budget-kpi"></div>
   <div id="budget-sections"></div>
 </div>
@@ -1182,9 +1189,96 @@ links:[
 ],
 };
 
+// ===== 2027年上期 初期データ =====
+const INIT27 = {
+tasks:[
+  {id:'t27_1',title:'会場（コンコルドホテル）との打合せ',assignee:'君塚さん・清水さん',category:'会場・備品',start:'2026-08-01',due:'2026-10-31',status:'todo',memo:'雲海の間の設備・レイアウト確認'},
+  {id:'t27_2',title:'タイムテーブル作成',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-09-01',due:'2026-12-01',status:'todo',memo:''},
+  {id:'t27_3',title:'発表者・発表内容の決定',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-09-01',due:'2026-11-01',status:'todo',memo:''},
+  {id:'t27_4',title:'360°FBアンケート作成',assignee:'髙松さん・岡さん',category:'360°フィードバック',start:'2026-10-01',due:'2026-12-01',status:'todo',memo:''},
+  {id:'t27_5',title:'当日の担当割り振り',assignee:'松下さん・森下さん',category:'当日役割',start:'2026-11-01',due:'2026-12-15',status:'todo',memo:''},
+  {id:'t27_6',title:'備品・設備手配',assignee:'波多野さん・君塚さん',category:'会場・備品',start:'2026-10-01',due:'2027-01-15',status:'todo',memo:''},
+  {id:'t27_7',title:'リハーサル実施',assignee:'委員会全員',category:'当日役割',start:'2027-01-01',due:'2027-01-20',status:'todo',memo:''},
+],
+schedule:[
+  {id:'s27_1',title:'① 第1回 委員会MTG',date:'2026-08-11',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会（角谷さんお休み）',type:'mtg',memo:'※角谷さんお休み'},
+  {id:'s27_2',title:'② 第2回 委員会MTG',date:'2026-08-21',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会',type:'mtg',memo:'※松下さん、予定確認'},
+  {id:'s27_3',title:'③ 第3回 委員会MTG',date:'2026-09-25',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'s27_4',title:'④ 第4回 委員会MTG',date:'2026-10-02',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'s27_5',title:'⑤ 第5回 委員会MTG',date:'2026-10-20',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'s27_6',title:'⑥ 第6回 委員会MTG',date:'2026-11-13',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'s27_7',title:'⑦ 第7回 委員会MTG',date:'2026-12-03',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会（山本さんお休み）',type:'mtg',memo:'※山本さんお休み'},
+  {id:'s27_8',title:'⑧ 第8回 委員会MTG',date:'2026-12-18',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会全員',type:'mtg',memo:''},
+  {id:'s27_9',title:'⑨ 第9回 委員会MTG',date:'2027-01-08',startTime:'10:00',endTime:'12:00',location:'PG曳馬',attendees:'委員会全員',type:'mtg',memo:'※PG曳馬にて'},
+  {id:'s27_10',title:'⑩ 第10回 委員会MTG',date:'2027-01-21',startTime:'10:00',endTime:'12:00',location:'アーチ鴨江事務所',attendees:'委員会（山本さんお休み）',type:'mtg',memo:'※山本さんお休み'},
+  {id:'s27_main',title:'🎉 経営方針発表会 本番',date:'2027-01-26',startTime:'8:00',endTime:'17:00',location:'ホテルコンコルド 2F 雲海の間',attendees:'全社員',type:'main',memo:'8:00委員集合'},
+],
+board:[
+  {id:'b27_1',name:'委員会事務局',tag:'info',text:'2027年1月26日（火）経営方針発表会の準備を開始します。\n\n📍 会場：ホテルコンコルド 2F 雲海の間\n📅 日時：2027年1月26日（火）\n\n委員会MTGスケジュール（①〜⑩）はスケジュールタブで確認してください。',date:'2026-07-01'},
+],
+budget:[
+  {id:'g27_1',name:'会場費（ホテルコンコルド 雲海の間）',detail:'ホテルコンコルド 2F 雲海の間',budget:0,unitPrice:0,qty:1,actual:0,url:'',receipts:[],section:'1月',spSync:false},
+  {id:'g27_2',title:'その他費用',name:'その他費用',detail:'',budget:0,unitPrice:0,qty:1,actual:0,url:'',receipts:[],section:'1月',spSync:false},
+],
+venue:{
+  name:'ホテルコンコルド浜松 2F 雲海の間',
+  datetime:'2027年1月26日（火） 時間未定（委員8:00集合予定）',
+  address:'〒430-0942 静岡県浜松市中央区元城町218-8',
+  tel:'053-452-1111',
+  capacity:'未確認',
+  parking:'有（ホテル駐車場）',
+  access:'JR浜松駅から徒歩約5分',
+  note:'会場詳細は君塚さん・清水さんが確認中',
+},
+slideLinks:[
+  {id:'sl27_1',year:'今回（2027年）',label:'経営方針発表会 メインスライド',url:''},
+],
+parking:[
+  {id:'pk27_1',name:'ホテルコンコルド駐車場',spots:0,fee:'未確認',note:''},
+],
+layout:{url:'',memo:''},
+programs:[
+  {id:'p27_0',no:'',title:'（タイムテーブル未作成）',presenter:'',startTime:'',endTime:'',time:'',staff:'',type:'break'},
+],
+teams:[],
+dayRoles:[],
+supplies:[],
+minutes:[
+  {id:'m27_1',date:'2026-08-11',title:'① 第1回 委員会MTG（2026-08-11）',body:'📅 2026年8月11日（火）13:00〜15:00\n📍 アーチ鴨江事務所\n※ 角谷さんお休み\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_2',date:'2026-08-21',title:'② 第2回 委員会MTG（2026-08-21）',body:'📅 2026年8月21日（金）10:00〜12:00\n📍 アーチ鴨江事務所\n※ 松下さん、予定確認\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_3',date:'2026-09-25',title:'③ 第3回 委員会MTG（2026-09-25）',body:'📅 2026年9月25日（木）13:00〜15:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_4',date:'2026-10-02',title:'④ 第4回 委員会MTG（2026-10-02）',body:'📅 2026年10月2日（金）10:00〜12:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_5',date:'2026-10-20',title:'⑤ 第5回 委員会MTG（2026-10-20）',body:'📅 2026年10月20日（火）13:00〜15:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_6',date:'2026-11-13',title:'⑥ 第6回 委員会MTG（2026-11-13）',body:'📅 2026年11月13日（金）13:00〜15:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_7',date:'2026-12-03',title:'⑦ 第7回 委員会MTG（2026-12-03）',body:'📅 2026年12月3日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n※ 山本さんお休み\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_8',date:'2026-12-18',title:'⑧ 第8回 委員会MTG（2026-12-18）',body:'📅 2026年12月18日（金）10:00〜12:00\n📍 アーチ鴨江事務所\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_9',date:'2027-01-08',title:'⑨ 第9回 委員会MTG（2027-01-08）',body:'📅 2027年1月8日（金）10:00〜12:00\n📍 PG曳馬\n※ PG曳馬にて\n\n※ 会議後に内容を記入してください'},
+  {id:'m27_10',date:'2027-01-21',title:'⑩ 第10回 委員会MTG（2027-01-21）',body:'📅 2027年1月21日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n※ 山本さんお休み\n\n※ 会議後に内容を記入してください'},
+],
+members:[
+  {id:'mb1',name:'松下 雄紀',dept:'',role:'委員長・全体統括・司会進行',note:''},
+  {id:'mb2',name:'森下 秀之',dept:'',role:'会場・設備担当',note:''},
+  {id:'mb3',name:'髙松 柚子',dept:'',role:'360°FB担当',note:''},
+  {id:'mb4',name:'岡 真弥子',dept:'',role:'360°FB担当',note:''},
+  {id:'mb5',name:'君塚 菜穂',dept:'',role:'会場調整（コンコルド）',note:'コンコルドホテル窓口'},
+  {id:'mb6',name:'波多野 恵梨',dept:'',role:'ケータリング・参加者管理',note:''},
+  {id:'mb7',name:'清水 洋希',dept:'',role:'会場資料担当',note:'コンコルドホテル資料提供'},
+  {id:'mb8',name:'角谷 啓佳',dept:'',role:'委員',note:''},
+  {id:'mb9',name:'山本 英之',dept:'',role:'委員',note:''},
+],
+lastChatworkSync:'',
+links:[
+  {id:'lk27_1',category:'💬 コミュニケーション',title:'Chatwork 委員会ルーム',url:'https://www.chatwork.com/#!rid424948782',note:'委員会の主要連絡チャンネル'},
+  {id:'lk27_2',category:'🏛 会場',title:'ホテルコンコルド浜松 公式サイト',url:'https://www.hotel-concorde.jp/',note:'2027年1月26日（火）会場'},
+],
+};
+
 // ===== データ管理 =====
 const SK='kh26v3',SS='kh26cfg';
+const SK27='kh27v1',SS27='kh27cfg';
 let D={}, cfg={apiKey:'',binId:''};
+let cfg27={apiKey:'',binId:''};
+let curPeriod='2026';
 
 function loadLocal(){
   try{const d=localStorage.getItem(SK);D=d?JSON.parse(d):cloneD(INIT);}catch(e){D=cloneD(INIT);}
@@ -1269,7 +1363,55 @@ function loadLocal(){
     if(history.replaceState)history.replaceState(null,'',location.pathname);
   })();
 }
-function persist(){D._t=Date.now();localStorage.setItem(SK,JSON.stringify(D));autoSync();}
+function loadLocal27(){
+  try{var d=localStorage.getItem(SK27);D=d?JSON.parse(d):cloneD(INIT27);}catch(e){D=cloneD(INIT27);}
+  ['tasks','members','minutes','budget','schedule','board','links'].forEach(function(key){
+    if(!D[key]){D[key]=cloneD(INIT27[key]||[]);}
+    else{(INIT27[key]||[]).forEach(function(item){if(!D[key].find(function(x){return x.id===item.id;}))D[key].push(cloneD(item));});}
+  });
+  if(!D.venue){D.venue=cloneD(INIT27.venue);}
+  if(!D.slideLinks){D.slideLinks=cloneD(INIT27.slideLinks||[]);}
+  if(!D.parking){D.parking=cloneD(INIT27.parking||[]);}
+  if(!D.layout){D.layout=cloneD(INIT27.layout||{url:'',memo:''});}
+  if(!D.programs){D.programs=cloneD(INIT27.programs||[]);}
+  if(!D.teams){D.teams=[];}
+  if(!D.dayRoles){D.dayRoles=[];}
+  if(!D.supplies){D.supplies=[];}
+  if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
+  try{var s=localStorage.getItem(SS27);if(s)cfg27={...cfg27,...JSON.parse(s)};}catch(e){}
+}
+
+function switchPeriod(year){
+  if(year===curPeriod)return;
+  // 現在のデータを保存
+  var curSK=curPeriod==='2026'?SK:SK27;
+  D._t=Date.now();
+  localStorage.setItem(curSK,JSON.stringify(D));
+  curPeriod=year;
+  // 新しい期のデータをロード
+  if(year==='2026'){
+    loadLocal();
+  } else {
+    loadLocal27();
+  }
+  // ヘッダー更新
+  updatePeriodUI();
+  goTab('board');
+}
+
+function updatePeriodUI(){
+  var is26=curPeriod==='2026';
+  var btn26=document.getElementById('period-btn-26');
+  var btn27=document.getElementById('period-btn-27');
+  var sub=document.getElementById('header-sub');
+  var title=document.getElementById('header-title');
+  if(btn26){btn26.className='btn '+(is26?'btn-w':'btn-ol');}
+  if(btn27){btn27.className='btn '+(is26?'btn-ol':'btn-w');}
+  if(sub){sub.textContent='株式会社LIFEFUND ／ '+(is26?'2026年7月28日（火）クリエート浜松2階 大ホール':'2027年1月26日（火）ホテルコンコルド2F 雲海の間');}
+  if(title){title.textContent='🎤 経営方針発表会 '+(is26?'2026':'2027');}
+}
+
+function persist(){D._t=Date.now();localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));autoSync();}
 function showToast(msg){
   var t=document.getElementById('save-toast');
   if(!t){t=document.createElement('div');t.id='save-toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#2ecc71;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:opacity .4s;pointer-events:none';document.body.appendChild(t);}
@@ -1283,12 +1425,13 @@ function setSyncBadge(state){
 }
 var _autoSyncTimer=null;
 async function autoSync(){
-  if(!cfg.apiKey||!cfg.binId)return;
+  var activeCfg=curPeriod==='2026'?cfg:cfg27;
+  if(!activeCfg.apiKey||!activeCfg.binId)return;
   clearTimeout(_autoSyncTimer);
   _autoSyncTimer=setTimeout(async function(){
     setSyncBadge('syncing');
     try{
-      await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});
+      await fetch('https://api.jsonbin.io/v3/b/'+activeCfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':activeCfg.apiKey},body:JSON.stringify(D)});
       setSyncBadge('online');
     }catch(e){setSyncBadge('error');}
   },600);
@@ -2112,7 +2255,36 @@ function calcActual(g){
   var up=Number(g.unitPrice||0),q=Number(g.qty||0);
   return(up>0&&q>0)?up*q:Number(g.actual||0);
 }
+function renderCrossPeriodBudget(){
+  var el=document.getElementById('cross-period-budget');
+  if(!el)return;
+  // 2026年データはSKから読む
+  var d26=D, d27={budget:[]};
+  try{
+    var raw26=curPeriod==='2026'?D:JSON.parse(localStorage.getItem(SK)||'{}');
+    var raw27=curPeriod==='2027'?D:JSON.parse(localStorage.getItem(SK27)||'{}');
+    d26=raw26; d27=raw27;
+  }catch(e){}
+  function calcBudget(budget){
+    var b=0,a=0;
+    (budget||[]).forEach(function(g){b+=Number(g.budget||0);a+=calcActual(g);});
+    return{b:b,a:a};
+  }
+  var r26=calcBudget(d26.budget);
+  var r27=calcBudget(d27.budget);
+  var total=r26.b+r27.b;
+  var totalAct=r26.a+r27.a;
+  el.innerHTML='<div style="background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:14px 18px;box-shadow:0 2px 10px rgba(0,0,0,.08)">'
+    +'<div style="font-size:.72rem;font-weight:800;color:#666;letter-spacing:.08em;margin-bottom:10px">📊 通期予算サマリー</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">'
+    +'<div style="background:#f5f3ef;border-radius:8px;padding:10px 12px"><div style="font-size:.65rem;color:#666;font-weight:700">2026/7月 予算</div><div style="font-size:1.1rem;font-weight:900;color:#1565c0">¥'+fmtN(r26.b)+'</div><div style="font-size:.65rem;color:#e65100">実績 ¥'+fmtN(r26.a)+'</div></div>'
+    +'<div style="background:#f5f3ef;border-radius:8px;padding:10px 12px"><div style="font-size:.65rem;color:#666;font-weight:700">2027/1月 予算</div><div style="font-size:1.1rem;font-weight:900;color:#1565c0">¥'+fmtN(r27.b)+'</div><div style="font-size:.65rem;color:#e65100">実績 ¥'+fmtN(r27.a)+'</div></div>'
+    +'<div style="background:#1a1a2e;border-radius:8px;padding:10px 12px"><div style="font-size:.65rem;color:#aaa;font-weight:700">通期合計 予算</div><div style="font-size:1.1rem;font-weight:900;color:#e8b84b">¥'+fmtN(total)+'</div><div style="font-size:.65rem;color:#ff9e9e">実績合計 ¥'+fmtN(totalAct)+'</div></div>'
+    +'</div></div>';
+}
+
 function renderBudget(){
+  renderCrossPeriodBudget();
   var tot=0,act=0;
   var sections=['7月','1月'];
   var secData=[];
@@ -4100,6 +4272,9 @@ function hideLogin(){
 // ===== 起動 =====
 async function appInit(){
   loadLocal();
+  // 2027期データも先読みしてlocalStorageに確保（初回のみ）
+  try{if(!localStorage.getItem(SK27)){var d27=cloneD(INIT27);d27._t=0;localStorage.setItem(SK27,JSON.stringify(d27));}}catch(e){}
+  updatePeriodUI();
   document.getElementById('s-ak').value=cfg.apiKey||'';
   document.getElementById('s-bi').value=cfg.binId||'';
   if(cfg.apiKey&&cfg.binId){
