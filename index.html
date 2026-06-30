@@ -1361,10 +1361,12 @@ function updatePeriodUI(){
   var btn27=document.getElementById('period-btn-27');
   var sub=document.getElementById('header-sub');
   var title=document.getElementById('header-title');
+  var header=document.querySelector('header');
   if(btn26){btn26.className='btn '+(is26?'btn-w':'btn-ol');}
   if(btn27){btn27.className='btn '+(is26?'btn-ol':'btn-w');}
   if(sub){sub.textContent='株式会社LIFEFUND ／ '+(is26?'2026年7月28日（火）クリエート浜松2階 大ホール':'2027年1月26日（火）ホテルコンコルド2F 雲海の間');}
   if(title){title.textContent='🎤 経営方針発表会 '+(is26?'2026':'2027');}
+  if(header){header.style.background=is26?'':'#1a3a6a';}
 }
 
 function persist(){D._t=Date.now();localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));autoSync();}
