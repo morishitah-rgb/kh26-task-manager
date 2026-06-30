@@ -644,56 +644,11 @@ a{color:var(--red)}
   <!-- 会場カード -->
   <div class="card" id="venue-display-card"></div>
 
-  <!-- 関連リンク -->
-  <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-    <span style="font-weight:800;font-size:.92rem;color:var(--red)">🔗 関連リンク</span>
-    <a href="https://www.hcf.or.jp/facilities/create/" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">🏛 クリエート浜松 公式サイト</a>
-    <a href="https://yoyacool.e-harp.jp/hamamatsu" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">📅 会場予約システム（松ぼっくり）</a>
-    <a href="https://snoweecafe.owst.jp/" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">🍽 スノーウィーカフェ（懇親会）</a>
-  </div>
+  <!-- 関連リンク（period-aware） -->
+  <div id="venue-links-card"></div>
 
-  <!-- イベント会場情報 -->
-  <div class="card" style="background:#fff8f8;border-color:#f8c6c6">
-    <div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🎉 懇親会 LIFEFUND VISION DAY 会場</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
-      <div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">会場名</div><div style="font-weight:700;font-size:.95rem;margin-top:2px">スノーウィーカフェ　メイワン7F</div></div>
-      <div><div style="font-size:.75rem;font-weight:700;color:var(--sub)">開催日時</div><div style="font-size:.9rem;margin-top:2px">2026年7月28日（火）18:15〜　※参加費無料</div></div>
-      <div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--sub)">住所</div>
-        <a href="https://www.google.com/maps/search/?api=1&query=静岡県浜松市中央区砂山町6-1+メイワン7F" target="_blank" style="font-size:.9rem;font-weight:700;display:block;margin-top:2px">📍 静岡県浜松市中央区砂山町6-1 メイワン7F</a>
-        <span style="font-size:.75rem;color:var(--sub)">タップでGoogleマップを開く</span>
-      </div>
-      <div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--sub)">公式サイト</div>
-        <a href="https://snoweecafe.owst.jp/" target="_blank" style="font-size:.9rem;font-weight:700;display:block;margin-top:2px">🔗 snoweecafe.owst.jp</a>
-      </div>
-    </div>
-    <div style="margin-top:10px;padding:10px;background:#fff;border-radius:8px;border:1px solid #f8c6c6;font-size:.84rem;line-height:1.7;color:#555">
-      💡 「一度帰宅したあとの途中参加」も大歓迎です。出欠登録は調整さんフォームから必ず回答ください（不参加の場合もコメント欄に理由の記載をお願いします）。
-    </div>
-  </div>
-
-  <!-- アクセスガイド -->
-  <div class="card">
-    <div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🚌 クリエート浜松 アクセスガイド</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
-      <div style="background:#f0f4ff;border-radius:10px;padding:12px">
-        <div style="font-weight:700;margin-bottom:6px">🚃 電車の場合</div>
-        <div style="font-size:.85rem;line-height:1.8">JR浜松駅 北口から<br>徒歩 約15〜17分<br><span style="color:var(--sub);font-size:.78rem">東方向へ直進（遠州鉄道沿い）</span></div>
-        <a href="https://www.google.com/maps/dir/JR浜松駅/静岡県浜松市中央区早馬町2-1" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>
-      </div>
-      <div style="background:#f0fff4;border-radius:10px;padding:12px">
-        <div style="font-weight:700;margin-bottom:6px">🚌 バスの場合</div>
-        <div style="font-size:.85rem;line-height:1.8">遠鉄バス 浜松駅バスターミナルから<br>「市役所南」バス停 下車<br>徒歩 約3分<br><span style="color:var(--sub);font-size:.78rem">系統：市内循環バス等</span></div>
-        <a href="https://maps.google.com/?q=遠鉄バス+市役所南+浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 バス停を地図で見る</a>
-      </div>
-      <div style="background:#fff8f0;border-radius:10px;padding:12px">
-        <div style="font-weight:700;margin-bottom:6px">🚗 車の場合</div>
-        <div style="font-size:.85rem;line-height:1.8">東名浜松IC から約20分<br>浜松西ICから約25分<br><span style="color:var(--sub);font-size:.78rem">駐車場は提携先をご利用ください</span></div>
-        <a href="https://www.google.com/maps/dir//静岡県浜松市中央区早馬町2-1+クリエート浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>
-      </div>
-    </div>
-  </div>
+  <!-- アクセスガイド（period-aware） -->
+  <div id="access-guide"></div>
 
   <!-- 提携駐車場 -->
   <div class="card">
@@ -1164,7 +1119,6 @@ links:[
   {id:'lk8',category:'🎬 動画アーカイブ',title:'2025年7月29日（第54期下期）動画フォルダ',url:'https://drive.google.com/drive/folders/199v4olS6jw2-ysaMA43LBM2mLHmOPHNQ',note:''},
   {id:'lk9',category:'🎬 動画アーカイブ',title:'2026年1月26日（第55期上期）動画・資料フォルダ',url:'https://drive.google.com/drive/folders/1RH81Llm94q6h412I8ks-DqrsobaRGmx2',note:''},
   {id:'lk10',category:'📄 資料・PDF',title:'第55期タイムスケジュールPDF（1月開催・Googleドライブ）',url:'https://drive.google.com/drive/folders/13R6UzwdksEBvAN1nxysxQYMIYXDVQpin',note:'LIFEFUND第55期経営方針発表会_スケジュール.pdf'},
-  {id:'lk11',category:'🎉 イベント',title:'スノーウィーカフェ（VISION DAY 2026会場）',url:'',note:'経営方針発表会後のVISION DAYイベント会場'},
   {id:'lk12',category:'📑 コンセプト・参考資料',title:'📋 コンセプト方針書（260606・白都発行）→ ⑨議事録タブで全文閲覧可',url:'',note:'⑨議事録タブ「コンセプト方針書（白都 卓磨・全文）」を展開してください。発表者必読・全6ページ。'},
   {id:'lk24',category:'📑 コンセプト・参考資料',title:'第5回 委員会MTG Geminiメモ（2026-06-04）',url:'https://docs.google.com/document/d/1Y_oDSZuRbnGyGetBqTX8MGynVTh_r6NH-Tyv0m7Iats/edit',note:'Google Meetの自動文字起こし・サマリー。録音2時間13分分。'},
   {id:'lk13',category:'📑 コンセプト・参考資料',title:'社長及び各事業部 参考発表スライド（過去分）',url:'https://docs.google.com/presentation/d/1t-dvgbEQ4w3si_cwuQjMLydi76oqID2l1yhHhQuc434/edit?usp=sharing',note:'発表資料作成前に必ず確認'},
@@ -2561,7 +2515,74 @@ function saveBudget(){
 function renderVenue(){
   renderSlideListDisplay();
   renderVenueCard();
+  renderVenueLinks();
+  renderAccessGuide();
   renderParkingList();
+}
+
+function renderVenueLinks(){
+  var el=document.getElementById('venue-links-card');
+  if(!el)return;
+  var is26=curPeriod==='2026';
+  var links=is26
+    ?[
+      {href:'https://www.hcf.or.jp/facilities/create/',label:'🏛 クリエート浜松 公式サイト'},
+      {href:'https://yoyacool.e-harp.jp/hamamatsu',label:'📅 会場予約システム（松ぼっくり）'}
+     ]
+    :[
+      {href:'https://www.hotel-concord.co.jp/hamamatsu/',label:'🏨 ホテルコンコルド浜松 公式サイト'}
+     ];
+  el.innerHTML='<div class="card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">'
+    +'<span style="font-weight:800;font-size:.92rem;color:var(--red)">🔗 関連リンク</span>'
+    +links.map(function(l){return'<a href="'+l.href+'" target="_blank" class="btn btn-ol" style="color:var(--red);border-color:var(--red);font-size:.82rem;text-decoration:none">'+l.label+'</a>';}).join('')
+    +'</div>';
+}
+
+function renderAccessGuide(){
+  var el=document.getElementById('access-guide');
+  if(!el)return;
+  var is26=curPeriod==='2026';
+  if(is26){
+    el.innerHTML='<div class="card">'
+      +'<div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🚌 クリエート浜松 アクセスガイド</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">'
+      +'<div style="background:#f0f4ff;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚃 電車の場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">JR浜松駅 北口から<br>徒歩 約15〜17分<br><span style="color:var(--sub);font-size:.78rem">東方向へ直進（遠州鉄道沿い）</span></div>'
+        +'<a href="https://www.google.com/maps/dir/JR浜松駅/静岡県浜松市中央区早馬町2-1" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>'
+      +'</div>'
+      +'<div style="background:#f0fff4;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚌 バスの場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">遠鉄バス 浜松駅バスターミナルから<br>「市役所南」バス停 下車<br>徒歩 約3分<br><span style="color:var(--sub);font-size:.78rem">系統：市内循環バス等</span></div>'
+        +'<a href="https://maps.google.com/?q=遠鉄バス+市役所南+浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 バス停を地図で見る</a>'
+      +'</div>'
+      +'<div style="background:#fff8f0;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚗 車の場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">東名浜松IC から約20分<br>浜松西ICから約25分<br><span style="color:var(--sub);font-size:.78rem">駐車場は提携先をご利用ください</span></div>'
+        +'<a href="https://www.google.com/maps/dir//静岡県浜松市中央区早馬町2-1+クリエート浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>'
+      +'</div>'
+      +'</div></div>';
+  }else{
+    el.innerHTML='<div class="card">'
+      +'<div style="font-weight:800;font-size:.95rem;color:var(--red);margin-bottom:12px">🚌 ホテルコンコルド浜松 アクセスガイド</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">'
+      +'<div style="background:#f0f4ff;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚃 電車の場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">JR浜松駅 北口から<br>徒歩 約7分<br><span style="color:var(--sub);font-size:.78rem">北東方向へ直進（板屋町方面）</span></div>'
+        +'<a href="https://www.google.com/maps/dir/JR浜松駅/静岡県浜松市中央区板屋町111-2+ホテルコンコルド浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>'
+      +'</div>'
+      +'<div style="background:#f0fff4;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚌 バスの場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">遠鉄バス 浜松駅バスターミナルから<br>「板屋町」バス停 下車<br>徒歩 約1分<br><span style="color:var(--sub);font-size:.78rem">各方面行きで利用可</span></div>'
+        +'<a href="https://maps.google.com/?q=板屋町+バス停+浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 バス停を地図で見る</a>'
+      +'</div>'
+      +'<div style="background:#fff8f0;border-radius:10px;padding:12px">'
+        +'<div style="font-weight:700;margin-bottom:6px">🚗 車の場合</div>'
+        +'<div style="font-size:.85rem;line-height:1.8">東名浜松ICから約20分<br>東名浜松西ICから約25分<br><span style="color:var(--sub);font-size:.78rem">ホテル隣接の有料駐車場あり</span></div>'
+        +'<a href="https://www.google.com/maps/dir//静岡県浜松市中央区板屋町111-2+ホテルコンコルド浜松" target="_blank" style="display:inline-block;margin-top:8px;font-size:.8rem">📍 Googleマップで経路を見る</a>'
+      +'</div>'
+      +'</div></div>';
+  }
 }
 function renderSlideListDisplay(){
   var el=document.getElementById('slide-list-display');
