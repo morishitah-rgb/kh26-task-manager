@@ -1443,15 +1443,17 @@ function startPolling(){
   if(_polling)return;
   _polling=true;
   setInterval(async function(){
-    if(!cfg.apiKey||!cfg.binId)return;
+    var activeCfg=curPeriod==='2026'?cfg:cfg27;
+    if(!activeCfg.apiKey||!activeCfg.binId)return;
     if(_autoSyncTimer)return; // 送信中はスキップ
     try{
-      var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
+      var r=await fetch('https://api.jsonbin.io/v3/b/'+activeCfg.binId+'/latest',{headers:{'X-Master-Key':activeCfg.apiKey}});
       var data=await r.json();
       if(data.record&&data.record._t&&data.record._t>(D._t||0)){
         setSyncBadge('updating');
-        D=Object.assign(cloneD(INIT),data.record);
-        localStorage.setItem(SK,JSON.stringify(D));
+        var baseInit=curPeriod==='2026'?INIT:INIT27;
+        D=Object.assign(cloneD(baseInit),data.record);
+        localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));
         renderPage(curTab);
         showToast('📥 他のユーザーの変更を反映しました');
         setSyncBadge('online');
