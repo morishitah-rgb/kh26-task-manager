@@ -1365,6 +1365,8 @@ function loadLocal(){
 }
 function loadLocal27(){
   try{var d=localStorage.getItem(SK27);D=d?JSON.parse(d):cloneD(INIT27);}catch(e){D=cloneD(INIT27);}
+  // 2026のboardIDが混入していたらINIT27にリセット（ポーリング汚染対策）
+  if(D.board&&D.board.some(function(b){return b.id&&!b.id.startsWith('b27_');})){D=cloneD(INIT27);}
   ['tasks','members','minutes','budget','schedule','board','links'].forEach(function(key){
     if(!D[key]){D[key]=cloneD(INIT27[key]||[]);}
     else{(INIT27[key]||[]).forEach(function(item){if(!D[key].find(function(x){return x.id===item.id;}))D[key].push(cloneD(item));});}
