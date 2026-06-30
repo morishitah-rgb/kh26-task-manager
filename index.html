@@ -4274,6 +4274,24 @@ function hideLogin(){
 }
 
 // ===== 起動 =====
+async function ensureBin27(){
+  // cfg27のBin IDが未設定で、2026のAPIキーがあれば自動作成
+  if(cfg27.binId||!cfg.apiKey)return;
+  try{
+    var r=await fetch('https://api.jsonbin.io/v3/b',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey,'X-Bin-Name':'kh27-task-manager'},
+      body:JSON.stringify(cloneD(INIT27))
+    });
+    var res=await r.json();
+    if(res.metadata&&res.metadata.id){
+      cfg27.binId=res.metadata.id;
+      cfg27.apiKey=cfg.apiKey;
+      localStorage.setItem(SS27,JSON.stringify(cfg27));
+    }
+  }catch(e){}
+}
+
 async function appInit(){
   loadLocal();
   // 2027期データも先読みしてlocalStorageに確保（初回のみ）
@@ -4287,6 +4305,8 @@ async function appInit(){
       var data=await r.json();
       if(data.record&&(data.record.tasks||data.record.board)){D=Object.assign(cloneD(INIT),data.record);localStorage.setItem(SK,JSON.stringify(D));}
     }catch(e){}
+    // 2027用Binが未設定なら自動作成
+    await ensureBin27();
   }
   migrateOwnerNames();
   goTab('board');
