@@ -1419,9 +1419,10 @@ try{
 function fbNode(year){return year==='2026'?'kh2026':'kh2027';}
 
 // 書き込み（persistから呼ばれる。デバウンスして負荷軽減）
-var _fbTimer=null;
+// _fbRemote：受信反映中はローカルへ書き戻すだけなのでクラウドへ再送しない（ループ防止）
+var _fbTimer=null, _fbRemote=false;
 function fbPush(){
-  if(!fbEnabled)return;
+  if(!fbEnabled||_fbRemote)return;
   clearTimeout(_fbTimer);
   var year=curPeriod, snapshot=D;
   _fbTimer=setTimeout(function(){
@@ -1461,15 +1462,21 @@ function fbListen(){
       var sk=year==='2026'?SK:SK27, localData={};
       try{localData=JSON.parse(localStorage.getItem(sk)||'{}');}catch(e){}
       if(data._t>(localData._t||0)){
-        localStorage.setItem(sk,JSON.stringify(data));
-        if(year===curPeriod){
-          var baseInit=year==='2026'?INIT:INIT27;
-          D=Object.assign(cloneD(baseInit),data);
-          setSyncBadge('updating');
-          renderPage(curTab);
-          showToast('📥 他のユーザーの変更を反映しました');
-          setSyncBadge('online');
-        }
+        // 受信データをローカルへ保存し、loadLocal系で欠損項目を正規化してから描画する。
+        // Firebaseは空配列を保存時に削除するため受信データは構造が欠けることがあり、
+        // Object.assignの浅いマージだと描画関数が途中で止まる。正規化を通すことで防ぐ。
+        _fbRemote=true;
+        try{
+          localStorage.setItem(sk,JSON.stringify(data));
+          if(year===curPeriod){
+            if(year==='2026'){loadLocal();}else{loadLocal27();}
+            setSyncBadge('updating');
+            goTab(curTab);
+            showToast('📥 他のユーザーの変更を反映しました');
+            setSyncBadge('online');
+          }
+        }catch(e){console.warn('受信反映エラー',e);}
+        _fbRemote=false;
       }
     });
   });
