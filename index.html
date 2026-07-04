@@ -7,6 +7,8 @@
 <script src="https://accounts.google.com/gsi/client" onload="if(window.onGsiLoad)onGsiLoad()" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1374,7 +1376,7 @@ function updatePeriodUI(){
   if(header){header.style.background=is26?'':'#1a3a6a';}
 }
 
-function persist(){D._t=Date.now();localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));autoSync();}
+function persist(){D._t=Date.now();localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));fbPush();}
 function showToast(msg){
   var t=document.getElementById('save-toast');
   if(!t){t=document.createElement('div');t.id='save-toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#2ecc71;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:opacity .4s;pointer-events:none';document.body.appendChild(t);}
@@ -1400,7 +1402,79 @@ async function autoSync(){
   },600);
 }
 
-// ===== ポーリング（5秒ごとにクラウドの変更を検知して自動反映）=====
+// ===== Firebase リアルタイム同期 =====
+var fbDB=null, fbEnabled=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyBkcb2ohr_EEWx1ly5oHSeDHVowASs5IK0",
+    authDomain:"lifefund-sync.firebaseapp.com",
+    databaseURL:"https://lifefund-sync-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:"lifefund-sync"
+  });
+  fbDB=firebase.database();
+  fbEnabled=true;
+}catch(e){console.warn('Firebase初期化失敗',e);}
+
+function fbNode(year){return year==='2026'?'kh2026':'kh2027';}
+
+// 書き込み（persistから呼ばれる。デバウンスして負荷軽減）
+var _fbTimer=null;
+function fbPush(){
+  if(!fbEnabled)return;
+  clearTimeout(_fbTimer);
+  var year=curPeriod, snapshot=D;
+  _fbTimer=setTimeout(function(){
+    setSyncBadge('syncing');
+    fbDB.ref(fbNode(year)).set(snapshot)
+      .then(function(){setSyncBadge('online');})
+      .catch(function(){setSyncBadge('error');});
+  },500);
+}
+
+// 起動時：ローカルが新しい/クラウドが空ならローカルをアップ（データ保護）
+async function fbInitialSync(){
+  if(!fbEnabled)return;
+  var years=['2026','2027'];
+  for(var i=0;i<years.length;i++){
+    var year=years[i], sk=year==='2026'?SK:SK27, localData={};
+    try{localData=JSON.parse(localStorage.getItem(sk)||'{}');}catch(e){}
+    try{
+      var snap=await fbDB.ref(fbNode(year)).once('value');
+      var remote=snap.val();
+      if((!remote||!remote._t||(localData._t||0)>=(remote._t||0)) && localData._t){
+        await fbDB.ref(fbNode(year)).set(localData);
+      }
+    }catch(e){}
+  }
+}
+
+// リアルタイムリスナー：他ユーザーの変更を即時反映
+var _fbListening=false;
+function fbListen(){
+  if(!fbEnabled||_fbListening)return;
+  _fbListening=true;
+  ['2026','2027'].forEach(function(year){
+    fbDB.ref(fbNode(year)).on('value',function(snap){
+      var data=snap.val();
+      if(!data||!data._t)return;
+      var sk=year==='2026'?SK:SK27, localData={};
+      try{localData=JSON.parse(localStorage.getItem(sk)||'{}');}catch(e){}
+      if(data._t>(localData._t||0)){
+        localStorage.setItem(sk,JSON.stringify(data));
+        if(year===curPeriod){
+          var baseInit=year==='2026'?INIT:INIT27;
+          D=Object.assign(cloneD(baseInit),data);
+          setSyncBadge('updating');
+          renderPage(curTab);
+          showToast('📥 他のユーザーの変更を反映しました');
+          setSyncBadge('online');
+        }
+      }
+    });
+  });
+}
+
+// ===== ポーリング（旧JSONBin方式・Firebase移行により無効）=====
 var _polling=false;
 function startPolling(){
   if(_polling)return;
@@ -4327,21 +4401,15 @@ async function appInit(){
   // 2027期データも先読みしてlocalStorageに確保（初回のみ）
   try{if(!localStorage.getItem(SK27)){var d27=cloneD(INIT27);d27._t=0;localStorage.setItem(SK27,JSON.stringify(d27));}}catch(e){}
   updatePeriodUI();
-  document.getElementById('s-ak').value=cfg.apiKey||'';
-  document.getElementById('s-bi').value=cfg.binId||'';
-  if(cfg.apiKey&&cfg.binId){
-    try{
-      var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
-      var data=await r.json();
-      if(data.record&&(data.record.tasks||data.record.board)){D=Object.assign(cloneD(INIT),data.record);localStorage.setItem(SK,JSON.stringify(D));}
-    }catch(e){}
-    // 2027用Binが未設定なら自動作成
-    await ensureBin27();
-  }
+  var akEl=document.getElementById('s-ak'); if(akEl)akEl.value=cfg.apiKey||'';
+  var biEl=document.getElementById('s-bi'); if(biEl)biEl.value=cfg.binId||'';
+  // Firebase：ローカルが新しければクラウドへアップ（データ保護）
+  await fbInitialSync();
   migrateOwnerNames();
   goTab('board');
-  if(cfg.apiKey&&cfg.binId){setSyncBadge('online');}
-  startPolling();
+  if(fbEnabled)setSyncBadge('online');
+  // Firebaseリアルタイムリスナー開始（他ユーザーの変更を即時受信）
+  fbListen();
 }
 
 // ===== Google OAuth 認証 =====
