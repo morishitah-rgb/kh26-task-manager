@@ -993,13 +993,13 @@ dayRoles:[
   {id:'dr7',phase:1,role:'音響セット',assignees:[],icon:'🎤',note:''},
   {id:'dr8',phase:1,role:'バックヤード整理・表彰状準備',assignees:[],icon:'🏆',note:''},
   {id:'dr9',phase:1,role:'カメラマン準備',assignees:[],icon:'📷',note:''},
-  {id:'dr10',phase:1,role:'タイムキーパー準備',assignees:[],icon:'⏱',note:''},
+  {id:'dr10',phase:1,role:'タイムキーパー準備',assignees:[],icon:'⏱',note:'',link:'https://drive.google.com/file/d/1K18rwMuz7YkVx8EIcpumGHkyEIrfn2Pb/view?usp=drive_link'},
   {id:'dr11',phase:1,role:'受付スタンバイ',assignees:[],icon:'📋',note:''},
   {id:'dr12',phase:1,role:'社員への伝達事項',assignees:[],icon:'📢',note:''},
   {id:'dr13',phase:1,role:'ドア開閉',assignees:[],icon:'🚪',note:''},
   {id:'dr14',phase:2,role:'席で話を聞く',assignees:[],icon:'👂',note:'全員'},
   {id:'dr15',phase:2,role:'マイク渡す係',assignees:[],icon:'🎤',note:''},
-  {id:'dr16',phase:2,role:'タイムキーパー係',assignees:[],icon:'⏱',note:''},
+  {id:'dr16',phase:2,role:'タイムキーパー係',assignees:[],icon:'⏱',note:'',link:'https://drive.google.com/file/d/1K18rwMuz7YkVx8EIcpumGHkyEIrfn2Pb/view?usp=drive_link'},
   {id:'dr17',phase:2,role:'機材操作',assignees:[],icon:'💻',note:''},
   {id:'dr18',phase:2,role:'コーヒーヘルプ',assignees:[],icon:'☕',note:''},
   {id:'dr19',phase:2,role:'ゴミ袋設置係',assignees:[],icon:'🗑',note:'コーヒー提供時'},
@@ -1009,7 +1009,7 @@ dayRoles:[
   {id:'dr23',phase:3,role:'表彰者アテンド',assignees:[],icon:'🏆',note:''},
   {id:'dr24',phase:3,role:'表彰状準備',assignees:[],icon:'📜',note:''},
   {id:'dr25',phase:3,role:'機材準備',assignees:[],icon:'📹',note:''},
-  {id:'dr26',phase:3,role:'タイムキーパー',assignees:[],icon:'⏱',note:''},
+  {id:'dr26',phase:3,role:'タイムキーパー',assignees:[],icon:'⏱',note:'',link:'https://drive.google.com/file/d/1K18rwMuz7YkVx8EIcpumGHkyEIrfn2Pb/view?usp=drive_link'},
   {id:'dr27',phase:3,role:'社長へのマイク渡し',assignees:[],icon:'🎤',note:''},
   {id:'dr28',phase:4,role:'駐車券割引案内',assignees:[],icon:'🚗',note:''},
   {id:'dr29',phase:4,role:'机・椅子片付け',assignees:[],icon:'🪑',note:''},
@@ -3685,6 +3685,7 @@ function renderTeams(){
           '<div style="flex:1">'+
             '<div onclick="editDrRoleName(event,\''+r.id+'\')" title="クリックで役割名を編集" style="font-size:.8rem;font-weight:700;line-height:1.3;color:#fff;cursor:text;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-all">'+esc(r.role)+'</div>'+
             (r.note?'<div style="font-size:.66rem;color:rgba(255,255,255,.55);margin-top:2px">'+esc(r.note)+'</div>':'')+
+            (r.link?'<a href="'+esc(r.link)+'" target="_blank" onclick="event.stopPropagation()" style="display:inline-block;margin-top:4px;font-size:.66rem;color:#ffd54f;text-decoration:underline">📎 資料を見る</a>':'')+
           '</div>'+
           '<button style="background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:.75rem;padding:0 2px;line-height:1;flex-shrink:0" onclick="event.stopPropagation();delDrRole(\''+r.id+'\')" title="削除">✕</button>'+
         '</div>'+
