@@ -832,20 +832,6 @@ a{color:var(--red)}
 <!-- 設定 -->
 <div class="page" id="page-settings">
   <div class="setting-box">
-    <h3>🌐 クラウド共有設定（jsonbin.io）</h3>
-    <p style="font-size:.83rem;color:#666;margin-bottom:10px"><a href="https://jsonbin.io" target="_blank">jsonbin.io</a> で無料アカウント作成 → APIキーとBin IDを入力すると委員全員でリアルタイム共有できます</p>
-    <div class="srow">
-      <input type="text" id="s-ak" placeholder="X-Access-Key（APIキー）">
-      <input type="text" id="s-bi" placeholder="Bin ID">
-      <button class="btn btn-r" onclick="saveCfg()">保存</button>
-    </div>
-    <div class="srow" style="margin-top:8px">
-      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="syncDown()">↓ クラウドから読込</button>
-      <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="syncUp()">↑ クラウドへ保存</button>
-    </div>
-    <div id="syncst"></div>
-  </div>
-  <div class="setting-box">
     <h3>📥 データ管理</h3>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ol" style="color:var(--red);border-color:var(--red)" onclick="expJSON()">JSONエクスポート</button>
@@ -1236,10 +1222,9 @@ links:[
 };
 
 // ===== データ管理 =====
-const SK='kh26v3',SS='kh26cfg';
-const SK27='kh27v1',SS27='kh27cfg';
-let D={}, cfg={apiKey:'',binId:''};
-let cfg27={apiKey:'',binId:''};
+const SK='kh26v3';
+const SK27='kh27v1';
+let D={};
 let curPeriod='2026';
 
 function loadLocal(){
@@ -1314,16 +1299,6 @@ function loadLocal(){
     if(!ex){D.links.push(cloneD(item));}
     else{Object.keys(item).forEach(function(k){if(ex[k]===undefined||ex[k]===null)ex[k]=item[k];});}
   });}
-  try{const s=localStorage.getItem(SS);if(s)cfg={...cfg,...JSON.parse(s)};}catch(e){}
-  // URLハッシュ（#k=APIKEY&b=BINID）からcfgを自動設定
-  (function(){
-    var h=location.hash.slice(1);
-    if(!h)return;
-    var p={};h.split('&').forEach(function(pair){var kv=pair.split('=');if(kv.length===2)p[kv[0]]=decodeURIComponent(kv[1]);});
-    if(p.k){cfg.apiKey=p.k;if(p.b)cfg.binId=p.b;localStorage.setItem(SS,JSON.stringify({apiKey:cfg.apiKey,binId:cfg.binId}));}
-    // セキュリティのためURLからハッシュを除去
-    if(history.replaceState)history.replaceState(null,'',location.pathname);
-  })();
 }
 function loadLocal27(){
   try{var d=localStorage.getItem(SK27);D=d?JSON.parse(d):cloneD(INIT27);}catch(e){D=cloneD(INIT27);}
@@ -1342,7 +1317,6 @@ function loadLocal27(){
   if(!D.dayRoles){D.dayRoles=[];}
   if(!D.supplies){D.supplies=[];}
   if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
-  try{var s=localStorage.getItem(SS27);if(s)cfg27={...cfg27,...JSON.parse(s)};}catch(e){}
 }
 
 function switchPeriod(year){
@@ -1389,20 +1363,6 @@ function setSyncBadge(state){
   var map={online:'🟢 同期中',syncing:'🔄 送信中',updating:'📥 受信中',offline:'⚫ オフライン',error:'🔴 エラー'};
   el.textContent=map[state]||state;
 }
-var _autoSyncTimer=null;
-async function autoSync(){
-  var activeCfg=curPeriod==='2026'?cfg:cfg27;
-  if(!activeCfg.apiKey||!activeCfg.binId)return;
-  clearTimeout(_autoSyncTimer);
-  _autoSyncTimer=setTimeout(async function(){
-    setSyncBadge('syncing');
-    try{
-      await fetch('https://api.jsonbin.io/v3/b/'+activeCfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':activeCfg.apiKey},body:JSON.stringify(D)});
-      setSyncBadge('online');
-    }catch(e){setSyncBadge('error');}
-  },600);
-}
-
 // ===== Firebase リアルタイム同期 =====
 var fbDB=null, fbEnabled=false;
 try{
@@ -1482,30 +1442,6 @@ function fbListen(){
   });
 }
 
-// ===== ポーリング（旧JSONBin方式・Firebase移行により無効）=====
-var _polling=false;
-function startPolling(){
-  if(_polling)return;
-  _polling=true;
-  setInterval(async function(){
-    var activeCfg=curPeriod==='2026'?cfg:cfg27;
-    if(!activeCfg.apiKey||!activeCfg.binId)return;
-    if(_autoSyncTimer)return; // 送信中はスキップ
-    try{
-      var r=await fetch('https://api.jsonbin.io/v3/b/'+activeCfg.binId+'/latest',{headers:{'X-Master-Key':activeCfg.apiKey}});
-      var data=await r.json();
-      if(data.record&&data.record._t&&data.record._t>(D._t||0)){
-        setSyncBadge('updating');
-        var baseInit=curPeriod==='2026'?INIT:INIT27;
-        D=Object.assign(cloneD(baseInit),data.record);
-        localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));
-        renderPage(curTab);
-        showToast('📥 他のユーザーの変更を反映しました');
-        setSyncBadge('online');
-      }
-    }catch(e){}
-  },5000);
-}
 function cloneD(x){return JSON.parse(JSON.stringify(x));}
 function uid(){return 'i'+Date.now()+Math.random().toString(36).slice(2,6);}
 function todayStr(){return new Date().toISOString().split('T')[0];}
@@ -3689,13 +3625,42 @@ function drDrop(e,targetId,phase){
   persist();renderTeams();
 }
 
+var _drFilter=null; // 当日役割：絞り込み中の担当者名（nullで全員表示）
+function drFilterToggle(name){
+  _drFilter=(_drFilter===name)?null:name;
+  renderTeams();
+}
+
 function renderTeams(){
   if(!D.dayRoles)D.dayRoles=cloneD(INIT.dayRoles);
   // assignee→assignees マイグレーション
   D.dayRoles.forEach(function(r){if(!r.assignees){r.assignees=r.assignee?[r.assignee]:[];delete r.assignee;}});
 
+  // 担当者で絞り込むチップ一覧
+  var filterChips=(D.members||[]).map(function(m){
+    var clean=m.name.replace(/\s/g,'');
+    var ph2=MEMBER_PHOTOS&&(MEMBER_PHOTOS[clean]||MEMBER_PHOTOS[m.name]);
+    var sel=_drFilter===m.name;
+    var av=ph2?'<img src="'+ph2+'" style="width:24px;height:24px;object-fit:cover;object-position:center top;border-radius:50%;flex-shrink:0">':
+      '<div style="width:24px;height:24px;border-radius:50%;background:'+nameColor(clean)+';flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.65rem">'+clean.slice(0,1)+'</div>';
+    var sei=m.name.split(/\s+/)[0]||clean;
+    return '<div onclick="drFilterToggle(\''+esc(m.name)+'\')" style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 6px;border-radius:20px;cursor:pointer;border:2px solid '+(sel?'#1565c0':'#e0e0e0')+';background:'+(sel?'#e3f2fd':'#fff')+';flex-shrink:0;white-space:nowrap;min-height:36px">'+
+      av+'<span style="font-size:.8rem;font-weight:700">'+esc(sei)+'</span>'+
+    '</div>';
+  }).join('');
+
+  var filterBar='<div style="margin-bottom:16px">'+
+    '<div style="font-size:.75rem;font-weight:800;color:#888;margin-bottom:8px">👤 担当者で絞り込む'+(_drFilter?' — <span style="color:#1565c0">'+esc(_drFilter)+'さんの役割を表示中</span>':'')+'</div>'+
+    '<div style="display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px">'+
+      filterChips+
+      (_drFilter?'<div onclick="drFilterToggle(null)" style="display:flex;align-items:center;padding:6px 14px;border-radius:20px;cursor:pointer;border:2px solid #c62828;background:#fff;color:#c62828;font-size:.8rem;font-weight:700;flex-shrink:0;white-space:nowrap;min-height:36px">✕ 全員表示に戻す</div>':'')+
+    '</div>'+
+  '</div>';
+
   var html=PHASE_DEFS.map(function(ph){
     var roles=(D.dayRoles||[]).filter(function(r){return r.phase===ph.id;});
+    if(_drFilter)roles=roles.filter(function(r){return (r.assignees||[]).indexOf(_drFilter)>=0;});
+    if(_drFilter&&roles.length===0)return '';
     var asgn=roles.filter(function(r){return r.assignees&&r.assignees.length>0;}).length;
 
     var rolesHtml=roles.map(function(r){
@@ -3754,7 +3719,7 @@ function renderTeams(){
     '</div>'+
   '</div><div style="clear:both"></div>';
 
-  document.getElementById('dr-field').innerHTML=coachHtml+html;
+  document.getElementById('dr-field').innerHTML=filterBar+coachHtml+html;
   document.getElementById('dr-phase-tabs').innerHTML='';
 }
 
@@ -4346,31 +4311,6 @@ function printSchedule(){
 }
 
 // ===== 設定 =====
-function saveCfg(){
-  cfg.apiKey=getV('s-ak');cfg.binId=getV('s-bi');
-  localStorage.setItem(SS,JSON.stringify(cfg));setSt('✅ 設定を保存しました');
-}
-function setSt(m){document.getElementById('syncst').textContent=m;}
-async function syncDown(){
-  if(!cfg.apiKey||!cfg.binId){alert('APIキーとBin IDを入力してください');return;}
-  setSt('読み込み中...');
-  try{
-    var r=await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId+'/latest',{headers:{'X-Master-Key':cfg.apiKey}});
-    var data=await r.json();
-    if(data.record&&(data.record.tasks||data.record.board)){
-      D=Object.assign(cloneD(INIT),data.record);
-      localStorage.setItem(SK,JSON.stringify(D));renderPage(curTab);setSt('✅ クラウドから読み込みました');
-    }else setSt('⚠ データが見つかりません');
-  }catch(e){setSt('❌ 失敗: '+e.message);}
-}
-async function syncUp(){
-  if(!cfg.apiKey||!cfg.binId){alert('APIキーとBin IDを入力してください');return;}
-  setSt('保存中...');
-  try{
-    await fetch('https://api.jsonbin.io/v3/b/'+cfg.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},body:JSON.stringify(D)});
-    setSt('✅ クラウドに保存しました');
-  }catch(e){setSt('❌ 失敗: '+e.message);}
-}
 function expJSON(){var b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='keieihoshin26.json';a.click();}
 function impJSON(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var data=JSON.parse(ev.target.result);D=Object.assign(cloneD(INIT),data);persist();renderPage(curTab);alert('インポート完了');}catch(err){alert('ファイルが正しくありません');}};r.readAsText(f);};inp.click();}
 function resetAll(){if(!confirm('初期データにリセットします。よろしいですか？'))return;D=cloneD(INIT);persist();renderPage(curTab);alert('リセット完了');}
@@ -4386,31 +4326,11 @@ function hideLogin(){
 }
 
 // ===== 起動 =====
-async function ensureBin27(){
-  // cfg27のBin IDが未設定で、2026のAPIキーがあれば自動作成
-  if(cfg27.binId||!cfg.apiKey)return;
-  try{
-    var r=await fetch('https://api.jsonbin.io/v3/b',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey,'X-Bin-Name':'kh27-task-manager'},
-      body:JSON.stringify(cloneD(INIT27))
-    });
-    var res=await r.json();
-    if(res.metadata&&res.metadata.id){
-      cfg27.binId=res.metadata.id;
-      cfg27.apiKey=cfg.apiKey;
-      localStorage.setItem(SS27,JSON.stringify(cfg27));
-    }
-  }catch(e){}
-}
-
 async function appInit(){
   loadLocal();
   // 2027期データも先読みしてlocalStorageに確保（初回のみ）
   try{if(!localStorage.getItem(SK27)){var d27=cloneD(INIT27);d27._t=0;localStorage.setItem(SK27,JSON.stringify(d27));}}catch(e){}
   updatePeriodUI();
-  var akEl=document.getElementById('s-ak'); if(akEl)akEl.value=cfg.apiKey||'';
-  var biEl=document.getElementById('s-bi'); if(biEl)biEl.value=cfg.binId||'';
   // Firebase：ローカルが新しければクラウドへアップ（データ保護）
   await fbInitialSync();
   migrateOwnerNames();
