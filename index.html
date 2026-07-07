@@ -1406,7 +1406,14 @@ async function fbInitialSync(){
     try{
       var snap=await fbDB.ref(fbNode(year)).once('value');
       var remote=snap.val();
-      if((!remote||!remote._t||(localData._t||0)>=(remote._t||0)) && localData._t){
+      if(remote&&remote._t&&(remote._t>(localData._t||0))){
+        // クラウドの方が新しい：ローカルへ反映（正規化してから保存）
+        localStorage.setItem(sk,JSON.stringify(remote));
+        if(year===curPeriod){
+          if(year==='2026'){loadLocal();}else{loadLocal27();}
+        }
+      }else if(localData._t&&(!remote||!remote._t||localData._t>remote._t)){
+        // ローカルの方が新しい、かつ実データがある場合のみアップロード
         await fbDB.ref(fbNode(year)).set(localData);
       }
     }catch(e){}
@@ -1560,6 +1567,8 @@ var NAME_NORMALIZE={
 };
 function normName(n){n=(n||'').trim();return NAME_NORMALIZE[n]||n;}
 function migrateOwnerNames(){
+  // D._tが無い＝実データが一度もロード/保存されていない状態。ここでpersist()を呼ぶとクラウドを巻き戻す危険があるため何もしない
+  if(!D._t)return;
   function fixAssignee(v){if(!v)return'';return v.split(/[・、]/).map(normName).join('・');}
   var changed=false;
   (D.tasks||[]).forEach(function(t){
