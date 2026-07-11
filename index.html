@@ -3340,8 +3340,16 @@ function printParkingPDF(){
   *{box-sizing:border-box;margin:0;padding:0;}
   :root{--red:#C8232A;--ink:#222;--sub:#666;--bg:#f5f3ef;--line:#e4e0d8;}
   body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;background:#e8e8e8;}
+  .print-toolbar{
+    max-width:210mm;margin:6mm auto;text-align:center;
+  }
+  .print-toolbar button{
+    background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 24px;
+    font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);
+  }
+  .print-toolbar button:hover{opacity:.9;}
   .sheet{
-    width:210mm;height:297mm;margin:10mm auto;background:#fff;
+    width:210mm;min-height:297mm;margin:10mm auto;background:#fff;
     box-shadow:0 0 12px rgba(0,0,0,.25);position:relative;padding:12mm 14mm;
     display:flex;flex-direction:column;
   }
@@ -3357,9 +3365,9 @@ function printParkingPDF(){
     border:0.4mm solid var(--line);border-radius:3mm;padding:2.5mm 4mm;margin-bottom:2.5mm;background:#fafafa;
   }
   .map-title{font-size:3.4mm;font-weight:900;color:var(--ink);margin-bottom:1.5mm;}
-  .map-canvas{position:relative;width:auto;height:63mm;margin:0 auto;}
-  .map-canvas img{height:100%;width:auto;display:block;}
-  .map-overlay{position:absolute;top:0;left:0;height:100%;width:auto;}
+  .map-canvas{position:relative;width:100%;margin:0 auto;}
+  .map-canvas img{width:100%;height:auto;display:block;}
+  .map-overlay{position:absolute;top:0;left:0;width:100%;height:auto;}
   .map-legend{font-size:2.6mm;color:#888;margin-top:1mm;text-align:right;}
 
   .section-title{
@@ -3413,14 +3421,21 @@ function printParkingPDF(){
 
   @media print {
     html, body {width:210mm;height:297mm;background:#fff;}
+    .print-toolbar{display:none;}
     .sheet{
-      width:210mm;height:297mm;margin:0;box-shadow:none;border-radius:0;
+      width:210mm;height:297mm;min-height:0;margin:0;box-shadow:none;border-radius:0;
       page-break-after:avoid;page-break-inside:avoid;
     }
+    .map-canvas{width:auto;height:63mm;}
+    .map-canvas img{width:auto;height:100%;}
+    .map-overlay{width:auto;height:100%;}
   }
 </style>
 </head>
 <body>
+<div class="print-toolbar">
+  <button onclick="window.print()">🖨 この内容を印刷する</button>
+</div>
 <div class="sheet">
   <div class="header">
     <div class="en">LIFEFUND 経営方針発表会 2026</div>
@@ -3544,11 +3559,10 @@ function printParkingPDF(){
 </body>
 </html>
 `;
-  var w=window.open('','_blank','width=820,height=1000');
+  var w=window.open('','_blank','width=900,height=1000');
   w.document.write(html);
   w.document.close();
   w.focus();
-  setTimeout(function(){w.print();},500);
 }
 
 function openAddPersonModal(){
