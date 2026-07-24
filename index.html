@@ -1428,6 +1428,11 @@ function loadLocal(){
   // 提携駐車場がプレースホルダーのままなら最新INITで上書き
   else if(D.parking[0]&&D.parking[0].name==='提携駐車場①（未設定）'){D.parking=cloneD(INIT.parking);}
   if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
+  // 会場情報：未設定フィールドを補完（既存値は保持）
+  if(!D.venue){D.venue=cloneD(INIT.venue);}
+  else{Object.keys(INIT.venue).forEach(function(k){if(D.venue[k]===undefined||D.venue[k]===null)D.venue[k]=INIT.venue[k];});}
+  // 委員集合時刻を8:30に確定（260728更新・旧8:00表記を強制置き換え）
+  if(D.venue&&D.venue.datetime&&D.venue.datetime.indexOf('委員8:00集合')>=0){D.venue.datetime=INIT.venue.datetime;}
   // スケジュール初期化・マージ
   if(!D.schedule){D.schedule=cloneD(INIT.schedule);}
   else{INIT.schedule.forEach(function(item){if(!D.schedule.find(function(x){return x.id===item.id;})&&D.deletedIds.indexOf(item.id)===-1)D.schedule.push(cloneD(item));});}
