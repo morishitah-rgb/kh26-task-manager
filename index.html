@@ -1391,12 +1391,13 @@ let curPeriod='2026';
 
 function loadLocal(){
   try{const d=localStorage.getItem(SK);D=d?JSON.parse(d):cloneD(INIT);}catch(e){D=cloneD(INIT);}
-  // INITに追加されたレコードを既存データに補完（リセット不要）
+  if(!D.deletedIds)D.deletedIds=[];
+  // INITに追加されたレコードを既存データに補完（リセット不要）。ただしユーザーが削除済みのIDは復活させない
   ['tasks','members','minutes','budget','programs','teams','board'].forEach(function(key){
     if(!D[key]){D[key]=cloneD(INIT[key]);}
     else{INIT[key].forEach(function(item){
       var existing=D[key].find(function(x){return x.id===item.id;});
-      if(!existing){D[key].push(cloneD(item));}
+      if(!existing){if(D.deletedIds.indexOf(item.id)===-1){D[key].push(cloneD(item));}}
       else{
         // 新しく追加されたフィールドをINITから補完
         Object.keys(item).forEach(function(k){
@@ -1466,9 +1467,10 @@ function loadLocal27(){
   try{var d=localStorage.getItem(SK27);D=d?JSON.parse(d):cloneD(INIT27);}catch(e){D=cloneD(INIT27);}
   // 2026のboardIDが混入していたらINIT27にリセット（ポーリング汚染対策）
   if(D.board&&D.board.some(function(b){return b.id&&!b.id.startsWith('b27_');})){D=cloneD(INIT27);}
+  if(!D.deletedIds)D.deletedIds=[];
   ['tasks','members','minutes','budget','schedule','board','links'].forEach(function(key){
     if(!D[key]){D[key]=cloneD(INIT27[key]||[]);}
-    else{(INIT27[key]||[]).forEach(function(item){if(!D[key].find(function(x){return x.id===item.id;}))D[key].push(cloneD(item));});}
+    else{(INIT27[key]||[]).forEach(function(item){if(!D[key].find(function(x){return x.id===item.id;})&&D.deletedIds.indexOf(item.id)===-1)D[key].push(cloneD(item));});}
   });
   if(!D.venue){D.venue=cloneD(INIT27.venue);}
   if(!D.slideLinks){D.slideLinks=cloneD(INIT27.slideLinks||[]);}
@@ -1699,7 +1701,7 @@ function saveBoard(){
   else{data.id=uid();D.board.push(data);}
   persist();renderBoard();cm();
 }
-function delBoard(id){if(!confirm('削除しますか？'))return;D.board=D.board.filter(function(x){return x.id!==id;});persist();renderBoard();}
+function delBoard(id){if(!confirm('削除しますか？'))return;D.board=D.board.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderBoard();}
 
 // ===== タスク =====
 var taskFilter='';
@@ -2117,7 +2119,7 @@ function setTaskStatus(id,st){
   var t=D.tasks.find(function(x){return x.id===id;});
   if(!t)return;t.status=st;persist();renderTasks();
 }
-function delTask(id){if(!confirm('削除しますか？'))return;D.tasks=D.tasks.filter(function(x){return x.id!==id;});persist();renderTasks();}
+function delTask(id){if(!confirm('削除しますか？'))return;D.tasks=D.tasks.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderTasks();}
 function openTaskModal(id){
   var t=id?D.tasks.find(function(x){return x.id===id;}):null;
   var cats=['会場・備品','当日役割','コーヒー・ケータリング','360°フィードバック','タイムテーブル・スライド','表彰・賞金','広報・看板','その他'];
@@ -3383,6 +3385,8 @@ function saveScheduleEvent(){
 function delScheduleEvent(id){
   if(!confirm('この予定を削除しますか？'))return;
   D.schedule=(D.schedule||[]).filter(function(x){return x.id!==id;});
+  if(!D.deletedIds)D.deletedIds=[];
+  D.deletedIds.push(id);
   persist();renderSchedule();
 }
 
@@ -3947,6 +3951,8 @@ function armDel(e,id){
     clearTimeout(_delTimer);
     _delArmed=null;
     D.programs=D.programs.filter(function(x){return x.id!==id;});
+    if(!D.deletedIds)D.deletedIds=[];
+    D.deletedIds.push(id);
     persist();renderPrograms();
     return;
   }
@@ -4519,7 +4525,7 @@ function toggleMin(id){
   b.classList.toggle('open');
   if(t)t.textContent=b.classList.contains('open')?'▼ 閉じる':'▶ 詳細';
 }
-function delMin(id){if(!confirm('削除しますか？'))return;D.minutes=D.minutes.filter(function(x){return x.id!==id;});persist();renderMinutes();}
+function delMin(id){if(!confirm('削除しますか？'))return;D.minutes=D.minutes.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderMinutes();}
 function openMinModal(id){
   var m=id?D.minutes.find(function(x){return x.id===id;}):null;
   openModal('<h2>⑨ 議事録'+(m?'を編集':'を追加')+'</h2>'+
@@ -4568,7 +4574,7 @@ function renderMembers(){
       '</div>';
   }).join('')+'</div>';
 }
-function delMember(id){if(!confirm('削除しますか？'))return;D.members=D.members.filter(function(x){return x.id!==id;});persist();renderMembers();}
+function delMember(id){if(!confirm('削除しますか？'))return;D.members=D.members.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderMembers();}
 function openMemberModal(id){
   var m=id?D.members.find(function(x){return x.id===id;}):null;
   openModal('<h2>⑩ メンバー'+(m?'を編集':'を追加')+'</h2>'+
@@ -4609,7 +4615,7 @@ function renderLinks(){
       }).join('')+'</div>';
   }).join('');
 }
-function delLink(id){if(!confirm('削除しますか？'))return;D.links=D.links.filter(function(x){return x.id!==id;});persist();renderLinks();}
+function delLink(id){if(!confirm('削除しますか？'))return;D.links=D.links.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderLinks();}
 function openLinkModal(id){
   var lk=id?D.links.find(function(x){return x.id===id;}):null;
   openModal('<h2>⑪ リンク'+(lk?'を編集':'を追加')+'</h2>'+
