@@ -562,6 +562,7 @@ a{color:var(--red)}
   <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑫ 議事録</div>
   <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑬ メンバー</div>
   <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑭ リンク集</div>
+  <div class="tnb"        data-tab="survey"   onclick="goTab('survey')">  ⑮ 終了後アンケート</div>
   <div class="tnb"        data-tab="settings" onclick="goTab('settings')">⚙ 設定</div>
 </nav>
 
@@ -826,7 +827,7 @@ a{color:var(--red)}
     </div>
   </div>
   <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
-    📌 <b>クリエート浜松 2階 大ホール</b>｜2026年7月28日（火）｜社員席：73名 + AI業務委託：11名 + 入社予定：2名
+    📌 <b>クリエート浜松 2階 大ホール</b>
     <br>ドラッグ＆ドロップで席を移動できます。「未配置」エリアの名札を席へドロップしてください。
   </div>
   <!-- 凡例 -->
@@ -978,6 +979,18 @@ a{color:var(--red)}
 <div class="page" id="page-links">
   <div class="sect-head"><h2>⑭ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
   <div id="links-list"></div>
+</div>
+
+<!-- 終了後アンケート -->
+<div class="page" id="page-survey">
+  <div class="sect-head"><h2>⑮ 終了後アンケート</h2></div>
+  <div class="card" style="max-width:480px;margin:0 auto;padding:32px 24px;text-align:center">
+    <div style="font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:8px">終了後アンケートへのご協力をお願いします。</div>
+    <div style="color:var(--sub);font-size:.9rem;margin-bottom:4px">全体チャットでもURLをお送りします</div>
+    <div style="color:var(--red);font-weight:700;font-size:.9rem;margin-bottom:20px">回答期限：7月29日（明日）まで</div>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYgAAAGIAQAAAABzOEqLAAADhUlEQVR4nO1c224dMQgElP//ZSoYwJunnKP2WJTgVFrvBSX2LAy3LSu9OeRdAVqJ14e88SzGSnxyr76IGDNXFFa2I/sZk9o9n2o9tXh8GA8CEv4PcPi52o2AASd4avH4NB5kQNjRdt/n6kqjUJSEiPHU4vH6kL+WUHUsDA6HJBSD/+Xv+HnI79aPGqERPhjKkSar+TpkEh7qU/bdD12wozKgCID03l8lv1aCzCJh8sMPhmrPdcgQCX7Eg+Hq+gg9CV/3GTT2XIcMkWD3nyy8MJ7Qb6goog6QiCYoPdchsyTYIw8gAdYwR0vD3XKbpkbwG39cwINtx32vgYVriuOCi/4AZazY+r2aEp+zWyU2RTAjZdM0VhEQcgSLTdchcyQU5sp2HfoAokDcASUxBTHIDK+26xghwRl0HBbPkBCcEgeuWc91yBwJhRaEuTI9QPrKB8jclCezjW3XMUKC4ewGS0ALHoySyGgoS9t1yCAJNvfqwAFMIpMInUH2d/n8jr1SmxSPPKJxp/cDEm/944q/y4jF3YM66ZEyYhkmEmxXXz2fIMFppg5bxCzy7EXkHG5Yz3XIrPoHRwWqqrVVPQ99YVxf/+pSPUqx8RFpJAQRGRaZ8/YzXNAoDW5wQCJlhUtILVp4TlnBbarnMkiCK0kSwWCSuI9I/GrWSvquY4IEqaXUc25oPKqBicspIdLWBy/ohxoMGpEHku1e+cgqrmuIBk493ysZlS/RZPLIU+WdY6UYFcT1r27kE9UVoBj8Yb/Ss+JM83Z9r2SIBKdCIBwPv/eRQcyOXs3gpOc6ZJKEOhDO1u7WovAETzeCQkLevfc6BkiQU3n6VWWhTt+VPpsbaP2rC/zBCMkjq3iadZPkT0uvtn2vZFz/FUVfSdD2o5m3KJ7Xv7qSv+KsQqWe2MiGrKB8G36v53slcyTU2cPK56UXYHZ4v8Hn7F1Y6+9eqkcRSPxRQDdeSRNWLXIbD97xryj9q3Kw6j7u2UBapa2ej5D4ih3/hkFGgvHhYHWcNF6HzPu+Viv8yALuKULRCeR7rkPmfV/LjyIgVCZCkuQX3fr5Hf6gU/rweZY/4uLjWV3+uFM/p+KLKBSi3716eAkNWGuv7lk4rUQvvv5wLzdhUBw2/riS39XT5xO5qswj1ucIlOc9eVBmfl+rz8Ru0jrw0qjq9lyHDJHg/f+W/nMEZSVeHu/v1R9Xi/+TBsAHoQAAAABJRU5ErkJggg==" alt="終了後アンケートQRコード" style="width:220px;height:220px;margin-bottom:20px">
+    <div style="font-size:.75rem;color:var(--sub);word-break:break-all">https://docs.google.com/forms/d/e/1FAIpQLSdS9roAMHKUBGIiROcnbBJbXW8Zusi-FFRdspmbL_tnXr1lZg/viewform</div>
+  </div>
 </div>
 
 <!-- 設定 -->
