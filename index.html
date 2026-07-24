@@ -327,41 +327,34 @@ header .sub{font-size:.7rem;opacity:.8}
 /* Row separator */
 .gtbl tbody tr{border-bottom:1px solid #f4f5fb}
 
-/* ── タイムテーブル Professional ── */
+/* ── タイムテーブル（委員会確定版デザイン準拠） ── */
 .prog-info-bar{display:flex;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:12px 18px;border-radius:12px;margin-bottom:16px;font-weight:700;font-size:.85rem}
-.prog-wrap{overflow-x:auto;border-radius:14px;box-shadow:0 2px 20px rgba(0,0,0,.09);border:1px solid #e0e0e0;background:#fff;margin-bottom:4px}
-.prog-tbl{width:100%;border-collapse:collapse;font-size:.95rem}
-.prog-tbl thead tr{background:linear-gradient(135deg,#1a237e,#283593)}
-.prog-tbl thead th{padding:13px 14px;color:#fff;font-weight:700;font-size:.88rem;text-align:left;white-space:nowrap;border:none}
-.prog-tbl tbody tr{border-bottom:1px solid #ebebeb;transition:background .12s}
-.prog-tbl tbody tr.prow-main{background:#ffffff}
-.prog-tbl tbody tr.prow-main:nth-child(even){background:#f7f9ff}
-.prog-tbl tbody tr.prow-main:hover{background:#eef1fb}
-.prog-tbl tbody tr.prow-break{background:#fff8e1}
-.prog-tbl tbody tr.prow-break:hover{background:#fff3cd}
-.prog-tbl tbody tr.prow-transit{background:#f5f5f5}
-.prog-tbl tbody tr.prow-pre{background:#f3e5f5}
-.prog-tbl tbody tr.prow-end{background:#f5f5f5}
-.prog-tbl tbody tr.prow-coffee{background:linear-gradient(90deg,#fff8e1,#fff3e0)}
-.prog-tbl td{padding:11px 14px;vertical-align:middle}
-.pc-no{width:40px;text-align:center}
-.pc-st,.pc-et{width:60px;font-family:monospace;font-size:.9rem;color:var(--sub);white-space:nowrap}
-.pc-dur{width:52px;text-align:center;font-size:.85rem;color:var(--sub)}
-.pc-act{width:56px;text-align:right}
-.prog-no-bdg{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--red);color:#fff;border-radius:50%;font-weight:900;font-size:.8rem;flex-shrink:0}
+.prog-wrap{overflow-x:auto;border-radius:0;box-shadow:0 2px 10px rgba(20,40,63,.06);border:1px solid #c7d2e0;background:#fff;margin-bottom:4px}
+.prog-tbl{width:100%;border-collapse:collapse;font-size:.85rem;color:#23303f;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif}
+.prog-tbl thead tr{background:#14283f}
+.prog-tbl thead th{padding:10px 8px;color:#fff;font-weight:600;font-size:.82rem;text-align:center;white-space:nowrap;border:1px solid #2a4562}
+.prog-tbl tbody tr{transition:background .12s}
+.prog-tbl td{padding:8px 10px;vertical-align:middle;text-align:center;border:1px solid #c7d2e0}
+.pc-no{width:5%;font-weight:700;color:#1f3a5f}
+.pc-st,.pc-et{width:8%;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pc-sep{width:3%;color:#6b7a8d}
+.pc-dur{width:9%;color:#6b7a8d;font-variant-numeric:tabular-nums}
+.pc-title{width:31%;text-align:left}
+.pc-staff,.pc-pres{width:13%}
+.pc-act{width:56px;text-align:right;border:none}
 .prog-editable{cursor:pointer;padding:4px 6px;border-radius:4px;display:inline-block;min-width:20px;min-height:20px;transition:background .15s}
 .prog-editable:hover{background:#e8eeff}
 .prog-time-inp{font-family:monospace;font-size:.9rem;padding:3px 5px;border:1px solid #1565c0;border-radius:4px;width:72px}
 .prog-text-inp{font-size:.95rem;padding:4px 6px;border:1px solid #1565c0;border-radius:4px;width:100%;box-sizing:border-box}
-.prog-break-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;background:#ede7f6;color:#6a1b9a;border-radius:20px;font-size:.82rem;font-weight:700}
-.prog-coffee-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 12px;background:#e65100;color:#fff;border-radius:20px;font-size:.82rem;font-weight:700}
+.prog-vision-note{padding:14px 18px;font-size:.82rem;color:#6b7a8d;border:1px solid #c7d2e0;border-top:none;background:#fff}
+.prog-vision-note b{color:#1f3a5f;font-weight:700}
 .prog-del-btn{background:none;border:none;color:#ddd;cursor:pointer;font-size:.88rem;padding:2px 6px;border-radius:4px;transition:all .15s}
 .prog-del-btn:hover{color:#e53935;background:#ffebee}
 .prog-del-btn.del-armed{color:#fff;background:#e53935;border-radius:4px;animation:armed-pulse .4s ease}
 @keyframes armed-pulse{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
 .prog-ins-btn{background:none;border:none;color:#bbb;cursor:pointer;font-size:.75rem;padding:1px 5px;border-radius:3px;transition:all .15s;line-height:1}
 .prog-ins-btn:hover{color:#1565c0;background:#e8eeff}
-.prow-del-pending{background:#fff5f5 !important;outline:2px solid #ffcdd2}
+.prow-del-pending{outline:2px solid #ffcdd2}
 .prog-foot{padding:10px 8px;display:flex;justify-content:center}
 .prog-add-btn{background:#f8f8f8;border:2px dashed #ccc;color:#aaa;padding:7px 28px;border-radius:8px;cursor:pointer;font-size:.84rem;transition:all .2s}
 .prog-add-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f5}
@@ -927,19 +920,21 @@ a{color:var(--red)}
     <table class="prog-tbl">
       <thead>
         <tr>
-          <th class="pc-no">No</th>
+          <th class="pc-no">順番</th>
           <th class="pc-st">開始</th>
+          <th class="pc-sep"></th>
           <th class="pc-et">終了</th>
-          <th class="pc-dur">時間</th>
+          <th class="pc-dur">所要時間</th>
           <th class="pc-title">内容</th>
+          <th class="pc-staff">司会</th>
           <th class="pc-pres">発表者</th>
-          <th class="pc-staff">司会・担当</th>
           <th class="pc-act"></th>
         </tr>
       </thead>
       <tbody id="prog-body"></tbody>
     </table>
   </div>
+  <div class="prog-vision-note" id="prog-vision-note"></div>
   <div class="prog-foot">
     <button class="prog-add-btn" onclick="addProgRow()">＋ 行を追加</button>
   </div>
@@ -1110,36 +1105,36 @@ parking:[
 ],
 layout:{url:'',memo:'【会場レイアウトメモ】\n\n・ステージ：正面（北側）\n・客席：約300席（フォールディングチェア）\n・スクリーン：ステージ中央 大型1面\n・PA卓：客席後方右\n・受付：エントランス入口\n・コーヒーコーナー：ロビー（右側）\n・展示コーナー：ロビー（左側）\n\n※詳細は会場下見後に更新予定'},
 programs:[
-  {id:'p0',no:0,title:'着座・前説など',presenter:'',startTime:'11:20',endTime:'12:00',time:40,staff:'委員',type:'pre'},
-  {id:'p1',no:1,title:'① 開会挨拶・会場説明・注意事項・オープニング動画',presenter:'',startTime:'12:00',endTime:'12:05',time:5,staff:'BGM'},
+  {id:'p0',no:0,title:'着座・前説など',presenter:'',startTime:'11:20',endTime:'12:00',time:40,staff:'委員',type:'pre',accent:true},
+  {id:'p1',no:1,title:'① 開会挨拶・会場説明・注意事項・オープニング動画',presenter:'',startTime:'12:00',endTime:'12:05',time:5,staff:'BGM',accent:true},
   {id:'pt1',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'12:05',endTime:'12:06',time:1,staff:'大峰係長',type:'transit'},
   {id:'p2',no:2,title:'② 社長 方針発表',presenter:'社長',startTime:'12:06',endTime:'13:06',time:60,staff:''},
-  {id:'pb1',no:0,title:'',presenter:'',startTime:'13:06',endTime:'13:16',time:10,staff:'大峰係長',type:'break'},
+  {id:'pb1',no:0,title:'休憩',presenter:'',startTime:'13:06',endTime:'13:16',time:10,staff:'大峰係長',type:'break'},
   {id:'p3',no:3,title:'③ 組織人事課',presenter:'川島課長',startTime:'13:16',endTime:'13:26',time:10,staff:''},
   {id:'pt2',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'13:26',endTime:'13:27',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p4',no:5,title:'⑤ 上場に向けて、全社で変える基準',presenter:'藤平管理本部長',startTime:'13:27',endTime:'13:37',time:10,staff:''},
+  {id:'p4',no:4,title:'④ 上場に向けて、全社で変える基準',presenter:'藤平管理本部長',startTime:'13:27',endTime:'13:37',time:10,staff:''},
   {id:'pt3',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'13:37',endTime:'13:38',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p5',no:6,title:'⑥ マーケティング課 マーケティングチーム(ARRCH・PG) CXデザインチーム',presenter:'宇田課長',startTime:'13:38',endTime:'13:53',time:15,staff:''},
+  {id:'p5',no:5,title:'⑤ マーケティング課 マーケティングチーム(ARRCH・PG) CXデザインチーム',presenter:'宇田課長',startTime:'13:38',endTime:'13:53',time:15,staff:''},
   {id:'pt4',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'13:53',endTime:'13:54',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p6',no:7,title:'⑦ ARRCHアドバイザー課',presenter:'三山課長',startTime:'13:54',endTime:'14:04',time:10,staff:''},
+  {id:'p6',no:6,title:'⑥ ARRCHアドバイザー課',presenter:'三山課長',startTime:'13:54',endTime:'14:04',time:10,staff:''},
   {id:'pt5',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'14:04',endTime:'14:05',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p7',no:8,title:'⑧ PGHOUSEアドバイザー課',presenter:'袴田課長',startTime:'14:05',endTime:'14:15',time:10,staff:''},
-  {id:'pb2',no:0,title:'',presenter:'',startTime:'14:15',endTime:'14:25',time:10,staff:'大峰係長',type:'break'},
-  {id:'p8',no:9,title:'⑨ 設計課 設計チーム(ARRCH・PG)',presenter:'鵜飼係長',startTime:'14:25',endTime:'14:33',time:8,staff:''},
+  {id:'p7',no:7,title:'⑦ PGHOUSEアドバイザー課',presenter:'袴田課長',startTime:'14:05',endTime:'14:15',time:10,staff:''},
+  {id:'pb2',no:0,title:'休憩',presenter:'',startTime:'14:15',endTime:'14:25',time:10,staff:'大峰係長',type:'break'},
+  {id:'p8',no:8,title:'⑧ 設計課 設計チーム(ARRCH・PG)',presenter:'鵜飼係長',startTime:'14:25',endTime:'14:33',time:8,staff:''},
   {id:'pt6',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'14:33',endTime:'14:34',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p9',no:10,title:'⑩ 設計課 スタイリストチーム',presenter:'水野係長',startTime:'14:34',endTime:'14:41',time:7,staff:''},
+  {id:'p9',no:9,title:'⑨ 設計課 スタイリストチーム',presenter:'水野係長',startTime:'14:34',endTime:'14:41',time:7,staff:''},
   {id:'pt7',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'14:41',endTime:'14:42',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p10',no:11,title:'⑪ 建設課(監督チーム・アフターチーム共)',presenter:'青島係長',startTime:'14:42',endTime:'14:52',time:10,staff:''},
+  {id:'p10',no:10,title:'⑩ 建設課(監督チーム・アフターチーム共)',presenter:'青島係長',startTime:'14:42',endTime:'14:52',time:10,staff:''},
   {id:'pt8',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'14:52',endTime:'14:53',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p11',no:12,title:'⑫ 物件王国・買取再販・相続・戸建て賃貸',presenter:'山本マネージャー',startTime:'14:53',endTime:'15:08',time:15,staff:''},
+  {id:'p11',no:11,title:'⑪ 物件王国・買取再販・相続・戸建て賃貸',presenter:'山本マネージャー',startTime:'14:53',endTime:'15:08',time:15,staff:''},
   {id:'pt9',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'15:08',endTime:'15:09',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p12',no:13,title:'⑬ AI教育事業',presenter:'三山課長',startTime:'15:09',endTime:'15:19',time:10,staff:''},
-  {id:'pb3',no:0,title:'',presenter:'',startTime:'15:19',endTime:'15:29',time:10,staff:'大峰係長',type:'break'},
-  {id:'p13',no:14,title:'⑭ スタッフ表彰',presenter:'',startTime:'15:29',endTime:'15:51',time:22,staff:'大峰係長'},
-  {id:'p14',no:15,title:'⑮ 全社員フィードバック動画',presenter:'',startTime:'15:51',endTime:'16:01',time:10,staff:'大峰係長'},
-  {id:'p15',no:16,title:'⑯ 終了後アンケート記入時間',presenter:'',startTime:'16:01',endTime:'16:08',time:7,staff:'大峰係長'},
-  {id:'p16',no:17,title:'⑰ 閉会挨拶',presenter:'',startTime:'16:08',endTime:'16:13',time:5,staff:'大峰係長'},
-  {id:'p17',no:18,title:'⑱ 写真撮影準備・撮影',presenter:'',startTime:'16:13',endTime:'16:30',time:17,staff:'大峰係長･委員'},
+  {id:'p12',no:12,title:'⑫ AI教育事業',presenter:'三山課長',startTime:'15:09',endTime:'15:19',time:10,staff:''},
+  {id:'pb3',no:0,title:'休憩',presenter:'',startTime:'15:19',endTime:'15:29',time:10,staff:'大峰係長',type:'break'},
+  {id:'p13',no:13,title:'⑬ スタッフ表彰',presenter:'',startTime:'15:29',endTime:'15:51',time:22,staff:'大峰係長'},
+  {id:'p14',no:14,title:'⑭ 全社員フィードバック動画',presenter:'',startTime:'15:51',endTime:'16:01',time:10,staff:'大峰係長'},
+  {id:'p15',no:15,title:'⑮ 終了後アンケート記入時間',presenter:'',startTime:'16:01',endTime:'16:08',time:7,staff:'大峰係長'},
+  {id:'p16',no:16,title:'⑯ 閉会挨拶',presenter:'',startTime:'16:08',endTime:'16:13',time:5,staff:'大峰係長',accent:true},
+  {id:'p17',no:17,title:'⑰ 写真撮影準備・撮影',presenter:'',startTime:'16:13',endTime:'16:30',time:17,staff:'大峰係長･委員'},
   {id:'p18',no:0,title:'採用プロモーション用 個別インタビュー撮影候補',presenter:'',startTime:'16:30',endTime:'17:00',time:30,staff:'委員･川島課長'},
   {id:'p19',no:0,title:'完全撤収',presenter:'',startTime:'17:00',endTime:'17:15',time:15,staff:'委員'},
   {id:'pend',no:0,title:'→ LIFEFUND VISION DAY 〜つながる下期決起集会〜へ移動',presenter:'',startTime:'17:15',endTime:'',time:0,staff:'',type:'end'},
@@ -1425,7 +1420,7 @@ function loadLocal(){
   // 第55期タイムテーブル確定版（260728更新・開始11:20）→ 旧11:30開始データを強制置き換え
   if(D.programs&&D.programs.length>0&&D.programs[0].startTime==='11:30'){D.programs=cloneD(INIT.programs);}
   // 委員会確定版タイムテーブル（260728更新・番号ズレ修正版）→ 旧版を強制置き換え
-  if(D.programs&&D.programs.length>0){var _p4chk=D.programs.find(function(x){return x.id==='p4';});if(_p4chk&&_p4chk.no===4){D.programs=cloneD(INIT.programs);}}
+  if(D.programs&&D.programs.length>0){var _p4chk=D.programs.find(function(x){return x.id==='p4';});if(_p4chk&&(_p4chk.no===4||_p4chk.no===5)){D.programs=cloneD(INIT.programs);}}
   // 旧slidesデータがあれば移行
   if(D.slides&&!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
   if(!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
@@ -3925,54 +3920,48 @@ function autoArrangeSeating(){
 // ===== タイムテーブル =====
 function _t2m(t){if(!t)return null;var p=t.split(':');if(p.length<2)return null;return parseInt(p[0])*60+parseInt(p[1]);}
 function _m2t(m){if(m===null||m===undefined||isNaN(m))return '';var h=Math.floor(m/60),n=m%60;return('0'+h).slice(-2)+':'+('0'+n).slice(-2);}
-function _durStr(m){if(!m)return '';if(m<60)return m+'分';return Math.floor(m/60)+'時間'+(m%60?m%60+'分':'');}
+function _durStr(m){if(m===undefined||m===null||m==='')return '';var h=Math.floor(m/60),mm=m%60;return h+':'+(mm<10?'0':'')+mm;}
+function _stripDeco(t){return (t||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,'').replace(/^（(.*)）$/,'$1');}
 
 function renderPrograms(){
-  document.getElementById('prog-body').innerHTML=D.programs.map(function(p){
-    var isT=p.type==='transit',isB=p.type==='break',isP=p.type==='pre',isE=p.type==='end';
-    var hasCoffee=(p.title||'').indexOf('ケータリング')>-1;
-    var rowCls=isT?'prow-transit':isB?'prow-break':isP?'prow-pre':isE?'prow-end':'prow-main';
-    if(hasCoffee&&isT) rowCls='prow-coffee';
+  var realItems=D.programs.filter(function(p){return p.type!=='end';});
+  document.getElementById('prog-body').innerHTML=realItems.map(function(p,i){
+    var isFiller=p.type==='transit'||p.type==='break';
+    var rowBg=isFiller?'#F4F4F4':(i%2===1?'#EEF2F8':'#FFFFFF');
+    var rowTextColor=isFiller?'#6B7A8D':'#23303F';
+    var titleColor=isFiller?'#6B7A8D':(p.accent?'#3D6CA8':'#1F3A5F');
+    var titleWeight=isFiller?400:600;
 
-    var noCell=(!isT&&!isE&&p.no)?'<span class="prog-no-bdg">'+p.no+'</span>':'';
+    var circleMatch=(p.title||'').match(/^([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳])\s*/);
+    var noGlyph=circleMatch?circleMatch[1]:'';
 
-    // title cell
-    var tc;
-    if(isT){
-      if(hasCoffee) tc='<span class="prog-coffee-badge">☕ コーヒー提供開始</span>';
-      else tc='<span style="color:#ccc;font-size:.76rem;font-style:italic">— 入れ替わり —</span>';
-    } else if(isB){
-      tc='<span class="prog-break-badge">休憩</span>';
-      if(hasCoffee) tc+=' <span class="prog-coffee-badge">☕ コーヒー提供</span>';
-      var ex=(p.title||'').replace(/──\s*/g,'').replace(/\s*──/g,'').replace(/中休憩/,'').replace(/軽いストレッチ/,'・ストレッチ').trim();
-      if(ex&&ex.indexOf('ケータリング')<0&&ex.length>0) tc+=' <span style="color:#888;font-size:.8rem;margin-left:4px">'+esc(ex)+'</span>';
-    } else if(isP){
-      tc='<span onclick="progEdit(event,\''+p.id+'\',\'title\')" class="prog-editable" style="color:#6a1b9a;font-weight:700">'+esc((p.title||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,''))+'</span>';
-    } else if(isE){
-      tc='<span style="color:#999;font-style:italic;font-size:.9rem">'+esc((p.title||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,''))+'</span>';
-    } else {
-      tc='<span onclick="progEdit(event,\''+p.id+'\',\'title\')" class="prog-editable" style="font-weight:700">'+esc((p.title||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,''))+'</span>';
-    }
-
+    var tc='<span onclick="progEdit(event,\''+p.id+'\',\'title\')" class="prog-editable" style="color:'+titleColor+';font-weight:'+titleWeight+'">'+esc(_stripDeco(p.title))+'</span>';
     var stC='<span onclick="progEdit(event,\''+p.id+'\',\'startTime\')" class="prog-editable">'+esc(p.startTime||'')+'</span>';
     var etC='<span onclick="progEdit(event,\''+p.id+'\',\'endTime\')" class="prog-editable">'+esc(p.endTime||'')+'</span>';
-    var prC=(isT||isE)?'':('<span onclick="progEdit(event,\''+p.id+'\',\'presenter\')" class="prog-editable">'+esc(p.presenter||'')+'</span>');
+    var prC='<span onclick="progEdit(event,\''+p.id+'\',\'presenter\')" class="prog-editable">'+esc(p.presenter||'')+'</span>';
     var sfC='<span onclick="progEdit(event,\''+p.id+'\',\'staff\')" class="prog-editable">'+esc(p.staff||'')+'</span>';
 
-    return '<tr class="'+rowCls+'" data-id="'+p.id+'" id="prow-'+p.id+'">'+
-      '<td class="pc-no">'+noCell+'</td>'+
+    return '<tr data-id="'+p.id+'" id="prow-'+p.id+'" style="background:'+rowBg+';color:'+rowTextColor+'">'+
+      '<td class="pc-no">'+noGlyph+'</td>'+
       '<td class="pc-st">'+stC+'</td>'+
+      '<td class="pc-sep">〜</td>'+
       '<td class="pc-et">'+etC+'</td>'+
       '<td class="pc-dur">'+_durStr(p.time)+'</td>'+
       '<td class="pc-title">'+tc+'</td>'+
-      '<td class="pc-pres">'+prC+'</td>'+
       '<td class="pc-staff">'+sfC+'</td>'+
+      '<td class="pc-pres">'+prC+'</td>'+
       '<td class="pc-act" style="white-space:nowrap">'+
         '<button class="prog-ins-btn" title="この下に行を追加" onclick="addProgRow(\''+p.id+'\')">＋</button>'+
         '<button class="prog-del-btn" title="削除（2回押しで確定）" id="delbtn-'+p.id+'" onclick="armDel(event,\''+p.id+'\')">🗑</button>'+
       '</td>'+
       '</tr>';
   }).join('');
+
+  var endItem=D.programs.find(function(p){return p.type==='end';});
+  var vn=document.getElementById('prog-vision-note');
+  if(vn){
+    vn.innerHTML=endItem?('<span onclick="progEdit(event,\''+endItem.id+'\',\'title\')" class="prog-editable"><b>'+esc(endItem.title||'')+'</b></span>'):'';
+  }
 }
 
 function progEdit(e,id,field){
@@ -4765,15 +4754,15 @@ function printSchedule(){
   var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
     '<title>第55期 経営方針発表会 タイムスケジュール</title>'+
     '<style>'+
-    '@page{size:A4 portrait;margin:14mm 12mm}'+
+    '@page{size:A4 portrait;margin:10mm 12mm}'+
     '*{box-sizing:border-box;margin:0;padding:0}'+
     'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222}'+
     '.sheet{page-break-after:always}'+
     '.sheet:last-child{page-break-after:auto}'+
-    '.ts-title{text-align:center;font-size:16pt;font-weight:700;margin-bottom:10mm}'+
+    '.ts-title{text-align:center;font-size:13pt;font-weight:700;margin-bottom:4mm}'+
     'table{width:100%;border-collapse:collapse;border:1px solid #ddd}'+
-    'thead th{background:#FF8F3A;color:#fff;font-size:10pt;font-weight:700;text-align:center;padding:4mm 2mm;border:1px solid #ddd}'+
-    'tbody td{font-size:9.5pt;text-align:center;padding:2.6mm 2mm;border:1px solid #ddd}'+
+    'thead th{background:#FF8F3A;color:#fff;font-size:8pt;font-weight:700;text-align:center;padding:2mm 2mm;border:1px solid #ddd}'+
+    'tbody td{font-size:7.6pt;text-align:center;padding:1.5mm 2mm;line-height:1.25;border:1px solid #ddd}'+
     '.c-time{width:14%}.c-dur{width:13%}.c-title{width:54%}.c-pres{width:19%}'+
     '.sv-sheet{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center}'+
     '.sv-title{font-size:20pt;font-weight:700;margin-bottom:16mm}'+
