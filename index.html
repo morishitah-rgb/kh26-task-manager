@@ -4732,104 +4732,69 @@ function saveLinkData(){
 
 // ===== 印刷用PDF =====
 function printSchedule(){
-  var progs=D.programs||[];
-  // 印刷用：入れ替わり行を除く
-  var items=progs.filter(function(p){return p.type!=='transit';});
+  // 添付PDF「経営方針タイムテーブル」と同一の見た目で印刷する
+  var items=(D.programs||[]).filter(function(p){return p.type!=='end';});
 
-  var rows=items.map(function(p){
-    var isB=p.type==='break',isP=p.type==='pre',isE=p.type==='end';
-    var hasCoffee=(p.title||'').indexOf('ケータリング')>-1;
+  function stripDeco(t){
+    return (t||'')
+      .replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,'')
+      .replace(/^（(.*)）$/,'$1');
+  }
+  function durStr(min){
+    if(!min&&min!==0)return'';
+    var h=Math.floor(min/60),m=min%60;
+    return h+':'+(m<10?'0':'')+m;
+  }
 
-    var rowBg='';
-    if(isP) rowBg='background:#f8f4ff;';
-    if(isB&&!hasCoffee) rowBg='background:#fafafa;';
-    if(hasCoffee) rowBg='background:#fff3e0;';
-    if(isE) rowBg='background:#f5f5f5;';
-
-    var noCell='';
-    if(!isB&&!isP&&!isE&&p.no) noCell='<b style="color:#b71c1c">'+p.no+'</b>';
-
-    var timeStr=(p.startTime&&p.endTime)?p.startTime+'〜'+p.endTime:(p.startTime||'');
-    var durStr=p.time?(p.time+'分'):'';
-
-    var titleStr='';
-    if(isP) titleStr='来場者着座・前説';
-    else if(isE) titleStr=p.title||'';
-    else if(isB){
-      var bt='【休憩】';
-      if((p.title||'').indexOf('ストレッチ')>-1) bt='【休憩・ストレッチ】';
-      if(hasCoffee) bt='【休憩 ／ ☕ コーヒー提供】';
-      titleStr=bt;
-    } else {
-      titleStr=p.title||'';
-    }
-
-    var titleStyle='';
-    if(isE) titleStyle='color:#999;font-style:italic;';
-    if(isB||isP) titleStyle='color:#555;';
-    if(hasCoffee) titleStyle='color:#e65100;font-weight:600;';
-    if(!isB&&!isP&&!isE) titleStyle='font-weight:600;';
-
-    var presStr=(!isE&&p.presenter)?esc(p.presenter):'';
-
-    return '<tr style="'+rowBg+'border-bottom:1px solid #ebebeb">'+
-      '<td style="text-align:center;width:28px">'+noCell+'</td>'+
-      '<td style="font-family:monospace;font-size:8.5pt;color:#444;white-space:nowrap;width:88px">'+esc(timeStr)+'</td>'+
-      '<td style="text-align:center;color:#999;font-size:7.5pt;width:36px">'+esc(durStr)+'</td>'+
-      '<td style="'+titleStyle+'">'+esc(titleStr)+'</td>'+
-      '<td style="color:#555;font-size:8.5pt;width:100px">'+presStr+'</td>'+
+  var rows=items.map(function(p,i){
+    var isFiller=(p.type==='transit'||p.type==='break');
+    var bg=(i%2===1)?'#FAE3D5':'#FFFFFF';
+    var textColor=isFiller?'#999':'#222';
+    return '<tr style="background:'+bg+'">'+
+      '<td class="c-time">'+esc(p.startTime||'')+'</td>'+
+      '<td class="c-dur">'+esc(durStr(p.time))+'</td>'+
+      '<td class="c-title" style="color:'+textColor+'">'+esc(stripDeco(p.title))+'</td>'+
+      '<td class="c-pres">'+esc(p.presenter||'')+'</td>'+
       '</tr>';
   }).join('');
 
-  // 行数に応じて文字・余白を自動縮小して1枚に収める
-  var n=items.length;
-  var fs=n<=18?9.5:n<=22?8.5:n<=26?7.8:n<=30?7.2:6.8;
-  var td=n<=18?6:n<=22?5:n<=26?4:3;
-  var margin=n<=18?'14mm 12mm':n<=22?'11mm 10mm':'9mm 8mm';
+  var qrDataUri='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYgAAAGIAQAAAABzOEqLAAADhUlEQVR4nO1c224dMQgElP//ZSoYwJunnKP2WJTgVFrvBSX2LAy3LSu9OeRdAVqJ14e88SzGSnxyr76IGDNXFFa2I/sZk9o9n2o9tXh8GA8CEv4PcPi52o2AASd4avH4NB5kQNjRdt/n6kqjUJSEiPHU4vH6kL+WUHUsDA6HJBSD/+Xv+HnI79aPGqERPhjKkSar+TpkEh7qU/bdD12wozKgCID03l8lv1aCzCJh8sMPhmrPdcgQCX7Eg+Hq+gg9CV/3GTT2XIcMkWD3nyy8MJ7Qb6goog6QiCYoPdchsyTYIw8gAdYwR0vD3XKbpkbwG39cwINtx32vgYVriuOCi/4AZazY+r2aEp+zWyU2RTAjZdM0VhEQcgSLTdchcyQU5sp2HfoAokDcASUxBTHIDK+26xghwRl0HBbPkBCcEgeuWc91yBwJhRaEuTI9QPrKB8jclCezjW3XMUKC4ewGS0ALHoySyGgoS9t1yCAJNvfqwAFMIpMInUH2d/n8jr1SmxSPPKJxp/cDEm/944q/y4jF3YM66ZEyYhkmEmxXXz2fIMFppg5bxCzy7EXkHG5Yz3XIrPoHRwWqqrVVPQ99YVxf/+pSPUqx8RFpJAQRGRaZ8/YzXNAoDW5wQCJlhUtILVp4TlnBbarnMkiCK0kSwWCSuI9I/GrWSvquY4IEqaXUc25oPKqBicspIdLWBy/ohxoMGpEHku1e+cgqrmuIBk493ysZlS/RZPLIU+WdY6UYFcT1r27kE9UVoBj8Yb/Ss+JM83Z9r2SIBKdCIBwPv/eRQcyOXs3gpOc6ZJKEOhDO1u7WovAETzeCQkLevfc6BkiQU3n6VWWhTt+VPpsbaP2rC/zBCMkjq3iadZPkT0uvtn2vZFz/FUVfSdD2o5m3KJ7Xv7qSv+KsQqWe2MiGrKB8G36v53slcyTU2cPK56UXYHZ4v8Hn7F1Y6+9eqkcRSPxRQDdeSRNWLXIbD97xryj9q3Kw6j7u2UBapa2ej5D4ih3/hkFGgvHhYHWcNF6HzPu+Viv8yALuKULRCeR7rkPmfV/LjyIgVCZCkuQX3fr5Hf6gU/rweZY/4uLjWV3+uFM/p+KLKBSi3716eAkNWGuv7lk4rUQvvv5wLzdhUBw2/riS39XT5xO5qswj1ucIlOc9eVBmfl+rz8Ru0jrw0qjq9lyHDJHg/f+W/nMEZSVeHu/v1R9Xi/+TBsAHoQAAAABJRU5ErkJggg==';
 
   var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
-    '<title>経営方針発表会 2026 タイムスケジュール</title>'+
+    '<title>第55期 経営方針発表会 タイムスケジュール</title>'+
     '<style>'+
-    '@page{size:A4 portrait;margin:'+margin+'}'+
+    '@page{size:A4 portrait;margin:14mm 12mm}'+
     '*{box-sizing:border-box;margin:0;padding:0}'+
-    'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222;font-size:'+fs+'pt}'+
-    '.hd{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #b71c1c;padding-bottom:7px;margin-bottom:8px}'+
-    '.logo{font-size:'+(fs+3)+'pt;font-weight:900;letter-spacing:.12em;color:#b71c1c;line-height:1}'+
-    '.logo-sub{font-size:'+(fs-2)+'pt;color:#999;letter-spacing:.04em;margin-top:2px}'+
-    '.ev-title{font-size:'+(fs+4.5)+'pt;font-weight:900;color:#1a1a1a;text-align:right;letter-spacing:.02em}'+
-    '.ev-sub{font-size:'+(fs-1)+'pt;color:#666;text-align:right;margin-top:3px}'+
-    '.info-bar{display:flex;gap:14px;border-left:3px solid #b71c1c;padding:5px 10px;background:#fafafa;border-radius:0 6px 6px 0;margin-bottom:8px;font-size:'+(fs-1)+'pt;flex-wrap:wrap}'+
-    '.info-bar b{color:#b71c1c}'+
-    'table{width:100%;border-collapse:collapse}'+
-    'thead tr{background:#1a237e}'+
-    'thead th{color:#fff;padding:'+td+'px 7px;font-size:'+(fs-1.5)+'pt;font-weight:700;text-align:left;white-space:nowrap;letter-spacing:.03em}'+
-    'tbody tr:last-child{border-bottom:2px solid #e0e0e0}'+
-    'td{padding:'+td+'px 7px;vertical-align:middle}'+
-    '.ft{display:flex;justify-content:space-between;align-items:center;margin-top:7px;padding-top:5px;border-top:1px solid #e0e0e0;font-size:'+(fs-2)+'pt;color:#aaa}'+
-    '.ft-note{font-style:italic}'+
+    'body{font-family:"Meiryo","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;background:#fff;color:#222}'+
+    '.sheet{page-break-after:always}'+
+    '.sheet:last-child{page-break-after:auto}'+
+    '.ts-title{text-align:center;font-size:16pt;font-weight:700;margin-bottom:10mm}'+
+    'table{width:100%;border-collapse:collapse;border:1px solid #ddd}'+
+    'thead th{background:#FF8F3A;color:#fff;font-size:10pt;font-weight:700;text-align:center;padding:4mm 2mm;border:1px solid #ddd}'+
+    'tbody td{font-size:9.5pt;text-align:center;padding:2.6mm 2mm;border:1px solid #ddd}'+
+    '.c-time{width:14%}.c-dur{width:13%}.c-title{width:54%}.c-pres{width:19%}'+
+    '.sv-sheet{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center}'+
+    '.sv-title{font-size:20pt;font-weight:700;margin-bottom:16mm}'+
+    '.sv-body{font-size:11pt;color:#333;line-height:1.9;margin-bottom:12mm}'+
+    '.sv-deadline{color:#C8232A;font-weight:700;font-size:11pt;margin-bottom:14mm}'+
+    '.sv-qr{width:55mm;height:55mm;margin-bottom:8mm}'+
+    '.sv-logo{font-size:14pt;font-weight:900;letter-spacing:.1em;color:#C8232A}'+
     '</style></head><body>'+
-    '<div class="hd">'+
-      '<div><div class="logo">LIFEFUND</div><div class="logo-sub">株式会社ライフファンド</div></div>'+
-      '<div><div class="ev-title">経営方針発表会 2026</div><div class="ev-sub">第56期 経営方針発表会</div></div>'+
+    '<div class="sheet">'+
+      '<div class="ts-title">第５５期　経営方針発表会　タイムスケジュール</div>'+
+      '<table>'+
+        '<thead><tr><th class="c-time">開始</th><th class="c-dur">所要時間</th><th class="c-title">内容</th><th class="c-pres">発表者</th></tr></thead>'+
+        '<tbody>'+rows+'</tbody>'+
+      '</table>'+
     '</div>'+
-    '<div class="info-bar">'+
-      '<span>📅 <b>2026年7月28日（火）</b></span>'+
-      '<span>📍 <b>クリエート浜松 2階 大ホール</b></span>'+
-      '<span>⏰ <b>開会 12:00 ／ 閉会 17:15</b></span>'+
-    '</div>'+
-    '<table>'+
-      '<thead><tr>'+
-        '<th style="width:28px">No</th>'+
-        '<th style="width:88px">時刻</th>'+
-        '<th style="width:36px;text-align:center">時間</th>'+
-        '<th>内容</th>'+
-        '<th style="width:100px">発表者</th>'+
-      '</tr></thead>'+
-      '<tbody>'+rows+'</tbody>'+
-    '</table>'+
-    '<div class="ft">'+
-      '<span class="ft-note">☕ コーヒーはケータリング提供（☕マーク行）</span>'+
-      '<span>2026年7月28日　LIFEFUND 経営方針発表会</span>'+
+    '<div class="sheet" style="height:273mm">'+
+      '<div class="sv-sheet">'+
+        '<div class="sv-title">終了後アンケート</div>'+
+        '<div class="sv-body">終了後アンケートへのご協力をお願いします。<br>全体チャットでもURLをお送りします</div>'+
+        '<div class="sv-deadline">回答期限：7月29日（明日）まで</div>'+
+        '<img class="sv-qr" src="'+qrDataUri+'" alt="終了後アンケートQRコード">'+
+        '<div class="sv-logo">LIFEFUND</div>'+
+      '</div>'+
     '</div>'+
     '<script>window.onload=function(){window.print();};<\/script>'+
     '</body></html>';
