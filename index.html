@@ -889,6 +889,7 @@ a{color:var(--red)}
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn btn-r" onclick="saveRoster()">💾 保存</button>
       <button class="btn btn-gray" onclick="openAddRosterModal()">＋ 追加</button>
+      <button class="btn btn-gray" onclick="printRosterPDF()">🖨 受付簿を印刷</button>
       <span id="roster-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
     </div>
   </div>
@@ -1096,38 +1097,39 @@ parking:[
 ],
 layout:{url:'',memo:'【会場レイアウトメモ】\n\n・ステージ：正面（北側）\n・客席：約300席（フォールディングチェア）\n・スクリーン：ステージ中央 大型1面\n・PA卓：客席後方右\n・受付：エントランス入口\n・コーヒーコーナー：ロビー（右側）\n・展示コーナー：ロビー（左側）\n\n※詳細は会場下見後に更新予定'},
 programs:[
-  {id:'p0',no:0,title:'来場者着座・前説',presenter:'',startTime:'11:30',endTime:'12:00',time:30,staff:'BGM',type:'pre'},
-  {id:'p1',no:1,title:'① 開会挨拶・会場説明・注意事項・オープニング動画',presenter:'',startTime:'12:00',endTime:'12:05',time:5,staff:'大峰係長'},
-  {id:'pt1',no:0,title:'（入れ替わり）',presenter:'',startTime:'12:05',endTime:'12:06',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p0',no:0,title:'着座・前説',presenter:'',startTime:'11:20',endTime:'12:00',time:40,staff:'',type:'pre'},
+  {id:'p1',no:1,title:'① 開会挨拶・会場説明・注意事項・OP動画',presenter:'',startTime:'12:00',endTime:'12:05',time:5,staff:'大峰係長'},
+  {id:'pt1',no:0,title:'（入れ替わり時間）',presenter:'',startTime:'12:05',endTime:'12:06',time:1,staff:'大峰係長',type:'transit'},
   {id:'p2',no:2,title:'② 社長 方針発表',presenter:'社長',startTime:'12:06',endTime:'13:06',time:60,staff:''},
-  {id:'pb1',no:0,title:'── 休憩 ──',presenter:'',startTime:'13:06',endTime:'13:16',time:10,staff:'大峰係長',type:'break'},
-  {id:'pt_kw',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:16',endTime:'13:17',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p12',no:3,title:'③ 組織人事課',presenter:'川島課長',startTime:'13:17',endTime:'13:27',time:10,staff:''},
-  {id:'pt_kw2',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:27',endTime:'13:28',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p3',no:4,title:'④ 上場に向けて、全社で変える基準',presenter:'藤平管理本部長',startTime:'13:28',endTime:'13:38',time:10,staff:''},
-  {id:'pt2',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:38',endTime:'13:39',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p5',no:5,title:'⑤ マーケティング課（マーケティングチーム・CXデザインチーム）',presenter:'宇田課長',startTime:'13:39',endTime:'13:54',time:15,staff:''},
-  {id:'pt3',no:0,title:'（入れ替わり）',presenter:'',startTime:'13:54',endTime:'13:55',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p6',no:6,title:'⑥ ARRCHアドバイザー課',presenter:'三山課長',startTime:'13:55',endTime:'14:05',time:10,staff:''},
-  {id:'pt4',no:0,title:'（入れ替わり）',presenter:'',startTime:'14:05',endTime:'14:06',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p7',no:7,title:'⑦ PGHOUSEアドバイザー課',presenter:'袴田課長',startTime:'14:06',endTime:'14:16',time:10,staff:''},
-  {id:'pt5',no:0,title:'（入れ替わり）※ケータリング提供開始',presenter:'',startTime:'14:16',endTime:'14:17',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p8',no:8,title:'⑧ 設計課（設計チーム・スタイリストチーム）',presenter:'鵜飼係長・水野係長',startTime:'14:17',endTime:'14:32',time:15,staff:''},
-  {id:'pb2',no:0,title:'── 中休憩・軽いストレッチ ──',presenter:'',startTime:'14:32',endTime:'14:47',time:15,staff:'大峰係長',type:'break'},
-  {id:'p9',no:9,title:'⑨ 建設課（監督チーム・アフターチーム共）',presenter:'青島係長',startTime:'14:47',endTime:'14:57',time:10,staff:''},
-  {id:'pt6',no:0,title:'（入れ替わり）',presenter:'',startTime:'14:57',endTime:'14:58',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p10',no:10,title:'⑩ 物件王国・買取再販・相続・戸建て賃貸',presenter:'山本マネージャー',startTime:'14:58',endTime:'15:18',time:20,staff:''},
-  {id:'pt7',no:0,title:'（入れ替わり）',presenter:'',startTime:'15:18',endTime:'15:19',time:1,staff:'大峰係長',type:'transit'},
-  {id:'p11',no:11,title:'⑪ AI事業',presenter:'三山課長',startTime:'15:19',endTime:'15:29',time:10,staff:''},
-  {id:'pb3',no:0,title:'── 休憩 ──',presenter:'',startTime:'15:29',endTime:'15:39',time:10,staff:'大峰係長',type:'break'},
-  {id:'p13',no:13,title:'⑬ 全社員フィードバック動画（360°FB） ※2',presenter:'',startTime:'15:39',endTime:'15:47',time:8,staff:'大峰係長'},
-  {id:'p14',no:14,title:'⑭ スタッフ表彰',presenter:'',startTime:'15:47',endTime:'16:07',time:20,staff:'大峰係長'},
-  {id:'p15',no:15,title:'⑮ 終了後アンケート記入',presenter:'',startTime:'16:07',endTime:'16:14',time:7,staff:'大峰係長'},
-  {id:'p16',no:16,title:'⑯ 閉会挨拶',presenter:'',startTime:'16:14',endTime:'16:19',time:5,staff:'大峰係長'},
-  {id:'p17',no:17,title:'⑰ 写真撮影準備・撮影',presenter:'',startTime:'16:19',endTime:'16:36',time:17,staff:'委員'},
-  {id:'p18',no:18,title:'⑱ 採用プロモーション用 個別インタビュー撮影候補',presenter:'',startTime:'16:36',endTime:'17:06',time:30,staff:'委員・川島課長'},
-  {id:'p19',no:19,title:'⑲ 完全撤収',presenter:'',startTime:'17:06',endTime:'17:16',time:10,staff:'委員'},
-  {id:'pend',no:0,title:'→ 決起集会へ移動',presenter:'',startTime:'17:16',endTime:'',time:0,staff:'',type:'end'},
+  {id:'pb1',no:0,title:'アンケート記入・小休憩',presenter:'',startTime:'13:06',endTime:'13:16',time:10,staff:'大峰係長',type:'break'},
+  {id:'p3',no:3,title:'③ 組織人事課',presenter:'川島課長',startTime:'13:16',endTime:'13:26',time:10,staff:''},
+  {id:'pt2',no:0,title:'（アンケート記入）',presenter:'',startTime:'13:26',endTime:'13:27',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p4',no:4,title:'④ 上場に向けて、全社で変える基準',presenter:'藤平管理本部長',startTime:'13:27',endTime:'13:37',time:10,staff:''},
+  {id:'pt3',no:0,title:'（アンケート記入）',presenter:'',startTime:'13:37',endTime:'13:38',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p5',no:5,title:'⑤ マーケティング課（ARRCH・PG・CX）',presenter:'宇田課長',startTime:'13:38',endTime:'13:53',time:15,staff:''},
+  {id:'pt4',no:0,title:'（アンケート記入）',presenter:'',startTime:'13:53',endTime:'13:54',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p6',no:6,title:'⑥ ARRCHアドバイザー課',presenter:'三山課長',startTime:'13:54',endTime:'14:04',time:10,staff:''},
+  {id:'pt5',no:0,title:'（アンケート記入）',presenter:'',startTime:'14:04',endTime:'14:05',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p7',no:7,title:'⑦ PGHOUSEアドバイザー課',presenter:'袴田課長',startTime:'14:05',endTime:'14:15',time:10,staff:''},
+  {id:'pb2',no:0,title:'アンケート記入',presenter:'',startTime:'14:15',endTime:'14:25',time:10,staff:'大峰係長',type:'break'},
+  {id:'p8',no:8,title:'⑧ 設計課 設計チーム（ARRCH・PG）',presenter:'鵜飼係長',startTime:'14:25',endTime:'14:33',time:8,staff:''},
+  {id:'pt6',no:0,title:'（アンケート記入）',presenter:'',startTime:'14:33',endTime:'14:34',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p9',no:9,title:'⑨ 設計課 スタイリストチーム',presenter:'水野係長',startTime:'14:34',endTime:'14:41',time:7,staff:''},
+  {id:'pt7',no:0,title:'（アンケート記入）',presenter:'',startTime:'14:41',endTime:'14:42',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p10',no:10,title:'⑩ 建設課（監督チーム・アフターチーム）',presenter:'青島係長',startTime:'14:42',endTime:'14:52',time:10,staff:''},
+  {id:'pt8',no:0,title:'（アンケート記入）',presenter:'',startTime:'14:52',endTime:'14:53',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p11',no:11,title:'⑪ 物件王国・買取再販・相続・戸建て賃貸',presenter:'山本マネージャー',startTime:'14:53',endTime:'15:08',time:15,staff:''},
+  {id:'pt9',no:0,title:'（アンケート記入）',presenter:'',startTime:'15:08',endTime:'15:09',time:1,staff:'大峰係長',type:'transit'},
+  {id:'p12',no:12,title:'⑫ AI教育事業',presenter:'三山課長',startTime:'15:09',endTime:'15:19',time:10,staff:''},
+  {id:'pb3',no:0,title:'アンケート記入',presenter:'',startTime:'15:19',endTime:'15:29',time:10,staff:'大峰係長',type:'break'},
+  {id:'p13',no:13,title:'⑬ スタッフ表彰',presenter:'',startTime:'15:29',endTime:'15:51',time:22,staff:'大峰係長'},
+  {id:'p14',no:14,title:'⑭ Special Contents',presenter:'',startTime:'15:51',endTime:'16:01',time:10,staff:''},
+  {id:'p15',no:15,title:'⑮ 終了後アンケート記入時間',presenter:'',startTime:'16:01',endTime:'16:08',time:7,staff:'大峰係長'},
+  {id:'p16',no:16,title:'⑯ 閉会挨拶',presenter:'',startTime:'16:08',endTime:'16:13',time:5,staff:'大峰係長'},
+  {id:'p17',no:17,title:'⑰ 写真撮影',presenter:'',startTime:'16:13',endTime:'16:30',time:17,staff:'委員'},
+  {id:'p18',no:18,title:'⑱ 採用プロモーション用 個別インタビュー撮影',presenter:'',startTime:'16:30',endTime:'17:00',time:30,staff:'委員・川島課長'},
+  {id:'p19',no:19,title:'⑲ 完全撤収',presenter:'',startTime:'17:00',endTime:'17:15',time:15,staff:'委員'},
+  {id:'pend',no:0,title:'→ 決起集会へ移動',presenter:'',startTime:'17:15',endTime:'',time:0,staff:'',type:'end'},
 ],
 teams:[
   {id:'r1',role:'全体統括・司会進行',assignee:'松下さん',due:'2026-07-28',status:'todo',memo:''},
@@ -1407,6 +1409,8 @@ function loadLocal(){
   if(D.programs&&D.programs.length>0&&!D.programs[0].startTime){D.programs=cloneD(INIT.programs);}
   // programs午前開催の旧データ → 午後開催INITで強制置き換え
   if(D.programs&&D.programs.length>0&&D.programs[0].startTime&&D.programs[0].startTime.startsWith('9:')){D.programs=cloneD(INIT.programs);}
+  // 第55期タイムテーブル確定版（260728更新・開始11:20）→ 旧11:30開始データを強制置き換え
+  if(D.programs&&D.programs.length>0&&D.programs[0].startTime==='11:30'){D.programs=cloneD(INIT.programs);}
   // 旧slidesデータがあれば移行
   if(D.slides&&!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
   if(!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
@@ -3048,6 +3052,87 @@ function getEmployeeData(){
   }
   return EMPLOYEES;
 }
+function printRosterPDF(){
+  var emps=getEmployeeData().filter(function(e){return e.attendance==='出席';});
+  var total=emps.length;
+  var cols=4;
+  var perCol=Math.ceil(total/cols);
+  var columns=[];
+  for(var c=0;c<cols;c++){columns.push(emps.slice(c*perCol,(c+1)*perCol));}
+
+  function colHtml(list,colIndex){
+    var rows=list.map(function(e,i){
+      var no=colIndex*perCol+i+1;
+      var catBadge=(e.cat&&e.cat!=='社員')?'<span class="rp-badge">'+e.cat+'</span>':'';
+      return '<tr>'+
+        '<td class="rp-no">'+no+'</td>'+
+        '<td class="rp-name">'+e.name+catBadge+'</td>'+
+        '<td class="rp-check"><span class="rp-box"></span></td>'+
+      '</tr>';
+    }).join('');
+    return '<table class="rp-table"><thead><tr><th class="rp-no">No.</th><th class="rp-name">氏名</th><th class="rp-check">受付</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+
+  var columnsHtml=columns.map(function(list,i){return '<div class="rp-col">'+colHtml(list,i)+'</div>';}).join('');
+
+  var venueName=(D.venue&&D.venue.name)||'クリエート浜松 大ホール';
+  var venueDatetime=(D.venue&&D.venue.datetime)||'2026年7月28日（火） 12:00〜17:00';
+
+  var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
+    '<title>受付簿</title>'+
+    '<style>'+
+    '@page{size:A4;margin:0;}'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    ':root{--red:#C8232A;--ink:#222;--sub:#666;--line:#e4e0d8;}'+
+    'body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;background:#e8e8e8;}'+
+    '.rp-toolbar{max-width:210mm;margin:6mm auto;text-align:center;}'+
+    '.rp-toolbar button{background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 24px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);}'+
+    '.rp-toolbar button:hover{opacity:.9;}'+
+    '.rp-sheet{width:210mm;height:297mm;margin:10mm auto;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.25);position:relative;padding:11mm 12mm;display:flex;flex-direction:column;}'+
+    '.rp-header{background:linear-gradient(135deg,var(--red),#8f1a20);color:#fff;border-radius:5mm;padding:5mm 9mm;margin-bottom:4mm;display:flex;justify-content:space-between;align-items:center;}'+
+    '.rp-header .en{font-size:3mm;letter-spacing:.15em;opacity:.85;font-weight:700;}'+
+    '.rp-header h1{font-size:7.5mm;font-weight:900;margin-top:1mm;line-height:1.2;}'+
+    '.rp-header .sub{font-size:3.1mm;margin-top:1.5mm;opacity:.95;}'+
+    '.rp-header .count{text-align:right;}'+
+    '.rp-header .count .num{font-size:9mm;font-weight:900;line-height:1;}'+
+    '.rp-header .count .label{font-size:2.8mm;opacity:.9;margin-top:1mm;}'+
+    '.rp-grid{flex:1;display:flex;gap:3mm;}'+
+    '.rp-col{flex:1;}'+
+    'table.rp-table{width:100%;border-collapse:collapse;}'+
+    'table.rp-table th{background:#2b2b2b;color:#fff;font-size:2.6mm;font-weight:700;padding:1.6mm 1mm;text-align:center;}'+
+    'table.rp-table th.rp-name{text-align:left;padding-left:2.5mm;}'+
+    'table.rp-table td{font-size:3.1mm;padding:1.7mm 1mm;border-bottom:0.25mm solid var(--line);vertical-align:middle;}'+
+    'table.rp-table tr:nth-child(even) td{background:#faf9f7;}'+
+    'td.rp-no{color:var(--sub);text-align:center;width:7mm;font-size:2.7mm;}'+
+    'td.rp-name{padding-left:2.5mm;font-weight:700;color:var(--ink);white-space:nowrap;}'+
+    'td.rp-check{width:11mm;text-align:center;}'+
+    '.rp-box{display:inline-block;width:4.2mm;height:4.2mm;border:0.35mm solid #999;border-radius:1mm;}'+
+    '.rp-badge{display:inline-block;margin-left:1.5mm;font-size:2.3mm;background:#f0c040;color:#5a4400;border-radius:2mm;padding:0.3mm 1.3mm;font-weight:700;vertical-align:middle;}'+
+    '.rp-footer{margin-top:3mm;padding-top:2.5mm;border-top:0.4mm solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:2.7mm;color:var(--sub);}'+
+    '.rp-footer b{color:var(--ink);}'+
+    '@media print{'+
+    'html,body{width:210mm;height:297mm;background:#fff;}'+
+    '.rp-toolbar{display:none;}'+
+    '.rp-sheet{width:210mm;height:297mm;margin:0;box-shadow:none;border-radius:0;page-break-after:avoid;page-break-inside:avoid;}'+
+    '}'+
+    '</style></head><body>'+
+    '<div class="rp-toolbar"><button onclick="window.print()">🖨 この内容を印刷する</button></div>'+
+    '<div class="rp-sheet">'+
+      '<div class="rp-header">'+
+        '<div><div class="en">LIFEFUND 経営方針発表会 2026</div><h1>📋 当日受付簿</h1><div class="sub">'+venueDatetime+'　｜　'+venueName+'</div></div>'+
+        '<div class="count"><div class="num">'+total+'</div><div class="label">名 出席予定</div></div>'+
+      '</div>'+
+      '<div class="rp-grid">'+columnsHtml+'</div>'+
+      '<div class="rp-footer"><span>受付担当：＿＿＿＿＿＿＿＿＿＿＿</span><span>出席人数確認：<b>　　　</b> 名 ／ 未着：<b>　　　</b> 名</span></div>'+
+    '</div>'+
+    '</body></html>';
+
+  var w=window.open('','_blank','width=900,height=1000');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+}
+
 function renderRoster(){
   var emps=getEmployeeData();
   var tbody=document.getElementById('roster-tbody');
