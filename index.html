@@ -848,10 +848,6 @@ a{color:var(--red)}
       </div>
       <!-- 座席グリッド -->
       <div id="seating-grid-wrap" style="display:flex;gap:4px;justify-content:center;align-items:flex-start">
-        <!-- 左側会場マーカー -->
-        <div style="display:flex;flex-direction:column;gap:6px;margin-right:4px;align-self:stretch;justify-content:flex-end;min-width:58px">
-          <div style="border:2.5px solid #e67e22;border-radius:6px;padding:20px 6px;color:#e67e22;font-size:.62rem;font-weight:700;writing-mode:vertical-rl;text-orientation:mixed;text-align:center;letter-spacing:.1em">コーヒーカウンター</div>
-        </div>
         <!-- 行ラベル（司会者・発表者ヘッダー行込み） -->
         <div id="seating-row-labels" style="display:flex;flex-direction:column;gap:6px;padding-top:2px">
           <!-- 司会者・発表者はA列の上にJSで追加 -->
@@ -871,9 +867,10 @@ a{color:var(--red)}
         <!-- ブロック右（列7-8） -->
         <div id="seating-block-R" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
-      <!-- 出入口（左右の端に配置） -->
-      <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <!-- 出入口（左右の端）＋コーヒーカウンター（中央） -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
         <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
+        <div style="border:2.5px solid #e67e22;border-radius:6px;padding:6px 24px;color:#e67e22;font-size:.78rem;font-weight:700;letter-spacing:.05em">☕ コーヒーカウンター</div>
         <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
       </div>
     </div>
