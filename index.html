@@ -1433,17 +1433,17 @@ function loadLocal(){
   if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
   // スケジュール初期化・マージ
   if(!D.schedule){D.schedule=cloneD(INIT.schedule);}
-  else{INIT.schedule.forEach(function(item){if(!D.schedule.find(function(x){return x.id===item.id;}))D.schedule.push(cloneD(item));});}
+  else{INIT.schedule.forEach(function(item){if(!D.schedule.find(function(x){return x.id===item.id;})&&D.deletedIds.indexOf(item.id)===-1)D.schedule.push(cloneD(item));});}
   // スケジュール移行：旧タスクからスケジュール系を除去
   var scheduleTaskIds=['t10','t11','t12','t13','t14','t15','t16','t18','t20'];
   if(D.tasks)D.tasks=D.tasks.filter(function(t){return scheduleTaskIds.indexOf(t.id)===-1;});
   if(D.tasks)D.tasks=D.tasks.filter(function(t){return t.id!=='t19';});
   if(!D.dayRoles){D.dayRoles=cloneD(INIT.dayRoles);}
-  else{INIT.dayRoles.forEach(function(r){if(!D.dayRoles.find(function(x){return x.id===r.id;}))D.dayRoles.push(cloneD(r));});}
+  else{INIT.dayRoles.forEach(function(r){if(!D.dayRoles.find(function(x){return x.id===r.id;})&&D.deletedIds.indexOf(r.id)===-1)D.dayRoles.push(cloneD(r));});}
   D.dayRoles.forEach(function(r){if(!r.assignees){r.assignees=r.assignee?[r.assignee]:[];delete r.assignee;}});
   if(!D.supplies){D.supplies=cloneD(INIT.supplies);}
   else{
-    INIT.supplies.forEach(function(s){if(!D.supplies.find(function(x){return x.id===s.id;}))D.supplies.push(cloneD(s));});
+    INIT.supplies.forEach(function(s){if(!D.supplies.find(function(x){return x.id===s.id;})&&D.deletedIds.indexOf(s.id)===-1)D.supplies.push(cloneD(s));});
     D.supplies.forEach(function(s){if(s.checked===undefined){s.checked=false;s.checkedBy='';s.checkedAt='';}});
   }
   // 議事録body強制更新（大幅に加筆されたレコードはINIT内容で上書き）
@@ -1473,7 +1473,7 @@ function loadLocal(){
   if(!D.links){D.links=cloneD(INIT.links);}
   else{INIT.links.forEach(function(item){
     var ex=D.links.find(function(x){return x.id===item.id;});
-    if(!ex){D.links.push(cloneD(item));}
+    if(!ex){if(D.deletedIds.indexOf(item.id)===-1)D.links.push(cloneD(item));}
     else{Object.keys(item).forEach(function(k){if(ex[k]===undefined||ex[k]===null)ex[k]=item[k];});}
   });}
 }
@@ -4577,7 +4577,7 @@ function saveSupply(){
   else{data.id=uid();data.checked=false;data.checkedBy='';data.checkedAt='';D.supplies.push(data);}
   persist();renderSupplies();cm();
 }
-function delSupply(id){if(!confirm('削除しますか？'))return;D.supplies=D.supplies.filter(function(x){return x.id!==id;});persist();renderSupplies();cm();}
+function delSupply(id){if(!confirm('削除しますか？'))return;D.supplies=D.supplies.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderSupplies();cm();}
 
 // ===== 議事録 =====
 function renderMinutes(){
