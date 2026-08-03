@@ -2554,22 +2554,33 @@ function addReceipt(gid, mode){
   var inp=document.createElement('input');
   inp.type='file';
   inp.accept='image/*,application/pdf';
+  if(mode!=='camera') inp.multiple=true;
   if(mode==='camera') inp.setAttribute('capture','environment');
   inp.onchange=function(e){
-    var f=e.target.files[0]; if(!f)return;
-    if(f.size>8000000){alert('ファイルサイズが大きすぎます（8MB以下にしてください）'); return;}
-    var isPdf=f.type==='application/pdf';
-    var rid=uid();
-    var r=new FileReader();
-    r.onerror=function(){alert('読み込みエラー。別のファイルをお試しください。');};
-    r.onload=function(ev){
-      var g=D.budget.find(function(x){return x.id===gid;});
-      if(!g)return;
-      if(!g.receipts)g.receipts=[];
-      g.receipts.push({id:rid,name:f.name,data:ev.target.result,isPdf:isPdf});
-      persist(); renderBudget(); openReceiptList(gid);
-    };
-    r.readAsDataURL(f);
+    var files=Array.prototype.slice.call(e.target.files||[]);
+    if(!files.length)return;
+    var tooBig=files.filter(function(f){return f.size>8000000;});
+    files=files.filter(function(f){return f.size<=8000000;});
+    if(tooBig.length)alert(tooBig.length+'件のファイルサイズが大きすぎるため除外しました（8MB以下にしてください）：\n'+tooBig.map(function(f){return f.name;}).join('\n'));
+    if(!files.length)return;
+    var remaining=files.length;
+    files.forEach(function(f){
+      var isPdf=f.type==='application/pdf';
+      var rid=uid();
+      var r=new FileReader();
+      r.onerror=function(){remaining--;alert('読み込みエラー：'+f.name);if(remaining===0){renderBudget();openReceiptList(gid);}};
+      r.onload=function(ev){
+        var g=D.budget.find(function(x){return x.id===gid;});
+        if(g){
+          if(!g.receipts)g.receipts=[];
+          g.receipts.push({id:rid,name:f.name,data:ev.target.result,isPdf:isPdf});
+          persist();
+        }
+        remaining--;
+        if(remaining===0){renderBudget();openReceiptList(gid);}
+      };
+      r.readAsDataURL(f);
+    });
   };
   inp.click();
 }
