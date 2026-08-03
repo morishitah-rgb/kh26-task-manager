@@ -2499,7 +2499,7 @@ function renderBudget(){
       var recCount=g.receipts?g.receipts.length:0;
       var recCell=recCount>0
         ?'<span class="brec-badge" onclick="openReceiptList(\''+g.id+'\')">📎 '+recCount+'件</span>'
-        :'<span class="brec-add" onclick="addReceipt(\''+g.id+'\')">＋ 添付</span>';
+        :'<span class="brec-add" onclick="openReceiptList(\''+g.id+'\')">＋ 添付</span>';
       var actColor=isOver?'#e53935':actualVal>0?'#e65100':'#aaa';
       return '<tr class="'+(g.spSync===false?'spext':'')+'">'
         +'<td style="min-width:180px"><div class="bname">'+urlLink+esc(g.name)+syncTag+'</div>'
@@ -2549,8 +2549,7 @@ function renderBudget(){
   secHtml+='</div>';
   document.getElementById('budget-sections').innerHTML=secHtml;
 }
-// 領収書追加（カメラ/画像/PDF対応）
-var _receipt={};
+// 領収書追加（画像/PDF/参考URL対応・金額自動反映なし）
 function addReceipt(gid, mode){
   var inp=document.createElement('input');
   inp.type='file';
@@ -2564,57 +2563,62 @@ function addReceipt(gid, mode){
     var r=new FileReader();
     r.onerror=function(){alert('読み込みエラー。別のファイルをお試しください。');};
     r.onload=function(ev){
-      _receipt={gid:gid,rid:rid,name:f.name,isPdf:isPdf,data:ev.target.result};
-      _showReceiptAmountModal(isPdf, f.name, ev.target.result);
+      var g=D.budget.find(function(x){return x.id===gid;});
+      if(!g)return;
+      if(!g.receipts)g.receipts=[];
+      g.receipts.push({id:rid,name:f.name,data:ev.target.result,isPdf:isPdf});
+      persist(); renderBudget(); openReceiptList(gid);
     };
     r.readAsDataURL(f);
   };
   inp.click();
 }
-function _showReceiptAmountModal(isPdf, fname, dataUrl){
-  var preview=isPdf
-    ?'<div style="text-align:center;font-size:3rem;padding:8px">📄</div><p style="text-align:center;font-size:.85rem;color:#666;margin-bottom:8px">'+esc(fname)+'</p>'
-    :'<img src="'+dataUrl+'" style="max-width:100%;max-height:160px;border-radius:8px;display:block;margin:0 auto 10px;border:1px solid #eee">';
+function addReceiptUrl(gid){
   openModal(
-    '<h2>📎 領収書を添付</h2>'+preview+
-    '<div class="frow"><label>金額（円・任意）</label>'+
-    '<input type="number" id="r-amt" placeholder="例：3500" style="font-size:1.15rem;font-weight:700"></div>'+
-    '<p style="font-size:.77rem;color:#aaa;margin-bottom:14px">入力した金額は実績に加算されます。金額が分からなければ空欄のまま保存できます。</p>'+
-    '<div style="display:flex;gap:8px">'+
-    '<button class="btn btn-r" style="flex:1" onclick="_saveReceipt(true)">保存して実績に反映</button>'+
-    '<button class="btn btn-gray" style="flex:1" onclick="_saveReceipt(false)">添付のみ（金額なし）</button>'+
-    '</div>'
+    '<h2>🔗 参考URLを追加</h2>'+
+    '<p style="font-size:.8rem;color:#888;margin-bottom:12px">Amazon等で購入し領収書がない場合、注文履歴などのURLを保存できます。</p>'+
+    '<div class="frow"><label>URL *</label><input type="url" id="ru-url" placeholder="https://"></div>'+
+    '<div class="frow"><label>メモ（任意）</label><input id="ru-label" placeholder="例：Amazon注文履歴"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm();openReceiptList(\''+gid+'\')">キャンセル</button>'+
+    '<button class="btn btn-r" onclick="_saveReceiptUrl(\''+gid+'\')">保存</button></div>'
   );
 }
-function _saveReceipt(applyAmount){
-  var g=D.budget.find(function(x){return x.id===_receipt.gid;});
-  if(!g){cm();return;}
+function _saveReceiptUrl(gid){
+  var url=document.getElementById('ru-url').value.trim();
+  if(!url){alert('URLを入力してください');return;}
+  var label=document.getElementById('ru-label').value.trim();
+  var g=D.budget.find(function(x){return x.id===gid;});
+  if(!g)return;
   if(!g.receipts)g.receipts=[];
-  var amt=applyAmount?Number(document.getElementById('r-amt').value||0):0;
-  g.receipts.push({id:_receipt.rid,name:_receipt.name,data:_receipt.data,isPdf:_receipt.isPdf,amount:amt});
-  if(amt>0) g.actual=(Number(g.actual)||0)+amt;
-  persist(); cm(); renderBudget();
+  g.receipts.push({id:uid(),name:label||url,isUrl:true,url:url});
+  persist(); renderBudget(); openReceiptList(gid);
 }
 function openReceiptList(gid){
   var g=D.budget.find(function(x){return x.id===gid;});
   if(!g)return;
   if(!g.receipts)g.receipts=[];
   var rows=g.receipts.map(function(r){
-    var thumb=r.isPdf
-      ?'<div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">📄</div>'
-      :'<img src="'+r.data+'" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid #eee;flex-shrink:0">';
+    var thumb=r.isUrl
+      ?'<div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🔗</div>'
+      :r.isPdf
+        ?'<div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">📄</div>'
+        :'<img src="'+r.data+'" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid #eee;flex-shrink:0">';
+    var sub=r.isUrl?'<div style="font-size:.78rem;color:#1565c0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.url)+'</div>':'';
     return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee">'
       +'<div style="cursor:pointer" onclick="viewReceipt(\''+gid+'\',\''+r.id+'\')">'+thumb+'</div>'
       +'<div style="flex:1;min-width:0;cursor:pointer" onclick="viewReceipt(\''+gid+'\',\''+r.id+'\')">'
         +'<div style="font-size:.85rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.name||'領収書')+'</div>'
-        +(r.amount>0?'<div style="font-size:.78rem;color:#e65100">'+fmtN(r.amount)+'円</div>':'<div style="font-size:.78rem;color:#aaa">金額未設定</div>')
+        +sub
       +'</div>'
       +'<button class="bsm" onclick="viewReceipt(\''+gid+'\',\''+r.id+'\')">開く</button>'
       +'<button class="bsm" style="color:#e53935" onclick="delReceipt(\''+gid+'\',\''+r.id+'\')">削除</button>'
     +'</div>';
   }).join('') || '<p style="color:#aaa;font-size:.85rem;padding:8px 0">まだ添付がありません</p>';
-  openModal('<h2>📎 領収書一覧</h2>'+rows+
-    '<div style="margin-top:14px"><button class="btn btn-r" style="width:100%" onclick="cm();addReceipt(\''+gid+'\')">＋ 追加で添付</button></div>');
+  openModal('<h2>📎 領収書・参考リンク一覧</h2>'+rows+
+    '<div style="display:flex;gap:8px;margin-top:14px">'+
+    '<button class="btn btn-r" style="flex:1" onclick="cm();addReceipt(\''+gid+'\')">＋ ファイルを添付</button>'+
+    '<button class="btn btn-gray" style="flex:1" onclick="addReceiptUrl(\''+gid+'\')">🔗 URLを追加</button>'+
+    '</div>');
 }
 function _dataUrlToBlobUrl(dataUrl){
   var parts=dataUrl.split(',');
@@ -2630,7 +2634,9 @@ function viewReceipt(gid,rid){
   if(!g)return;
   var r=g.receipts.find(function(x){return x.id===rid;});
   if(!r)return;
-  if(r.isPdf){
+  if(r.isUrl){
+    window.open(r.url,'_blank');
+  } else if(r.isPdf){
     var blobUrl=_dataUrlToBlobUrl(r.data);
     var w=window.open(blobUrl,'_blank');
     if(!w) alert('ポップアップがブロックされています。ブラウザの設定でポップアップを許可してください。');
@@ -2640,11 +2646,9 @@ function viewReceipt(gid,rid){
   }
 }
 function delReceipt(gid,rid){
-  if(!confirm('この領収書を削除しますか？'))return;
+  if(!confirm('削除しますか？'))return;
   var g=D.budget.find(function(x){return x.id===gid;});
   if(!g)return;
-  var r=g.receipts.find(function(x){return x.id===rid;});
-  if(r&&r.amount>0) g.actual=Math.max(0,(Number(g.actual)||0)-Number(r.amount));
   g.receipts=g.receipts.filter(function(x){return x.id!==rid;});
   persist(); openReceiptList(gid); renderBudget();
 }
