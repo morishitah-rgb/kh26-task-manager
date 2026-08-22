@@ -545,16 +545,17 @@ a{color:var(--red)}
   <div class="tnb"        data-tab="gantt"    onclick="goTab('gantt')">   ④ ガントチャート</div>
   <div class="tnb"        data-tab="budget"   onclick="goTab('budget')">  ⑤ 予算管理</div>
   <div class="tnb"        data-tab="venue"    onclick="goTab('venue')">   ⑥ 会場情報</div>
-  <div class="tnb"        data-tab="seating"  onclick="goTab('seating')"> ⑦ 座席表</div>
+  <div class="tnb"        data-tab="seating"  onclick="goTab('seating')"> ⑦ 座席表（本編）</div>
   <div class="tnb"        data-tab="roster"   onclick="goTab('roster')">  ⑧ 名簿</div>
   <div class="tnb"        data-tab="vendors"  onclick="goTab('vendors')"> ⑨ 業者名簿</div>
-  <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑩ タイムテーブル</div>
-  <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑪ 当日役割</div>
-  <div class="tnb"        data-tab="checklist" onclick="goTab('checklist')">⑫ 持物チェック</div>
-  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑬ 議事録</div>
-  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑭ メンバー</div>
-  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑮ リンク集</div>
-  <div class="tnb"        data-tab="survey"   onclick="goTab('survey')">  ⑯ 終了後アンケート</div>
+  <div class="tnb"        data-tab="banquet"  onclick="goTab('banquet')"> ⑩ 懇親会座席表</div>
+  <div class="tnb"        data-tab="programs" onclick="goTab('programs')">⑪ タイムテーブル</div>
+  <div class="tnb"        data-tab="teams"    onclick="goTab('teams')">   ⑫ 当日役割</div>
+  <div class="tnb"        data-tab="checklist" onclick="goTab('checklist')">⑬ 持物チェック</div>
+  <div class="tnb"        data-tab="minutes"  onclick="goTab('minutes')"> ⑭ 議事録</div>
+  <div class="tnb"        data-tab="members"  onclick="goTab('members')"> ⑮ メンバー</div>
+  <div class="tnb"        data-tab="links"    onclick="goTab('links')">   ⑯ リンク集</div>
+  <div class="tnb"        data-tab="survey"   onclick="goTab('survey')">  ⑰ 終了後アンケート</div>
   <div class="tnb"        data-tab="settings" onclick="goTab('settings')">⚙ 設定</div>
 </nav>
 
@@ -809,7 +810,7 @@ a{color:var(--red)}
 <!-- 座席表 -->
 <div class="page" id="page-seating">
   <div class="sect-head">
-    <h2>⑦ 座席表</h2>
+    <h2>⑦ 座席表（本編）</h2>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn btn-r" onclick="saveSeating()">💾 保存</button>
       <button class="btn btn-gray" onclick="resetSeating()">🔄 リセット</button>
@@ -928,10 +929,25 @@ a{color:var(--red)}
   </div>
 </div>
 
+<!-- 懇親会座席表 -->
+<div class="page" id="page-banquet">
+  <div class="sect-head">
+    <h2>⑩ 懇親会座席表</h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-r" onclick="openAddTableModal()">＋ テーブル追加</button>
+      <span id="banquet-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
+    </div>
+  </div>
+  <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
+    📌 去年（2026年7月）の懇親会座席表（ホテルコンコルド想定）をもとに作成。A〜Fは業者・来賓卓、G〜Jは社員卓、K・Lは増席用の空テーブルです。人数が増える場合は後方のテーブル・席を増やしてください。
+  </div>
+  <div id="banquet-tables" style="display:flex;flex-direction:column;gap:14px"></div>
+</div>
+
 <!-- タイムテーブル -->
 <div class="page" id="page-programs">
   <div class="sect-head">
-    <h2>⑩ タイムテーブル</h2>
+    <h2>⑪ タイムテーブル</h2>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn btn-r" onclick="printSchedule()">🖨 印刷用PDF</button>
       <button class="btn btn-gray" onclick="addProgRow()">＋ 行を追加</button>
@@ -969,7 +985,7 @@ a{color:var(--red)}
 
 <!-- 当日役割 -->
 <div class="page" id="page-teams">
-  <div class="sect-head"><h2>⑪ 当日役割</h2></div>
+  <div class="sect-head"><h2>⑫ 当日役割</h2></div>
   <div id="dr-phase-tabs"></div>
   <div id="dr-field"></div>
 </div>
@@ -977,7 +993,7 @@ a{color:var(--red)}
 <!-- 持ち物事前チェック -->
 <div class="page" id="page-checklist">
   <div class="sect-head">
-    <h2>⑫ 持物チェック</h2>
+    <h2>⑬ 持物チェック</h2>
     <button class="btn btn-r" onclick="openChecklistAddModal()">＋ 持ち物を追加</button>
   </div>
   <div id="cl-user-bar"></div>
@@ -987,25 +1003,25 @@ a{color:var(--red)}
 
 <!-- 議事録 -->
 <div class="page" id="page-minutes">
-  <div class="sect-head"><h2>⑬ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑭ 議事録</h2><button class="btn btn-r" onclick="openMinModal()">＋ 追加</button></div>
   <div id="min-list"></div>
 </div>
 
 <!-- メンバー -->
 <div class="page" id="page-members">
-  <div class="sect-head"><h2>⑭ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
+  <div class="sect-head"><h2>⑮ 委員会メンバー</h2><button class="btn btn-r" onclick="openMemberModal()">＋ メンバー追加</button></div>
   <div id="member-list"></div>
 </div>
 
 <!-- リンク集 -->
 <div class="page" id="page-links">
-  <div class="sect-head"><h2>⑮ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
+  <div class="sect-head"><h2>⑯ リンク集</h2><button class="btn btn-r" onclick="openLinkModal()">＋ 追加</button></div>
   <div id="links-list"></div>
 </div>
 
 <!-- 終了後アンケート -->
 <div class="page" id="page-survey">
-  <div class="sect-head"><h2>⑯ 終了後アンケート</h2></div>
+  <div class="sect-head"><h2>⑰ 終了後アンケート</h2></div>
   <div class="card" style="max-width:480px;margin:0 auto;padding:32px 24px;text-align:center">
     <div style="font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:8px">終了後アンケートへのご協力をお願いします。</div>
     <div style="color:var(--sub);font-size:.9rem;margin-bottom:4px">全体チャットでもURLをお送りします</div>
@@ -1141,6 +1157,22 @@ const VENDOR_ROSTER_SEED = [
   {id:'vd97',company:'㈱マルマ',person:'防蟻_川井一哲',role:'管理職',tel:'080-4963-6157',email:'kawai024@maruma-ec.co.jp',note:'防蟻／防蟻工事'},
   {id:'vd98',company:'㈱丸八',person:'住設_西川　友章',role:'営業',tel:'080-6949-0506',email:'tomoaki-nishikawa@maruhachi.info',note:'設備／住宅設備'},
   {id:'vd99',company:'㈱丸八',person:'古川　健太',role:'サポート',tel:'08069490515',email:'kenta-furukawa@maruhachi.info',note:'住宅設備'},
+];
+
+// 懇親会座席表（260822追加・2026年7月実績の座席表をもとに作成。K・Lは増席用の空テーブル）
+const BANQUET_SEED = [
+  {id:'tbA',label:'テーブルA（業者・来賓）',seats:['株式会社ハウステック 近藤 泰靖 様','有限会社杉浦創建 小野田　圭 様','浜松磐田信用金庫 日置　覚 様','浜松磐田信用金庫 河合　大 様','株式会社静岡銀行 伊藤 秀樹 様','株式会社静岡銀行 伊藤　友 様','','','','','','','遠州信用金庫 松山 友亮 様','株式会社清水銀行 津田 博也 様','株式会社清水銀行 清水 巨久様','株式会社名古屋銀行 嶺井 祥 様','有限会社杉山工芸所 杉山 智則 様','有限会社智建工業 小田　智紀 様','','']},
+  {id:'tbB',label:'テーブルB（業者・来賓）',seats:['Cows 坂上 進悟 様','イナペイントサービス株式会社 伊奈　毅 様','T-WOOD 和實　武治 様','チャネルオリジナル株式会社 原田 真生 様','鈴与商事株式会社 三澤　拓也　様','鈴与商事株式会社 須田 勇一郎 様','オメガジャパン株式会社 鈴木 住直 様','スリーカウント株式会社 鈴木 悠資 様','','','','','メットライフ生命保険株式会社 大石　悠 様','SS総合会計グループ 久野　修 様','SS総合会計グループ 鈴木 宏典 様','株式会社名古屋銀行 池田　詳 様','ウグイスヤトーヨー住器株式会社 太田原　伸浩 様','ウグイスヤトーヨー住器株式会社 久米 康弘 様','エネジン株式会社 河合 亨朋 様','グラウンド・ワークス株式会社 金井　儀仁 様']},
+  {id:'tbC',label:'テーブルC（業者・来賓）',seats:['HARVEST 原田　陽介 様','サーラエナジー株式会社 小野田　和幸 様','スガマ工業株式会社 須釜  一成 様','スガマ工業株式会社 繁田 勝一郎 様','有限会社銘木堂 後藤 寛典 様','有限会社銘木堂 後藤 好史 様','報国エンジニアリング株式会社 石橋 英樹 様','報国エンジニアリング株式会社 上田　雄介 様','長竹道路株式会社 マルキ通商 畔栁　俊秀　様','長竹道路株式会社　マルキ通商 中島 茂雄 様','株式会社鈴三材木店 鈴木 諭 様','株式会社鈴三材木店 鈴木 昌志 様','株式会社秋山内装 夏目　篤志 様','株式会社秋山内装 秋山 陽平 様','株式会社スカイ 花田 裕弘 様','株式会社スカイ 岡村 優太 様','株式会社エムエスケイ 久志目 徹央 様','株式会社エムエスケイ 橋本 愛美 様','フロムアイ 仲田　利之 様','ベクセス株式会社 熊澤 詳元 様']},
+  {id:'tbD',label:'テーブルD（業者・来賓）',seats:['古舘 遼 様','株式会社コネクトハーツ 村松　昭吾 様','株式会社ライズアップ 北澤　昭宏 様','株式会社フィガロ 岩藤　洋一 様','株式会社丸八 鈴木 悠哉 様','株式会社丸八 西川　友章 様','株式会社丸八 河合 国輝 様','株式会社協和 加藤　悠 様','株式会社インテルグロー 森　寿彦　様','株式会社インテルグロー 鋤柄 禎彰 様','株式会社竹内建築 竹内 将人 様','株式会社竹内建築 原 誠宏 様','株式会社バーンリペア 早川 朱里 様','株式会社バーンリペア 桂 裕司 様','ハマニ株式会社 鈴木 純也 様','ハマニ株式会社 鈴木　登美夫 様','めぐみ建築 高山 和弥 様','ユナイテッドグリーンズ 大橋 剛昌 様','ヨダタイル 世田 一也 様','伊藤建築 伊藤 義英 様']},
+  {id:'tbE',label:'テーブルE（業者・来賓）',seats:['株式会社小田設備 小田　直幸 様','有限会社皿田タイル 皿田 秀成 様','有限会社G.W優進 金原 辰也 様','株式会社匠屋 菱田 晃 様','株式会社精電社工業所 小出　大輔様','株式会社Ｋ.Ｒ.Ｔ 平野 一博 様','株式会社マルマ 川井一哲 様','株式会社SHEaP Archi Labo 戸塚　治夫 様','株式会社美興 榊原　彰 様','有限会社エムシイ 髙橋 隼人 様','真千家 鈴木　章史 様','中部ホームサービス株式会社 日本 雅人 様','株式会社アイ・エム・エー 今井 寛朗 様','田一電気 田代　耕一 様','入谷建築 入谷 博 様','八真創美開発株式会社 八子　真也 様','株式会社メイン 秦名 哲平 様','株式会社GreenLife 田中 敦之 様','株式会社ディマンシェ 新村 奈美 様','株式会社とびすけ 蛭田　大介 様']},
+  {id:'tbF',label:'テーブルF（業者・来賓）',seats:['','','','ファイナンシャルアライアンス株式会社 鈴木 和弘 様','株式会社Total　Life　Design 内田　圭祐　様','ファイナンシャル・ジャパン株式会社 渥美　将司 様','株式会社ハンズ 秋山 英己 様','タカラスタンダード株式会社 市野 寛希様','ハイビック株式会社 山田　元弘 様','有限会社後藤機材 浦田利雄 様','株式会社LIXIL 粟野 友仁 様','鈴木建築 鈴木 史哉 様','有限会社アルジス 加藤　志成 様','TOTO株式会社 土屋 善裕 様','鈴木建築 鈴木 章浩 様','オムニ技研（株） 井口　万敬 様','和以美株式会社 永岡 一仁 様','株式会社スズキ工芸 鈴木 章吾 様','大谷事務所 大谷 直弘 様','村松泰成司法書士事務所 村松 泰成 様']},
+  {id:'tbG',label:'テーブルG（社員）',seats:['ARRCHアドバイザー課 小林直希','建設課 川原 和輝','設計課 水野萌','建設課 加藤宏昭','建設課 鈴木 寿','PG HOUSEアドバイザー課 平野 誠人','PG HOUSEアドバイザー課 森 秀樹','ARRCHアドバイザー課 寺田 結音','建設課 青島 怜史','設計課 添田 岳人','PG HOUSEアドバイザー課 平澤 明和','組織人事課 川島 隆義','代表取締役 白都 卓磨','ARRCHアドバイザー課 田中 康太','ARRCHアドバイザー課 市川 高裕','ARRCHアドバイザー課 大峰 佑月','PG HOUSEアドバイザー課 三村 賢澄','ARRCHアドバイザー課 藤田 瑛二','ARRCHアドバイザー課 白栁 愛菜','ARRCHアドバイザー課 乗松 一聖']},
+  {id:'tbH',label:'テーブルH（社員）',seats:['建設課 渡邊新','不動産部門 大石起輝','エクステリア係 佐藤大樹','不動産部門 清水洋希','建設課 神谷 信慶','建設課 鈴木 達男','建設課 内藤 紗波','業務管理課 見野 桃子','建設課 佐原 寛子','組織人事課 波多野 恵梨','マーケティング課 栫井 愛実','設計課 松田 美乃里','マーケティング課 宇田 身江子','PG HOUSEアドバイザー課 糸繰 優介','設計課 石澤 光宏','PG HOUSEアドバイザー課 袴田 晴久','建設技術統括部 兼 設計課 倉田 剛','経営戦略室 石野 祐太朗','不動産部門 磯口 耕大','不動産部門 望月 厚治']},
+  {id:'tbI',label:'テーブルI（社員）',seats:['建設課 松下雄紀','マーケティング課 髙松柚子','建設課 森下秀之','設計課 酒井太希','設計課 鵜飼 玲奈','設計課 草浦 文子','マーケティング課 伊熊 麗奈','マーケティング課 岡 真弥子','マーケティング課 袴田 真奈','マーケティング課 小澤 美香','マーケティング課 君塚 菜穂','マーケティング課 世田 珠吏','ARRCHアドバイザー課 橋本浩平','AI事業 箱岩 瑠菜','AI事業 齋藤 之英','ARRCHアドバイザー課 三山 大智','マーケティング課 金子 美佳','マーケティング課 杉山 恵美','建設課 岡田 学','建設課 森下 周太郎']},
+  {id:'tbJ',label:'テーブルJ（社員）',seats:['','','','','','','','','業務管理課 森 美香','マーケティング課 花畑 友美','マーケティング課 藤原 香織','設計課 角谷 啓佳','','','','','','','（株）クギヅケ 匂坂 秀樹 様','（株）クギヅケ 遠山  雄大 様']},
+  {id:'tbK',label:'テーブルK（増席用・空席）',seats:['','','','','','','','','','','','','','','','','','','','']},
+  {id:'tbL',label:'テーブルL（増席用・空席）',seats:['','','','','','','','','','','','','','','','','','','','']},
 ];
 
 const INIT = {
@@ -1382,6 +1414,7 @@ minutes:[
   {id:'m13',date:'2026-07-13',title:'第2回リハーサル（予定）',body:'📅 2026年7月13日（月）9:00〜13:00\n📍 PGハウス曳馬\n\n※ リハーサル後に内容を記入してください\n\n【実施内容予定】\n・第1回の修正点を反映\n・最終タイムテーブル確認\n・当日スタッフ役割の最終確認'},
 ],
 vendors:cloneD(VENDOR_ROSTER_SEED),
+banquet:{tables:cloneD(BANQUET_SEED)},
 members:[
   {id:'mb1',name:'松下 雄紀',dept:'',role:'委員長・全体統括・司会進行',note:'タイムテーブル管理・社長への予算承認窓口'},
   {id:'mb2',name:'森下 秀之',dept:'',role:'会場・設備・看板担当',note:'クリエート浜松下見・ラクスルバナー手配'},
@@ -1501,6 +1534,7 @@ minutes:[
   {id:'m27_10',date:'2027-01-21',title:'⑩ 第10回 委員会MTG（2027-01-21）',body:'📅 2027年1月21日（木）10:00〜12:00\n📍 アーチ鴨江事務所\n※ 山本さんお休み\n\n※ 会議後に内容を記入してください'},
 ],
 vendors:cloneD(VENDOR_ROSTER_SEED),
+banquet:{tables:cloneD(BANQUET_SEED)},
 members:[
   {id:'mb1',name:'松下 雄紀',dept:'',role:'委員長・全体統括・司会進行',note:''},
   {id:'mb2',name:'森下 秀之',dept:'',role:'会場・設備担当',note:''},
@@ -1567,6 +1601,7 @@ function loadLocal(){
   if(!D.slideLinks){D.slideLinks=cloneD(INIT.slideLinks);}
   if(!D.parking){D.parking=cloneD(INIT.parking);}
   if(!D.vendors){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
+  if(!D.banquet){D.banquet={tables:cloneD(BANQUET_SEED)};}
   // 提携駐車場がプレースホルダーのままなら最新INITで上書き
   else if(D.parking[0]&&D.parking[0].name==='提携駐車場①（未設定）'){D.parking=cloneD(INIT.parking);}
   if(D.lastChatworkSync===undefined)D.lastChatworkSync='';
@@ -1640,6 +1675,7 @@ function loadLocal27(){
   if(!D.slideLinks){D.slideLinks=cloneD(INIT27.slideLinks||[]);}
   if(!D.parking){D.parking=cloneD(INIT27.parking||[]);}
   if(!D.vendors){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
+  if(!D.banquet){D.banquet={tables:cloneD(BANQUET_SEED)};}
   if(!D.layout){D.layout=cloneD(INIT27.layout||{url:'',memo:''});}
   if(!D.programs){D.programs=cloneD(INIT27.programs||[]);}
   if(!D.teams){D.teams=[];}
@@ -1818,6 +1854,7 @@ function renderPage(n){
   else if(n==='seating')renderSeating();
   else if(n==='roster')renderRoster();
   else if(n==='vendors')renderVendors();
+  else if(n==='banquet')renderBanquetSeating();
   else if(n==='programs')renderPrograms();
   else if(n==='teams'){renderTeams();}
   else if(n==='minutes')renderMinutes();
@@ -4760,7 +4797,7 @@ function toggleMin(id){
 function delMin(id){if(!confirm('削除しますか？'))return;D.minutes=D.minutes.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderMinutes();}
 function openMinModal(id){
   var m=id?D.minutes.find(function(x){return x.id===id;}):null;
-  openModal('<h2>⑬ 議事録'+(m?'を編集':'を追加')+'</h2>'+
+  openModal('<h2>⑭ 議事録'+(m?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(m?m.id:'')+'">'+
     '<div class="frow"><label>日付</label><input type="date" id="m-date" value="'+(m?m.date:todayStr())+'"></div>'+
     '<div class="frow"><label>タイトル *</label><input id="m-title" value="'+(m?esc(m.title):'')+'"></div>'+
@@ -4809,7 +4846,7 @@ function renderMembers(){
 function delMember(id){if(!confirm('削除しますか？'))return;D.members=D.members.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderMembers();}
 function openMemberModal(id){
   var m=id?D.members.find(function(x){return x.id===id;}):null;
-  openModal('<h2>⑭ メンバー'+(m?'を編集':'を追加')+'</h2>'+
+  openModal('<h2>⑮ メンバー'+(m?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="m-id" value="'+(m?m.id:'')+'">'+
     '<div class="frow"><label>氏名 *</label><input id="m-name" value="'+(m?esc(m.name):'')+'"></div>'+
     '<div class="frow"><label>役割・担当</label><input id="m-role" value="'+(m?esc(m.role||''):'')+'"></div>'+
@@ -4880,6 +4917,74 @@ function saveVendor(){
   persist();renderVendors();cm();
 }
 
+// ===== 懇親会座席表 =====
+function renderBanquetSeating(){
+  if(!D.banquet)D.banquet={tables:cloneD(BANQUET_SEED)};
+  var tables=D.banquet.tables||[];
+  var totalSeats=0,filledSeats=0;
+  tables.forEach(function(t){t.seats.forEach(function(s){totalSeats++;if(s)filledSeats++;});});
+  var stats=document.getElementById('banquet-stats');
+  if(stats)stats.textContent=tables.length+'テーブル・'+totalSeats+'席中 '+filledSeats+'席使用';
+  var wrap=document.getElementById('banquet-tables');
+  wrap.innerHTML=tables.map(function(t){
+    var seatsHtml=t.seats.map(function(s,i){
+      return '<div style="display:flex;gap:4px;align-items:center">'+
+        '<input value="'+esc(s)+'" placeholder="空席" style="flex:1;padding:5px 8px;font-size:.8rem;border:1px solid var(--line);border-radius:5px" '+
+        'onchange="updateBanquetSeat(\''+t.id+'\','+i+',this.value)">'+
+        '<button title="この席を削除" onclick="removeBanquetSeat(\''+t.id+'\','+i+')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.85rem">✕</button>'+
+        '</div>';
+    }).join('');
+    return '<div class="card" style="padding:12px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+        '<b style="font-size:.92rem">'+esc(t.label)+'</b>'+
+        '<span style="display:flex;gap:6px">'+
+          '<button class="mb-edit-btn" onclick="addBanquetSeat(\''+t.id+'\')">＋ 席追加</button>'+
+          '<button class="mb-edit-btn" style="color:var(--red)" onclick="removeBanquetTable(\''+t.id+'\')">テーブル削除</button>'+
+        '</span>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px">'+seatsHtml+'</div>'+
+      '</div>';
+  }).join('');
+}
+function updateBanquetSeat(tableId,idx,value){
+  var t=D.banquet.tables.find(function(x){return x.id===tableId;});
+  if(!t)return;
+  t.seats[idx]=value;
+  persist();
+}
+function addBanquetSeat(tableId){
+  var t=D.banquet.tables.find(function(x){return x.id===tableId;});
+  if(!t)return;
+  t.seats.push('');
+  persist();renderBanquetSeating();
+}
+function removeBanquetSeat(tableId,idx){
+  var t=D.banquet.tables.find(function(x){return x.id===tableId;});
+  if(!t)return;
+  t.seats.splice(idx,1);
+  persist();renderBanquetSeating();
+}
+function removeBanquetTable(tableId){
+  if(!confirm('このテーブルを削除しますか？（席の内容もすべて削除されます）'))return;
+  D.banquet.tables=D.banquet.tables.filter(function(x){return x.id!==tableId;});
+  persist();renderBanquetSeating();
+}
+function openAddTableModal(){
+  openModal('<h2>⑩ テーブルを追加</h2>'+
+    '<div class="frow"><label>テーブル名 *</label><input id="bt-label" value=""></div>'+
+    '<div class="frow"><label>席数</label><input id="bt-seats" type="number" value="20" min="1" max="40"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveNewTable()">追加</button></div>');
+}
+function saveNewTable(){
+  var label=getV('bt-label');
+  var n=parseInt(getV('bt-seats'),10)||20;
+  if(!label){alert('テーブル名を入力してください');return;}
+  if(!D.banquet)D.banquet={tables:[]};
+  var seats=[];for(var i=0;i<n;i++)seats.push('');
+  D.banquet.tables.push({id:uid(),label:label,seats:seats});
+  persist();renderBanquetSeating();cm();
+}
+
 // ===== リンク集 =====
 function renderLinks(){
   var list=document.getElementById('links-list');
@@ -4905,7 +5010,7 @@ function renderLinks(){
 function delLink(id){if(!confirm('削除しますか？'))return;D.links=D.links.filter(function(x){return x.id!==id;});if(!D.deletedIds)D.deletedIds=[];D.deletedIds.push(id);persist();renderLinks();}
 function openLinkModal(id){
   var lk=id?D.links.find(function(x){return x.id===id;}):null;
-  openModal('<h2>⑮ リンク'+(lk?'を編集':'を追加')+'</h2>'+
+  openModal('<h2>⑯ リンク'+(lk?'を編集':'を追加')+'</h2>'+
     '<input type="hidden" id="lk-id" value="'+(lk?lk.id:'')+'">'+
     '<div class="frow"><label>タイトル *</label><input id="lk-title" value="'+(lk?esc(lk.title):'')+'"></div>'+
     '<div class="frow"><label>URL</label><input id="lk-url" value="'+(lk?esc(lk.url||''):'')+'"></div>'+
