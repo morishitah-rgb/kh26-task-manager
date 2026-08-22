@@ -1394,7 +1394,8 @@ links:[
 const SK='kh26v3';
 const SK27='kh27v1';
 let D={};
-let curPeriod='2026';
+// 2026/7経営方針発表会は終了済のため、既定表示は2027/1にする（260822更新）
+let curPeriod='2027';
 
 function loadLocal(){
   try{const d=localStorage.getItem(SK);D=d?JSON.parse(d):cloneD(INIT);}catch(e){D=cloneD(INIT);}
@@ -1526,7 +1527,8 @@ function switchPeriod(year){
   }
   // ヘッダー更新
   updatePeriodUI();
-  goTab('board');
+  // 切替前に見ていたタブを維持する（そのタブが存在しない場合のみ掲示板にフォールバック）
+  goTab(document.getElementById('page-'+curTab)?curTab:'board');
 }
 
 function updatePeriodUI(){
@@ -4819,9 +4821,9 @@ function hideLogin(){
 
 // ===== 起動 =====
 async function appInit(){
-  loadLocal();
-  // 2027期データも先読みしてlocalStorageに確保（初回のみ）
-  try{if(!localStorage.getItem(SK27)){var d27=cloneD(INIT27);d27._t=0;localStorage.setItem(SK27,JSON.stringify(d27));}}catch(e){}
+  loadLocal27();
+  // 2026期データも先読みしてlocalStorageに確保（初回のみ）
+  try{if(!localStorage.getItem(SK)){var d26=cloneD(INIT);d26._t=0;localStorage.setItem(SK,JSON.stringify(d26));}}catch(e){}
   updatePeriodUI();
   // Firebase：ローカルが新しければクラウドへアップ（データ保護）
   await fbInitialSync();
