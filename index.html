@@ -3369,7 +3369,7 @@ function saveRoster(){
 }
 
 // ===== 座席表 =====
-var SEAT_ROWS=11,SEAT_COLS=8;
+var SEAT_ROWS=12,SEAT_COLS=20;
 var seatingDragSrc=null;
 
 function renderSeating(){
@@ -3404,9 +3404,9 @@ function renderSeating(){
   blockR.appendChild(hdrBlank.cloneNode());
 
   var placedNos=new Set(Object.values(saved.seats||{}));
-  var ROW_LABELS='ABCDEFGHIJK'.split('');
-  // col→block: 0,1=L / 2,3=CL / 4,5=CR / 6,7=R
-  var blocks=[blockL,blockL,blockCL,blockCL,blockCR,blockCR,blockR,blockR];
+  var ROW_LABELS='ABCDEFGHIJKL'.split('');
+  // col→block: 0-4=L / 5-9=CL / 10-14=CR / 15-19=R
+  var blocks=[blockL,blockL,blockL,blockL,blockL,blockCL,blockCL,blockCL,blockCL,blockCL,blockCR,blockCR,blockCR,blockCR,blockCR,blockR,blockR,blockR,blockR,blockR];
 
   // 行ごとにペアのラッパーを作る
   var rowPairs={L:[],CL:[],CR:[],R:[]};
@@ -3418,7 +3418,7 @@ function renderSeating(){
     rowLabels.appendChild(lbl);
 
     // 各ブロックにペアwrapperを追加
-    [['L',blockL,[0,1]],['CL',blockCL,[2,3]],['CR',blockCR,[4,5]],['R',blockR,[6,7]]].forEach(function(binfo){
+    [['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['CR',blockCR,[10,11,12,13,14]],['R',blockR,[15,16,17,18,19]]].forEach(function(binfo){
       var wrap=document.createElement('div');
       wrap.style.cssText='display:flex;gap:4px';
       binfo[2].forEach(function(c){
@@ -3426,7 +3426,7 @@ function renderSeating(){
         var cell=document.createElement('div');
         cell.id='seat-'+seatId;
         cell.dataset.seatId=seatId;
-        cell.style.cssText='width:80px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#adb5bd;transition:background .15s;overflow:hidden';
+        cell.style.cssText='width:52px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
         cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
         cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-emp-no]');if(t)this.style.background='';});
         cell.addEventListener('drop',onSeatDrop);
@@ -3685,16 +3685,16 @@ function resetSeating(){
 }
 
 function printSeating(){
-  var ROW_LABELS='ABCDEFGHIJK'.split('');
+  var ROW_LABELS='ABCDEFGHIJKL'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
-  var SEAT_W=62, SEAT_H=36, GAP=4, AISLE=18, LABEL_W=20;
+  var SEAT_W=40, SEAT_H=30, GAP=2, AISLE=12, LABEL_W=16;
 
   var rows='';
   for(var r=0;r<SEAT_ROWS;r++){
     var cells='';
     // 行ラベル
     cells+='<td class="rl">'+ROW_LABELS[r]+'</td>';
-    [[0,1],[2,3],[4,5],[6,7]].forEach(function(pair,bi){
+    [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19]].forEach(function(pair,bi){
       if(bi>0) cells+='<td class="aisle"></td>';
       pair.forEach(function(c){
         var sid='r'+r+'c'+c;
@@ -3726,7 +3726,7 @@ function printSeating(){
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
     '<title>座席表 2026年7月28日</title>'+
     '<style>'+
-    '@page{size:A4 portrait;margin:10mm 8mm;}'+
+    '@page{size:A4 landscape;margin:8mm 6mm;}'+
     '*{box-sizing:border-box;}'+
     'body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;padding:0;font-size:10px;}'+
     'h1{text-align:center;font-size:15px;margin:0 0 2px;letter-spacing:1px;}'+
@@ -3734,8 +3734,8 @@ function printSeating(){
     '.screen{background:#888;color:#fff;text-align:center;padding:4px 0;border-radius:3px;font-size:9px;width:180px;margin:0 auto 3px;letter-spacing:2px;}'+
     '.stage{background:#2c3e50;color:#fff;text-align:center;padding:7px 0;border-radius:5px;font-size:11px;font-weight:700;width:260px;margin:0 auto 10px;letter-spacing:4px;}'+
     'table{border-collapse:separate;border-spacing:'+GAP+'px;margin:0 auto;}'+
-    'td.rl{width:'+LABEL_W+'px;font-weight:700;font-size:10px;color:#444;text-align:center;vertical-align:middle;}'+
-    'td.seat{width:'+SEAT_W+'px;height:'+SEAT_H+'px;border:1px solid #bbb;border-radius:4px;font-size:9px;font-weight:700;text-align:center;vertical-align:middle;padding:2px;line-height:1.2;}'+
+    'td.rl{width:'+LABEL_W+'px;font-weight:700;font-size:9px;color:#444;text-align:center;vertical-align:middle;}'+
+    'td.seat{width:'+SEAT_W+'px;height:'+SEAT_H+'px;border:1px solid #bbb;border-radius:4px;font-size:7px;font-weight:700;text-align:center;vertical-align:middle;padding:1px;line-height:1.1;overflow:hidden;}'+
     'td.aisle{width:'+AISLE+'px;}'+
     '.exits{display:flex;justify-content:space-around;margin:10px auto 6px;width:500px;}'+
     '.exit{background:#e67e22;color:#fff;padding:5px 20px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:1px;}'+
