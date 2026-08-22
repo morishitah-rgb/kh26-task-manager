@@ -41,6 +41,7 @@ header .sub{font-size:.7rem;opacity:.8}
 /* ページ */
 .page{display:none;max-width:1100px;margin:0 auto;padding:20px 16px}
 .page.show{display:block}
+#page-seating.show{max-width:none}
 
 /* 共通カード・セクション */
 .card{background:#fff;border-radius:12px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:12px}
@@ -3389,44 +3390,57 @@ function renderSeating(){
   var blockR=document.getElementById('seating-block-R');
   rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
+  var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
+  var BLOCK_INFO=[['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['CR',blockCR,[10,11,12,13,14]],['R',blockR,[15,16,17,18,19]]];
+
   // A列の上に司会者・発表者マーカー行を挿入
   var hdrLbl=document.createElement('div');
-  hdrLbl.style.cssText='height:36px;width:18px';
+  hdrLbl.style.cssText='height:32px;width:26px';
   rowLabels.appendChild(hdrLbl);
   var hdrRow=document.createElement('div');
-  hdrRow.style.cssText='display:flex;gap:6px;align-items:flex-end;height:36px;margin-bottom:0px';
-  hdrRow.innerHTML='<div style="border:2.5px solid #e74c3c;border-radius:6px;padding:6px 8px;color:#e74c3c;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3">司会者</div>'
-    +'<div style="border:2.5px solid #3498db;border-radius:4px;padding:6px 8px;color:#3498db;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3">発表者</div>';
+  hdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;align-items:flex-end;height:32px;margin-bottom:2px';
+  hdrRow.innerHTML='<div style="border:2.5px solid #e74c3c;border-radius:6px;padding:5px 8px;color:#e74c3c;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">司会者</div>'
+    +'<div style="border:2.5px solid #3498db;border-radius:4px;padding:5px 8px;color:#3498db;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">発表者</div>';
   blockL.appendChild(hdrRow);
-  var hdrBlank=document.createElement('div');hdrBlank.style.height='36px';
+  var hdrBlank=document.createElement('div');hdrBlank.style.height='32px';hdrBlank.style.marginBottom='2px';
   blockCL.appendChild(hdrBlank.cloneNode());
   blockCR.appendChild(hdrBlank.cloneNode());
   blockR.appendChild(hdrBlank.cloneNode());
 
+  // 列番号ヘッダー（1〜20）：座席の通番を見やすくする
+  var colHdrLbl=document.createElement('div');
+  colHdrLbl.style.cssText='height:20px;width:26px';
+  rowLabels.appendChild(colHdrLbl);
+  BLOCK_INFO.forEach(function(binfo){
+    var colHdrRow=document.createElement('div');
+    colHdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;margin-bottom:2px';
+    colHdrRow.innerHTML=binfo[2].map(function(c){
+      return '<div style="width:'+SEAT_W+'px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#5a6472;background:#e8eaf0;border-radius:4px">'+(c+1)+'</div>';
+    }).join('');
+    binfo[1].appendChild(colHdrRow);
+  });
+
   var placedNos=new Set(Object.values(saved.seats||{}));
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
-  // col→block: 0-4=L / 5-9=CL / 10-14=CR / 15-19=R
-  var blocks=[blockL,blockL,blockL,blockL,blockL,blockCL,blockCL,blockCL,blockCL,blockCL,blockCR,blockCR,blockCR,blockCR,blockCR,blockR,blockR,blockR,blockR,blockR];
 
-  // 行ごとにペアのラッパーを作る
-  var rowPairs={L:[],CL:[],CR:[],R:[]};
   for(var r=0;r<SEAT_ROWS;r++){
-    // 行ラベル
+    // 行ラベル（丸背景で視認性アップ）
     var lbl=document.createElement('div');
-    lbl.style.cssText='height:54px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--sub);width:18px';
-    lbl.textContent=ROW_LABELS[r]||r;
+    lbl.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
+    lbl.innerHTML='<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--navy,#1F3A5F);color:#fff;font-weight:800;font-size:.82rem">'+(ROW_LABELS[r]||r)+'</span>';
     rowLabels.appendChild(lbl);
 
-    // 各ブロックにペアwrapperを追加
-    [['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['CR',blockCR,[10,11,12,13,14]],['R',blockR,[15,16,17,18,19]]].forEach(function(binfo){
+    // 各ブロックに行ラッパーを追加
+    BLOCK_INFO.forEach(function(binfo){
       var wrap=document.createElement('div');
-      wrap.style.cssText='display:flex;gap:4px';
+      wrap.style.cssText='display:flex;gap:'+SEAT_GAP+'px';
       binfo[2].forEach(function(c){
         var seatId='r'+r+'c'+c;
         var cell=document.createElement('div');
         cell.id='seat-'+seatId;
         cell.dataset.seatId=seatId;
-        cell.style.cssText='width:52px;height:54px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
+        cell.title=(ROW_LABELS[r]||r)+'-'+(c+1);
+        cell.style.cssText='width:'+SEAT_W+'px;height:'+SEAT_H+'px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
         cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
         cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-emp-no]');if(t)this.style.background='';});
         cell.addEventListener('drop',onSeatDrop);
@@ -3473,7 +3487,7 @@ function makeNameTag(emp,seatId){
   tag.draggable=true;
   tag.dataset.empNo=emp.no;
   if(seatId)tag.dataset.seatId=seatId;
-  tag.style.cssText='position:relative;background:'+st.bg+';color:'+st.color+';border-radius:6px;padding:4px 6px;font-size:.75rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.3;min-width:68px;text-shadow:0 1px 1px rgba(0,0,0,.2)'+(roleBorder!=='none'?';border:'+roleBorder:'');
+  tag.style.cssText='position:relative;background:'+st.bg+';color:'+st.color+';border-radius:6px;padding:3px 4px;font-size:.7rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.2;min-width:66px;max-width:70px;text-shadow:0 1px 1px rgba(0,0,0,.2)'+(roleBorder!=='none'?';border:'+roleBorder:'');
 
   if(isCommittee||isPresenter){
     var badgeRow=document.createElement('div');
@@ -3487,7 +3501,7 @@ function makeNameTag(emp,seatId){
   var nameEl=document.createElement('div');
   nameEl.textContent=emp.name;
   var nameLen=emp.name.replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g,'').length;
-  nameEl.style.cssText='white-space:nowrap;font-size:'+(nameLen>=6?'.6rem':nameLen>=5?'.65rem':'.75rem');
+  nameEl.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:'+(nameLen>=6?'.52rem':nameLen>=5?'.58rem':'.66rem');
   tag.appendChild(nameEl);
 
   if(emp.attendance==='欠席'){
@@ -3687,14 +3701,24 @@ function resetSeating(){
 function printSeating(){
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
-  var SEAT_W=40, SEAT_H=30, GAP=2, AISLE=12, LABEL_W=16;
+  var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
+
+  var COL_GROUPS=[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19]];
+
+  // 列番号ヘッダー行
+  var hdrCells='<td class="rl"></td>';
+  COL_GROUPS.forEach(function(pair,bi){
+    if(bi>0) hdrCells+='<td class="aisle"></td>';
+    pair.forEach(function(c){hdrCells+='<td class="colnum">'+(c+1)+'</td>';});
+  });
+  var headerRow='<tr>'+hdrCells+'</tr>';
 
   var rows='';
   for(var r=0;r<SEAT_ROWS;r++){
     var cells='';
     // 行ラベル
     cells+='<td class="rl">'+ROW_LABELS[r]+'</td>';
-    [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19]].forEach(function(pair,bi){
+    COL_GROUPS.forEach(function(pair,bi){
       if(bi>0) cells+='<td class="aisle"></td>';
       pair.forEach(function(c){
         var sid='r'+r+'c'+c;
@@ -3726,16 +3750,17 @@ function printSeating(){
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
     '<title>座席表 2026年7月28日</title>'+
     '<style>'+
-    '@page{size:A4 landscape;margin:8mm 6mm;}'+
+    '@page{size:A3 landscape;margin:10mm 8mm;}'+
     '*{box-sizing:border-box;}'+
     'body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;padding:0;font-size:10px;}'+
-    'h1{text-align:center;font-size:15px;margin:0 0 2px;letter-spacing:1px;}'+
-    '.sub{text-align:center;font-size:9px;color:#555;margin-bottom:6px;}'+
-    '.screen{background:#888;color:#fff;text-align:center;padding:4px 0;border-radius:3px;font-size:9px;width:180px;margin:0 auto 3px;letter-spacing:2px;}'+
-    '.stage{background:#2c3e50;color:#fff;text-align:center;padding:7px 0;border-radius:5px;font-size:11px;font-weight:700;width:260px;margin:0 auto 10px;letter-spacing:4px;}'+
+    'h1{text-align:center;font-size:18px;margin:0 0 3px;letter-spacing:1px;}'+
+    '.sub{text-align:center;font-size:10px;color:#555;margin-bottom:8px;}'+
+    '.screen{background:#888;color:#fff;text-align:center;padding:5px 0;border-radius:3px;font-size:10px;width:220px;margin:0 auto 4px;letter-spacing:2px;}'+
+    '.stage{background:#2c3e50;color:#fff;text-align:center;padding:8px 0;border-radius:5px;font-size:12px;font-weight:700;width:300px;margin:0 auto 12px;letter-spacing:4px;}'+
     'table{border-collapse:separate;border-spacing:'+GAP+'px;margin:0 auto;}'+
-    'td.rl{width:'+LABEL_W+'px;font-weight:700;font-size:9px;color:#444;text-align:center;vertical-align:middle;}'+
-    'td.seat{width:'+SEAT_W+'px;height:'+SEAT_H+'px;border:1px solid #bbb;border-radius:4px;font-size:7px;font-weight:700;text-align:center;vertical-align:middle;padding:1px;line-height:1.1;overflow:hidden;}'+
+    'td.rl{width:'+LABEL_W+'px;font-weight:700;font-size:11px;color:#444;text-align:center;vertical-align:middle;}'+
+    'td.colnum{width:'+SEAT_W+'px;height:16px;font-weight:700;font-size:9px;color:#5a6472;background:#e8eaf0;border-radius:4px;text-align:center;vertical-align:middle;}'+
+    'td.seat{width:'+SEAT_W+'px;height:'+SEAT_H+'px;border:1px solid #bbb;border-radius:5px;font-size:9px;font-weight:700;text-align:center;vertical-align:middle;padding:2px;line-height:1.15;overflow:hidden;}'+
     'td.aisle{width:'+AISLE+'px;}'+
     '.exits{display:flex;justify-content:space-around;margin:10px auto 6px;width:500px;}'+
     '.exit{background:#e67e22;color:#fff;padding:5px 20px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:1px;}'+
@@ -3746,7 +3771,7 @@ function printSeating(){
     '<div class="sub">2026年7月28日（火）｜クリエート浜松 2階 大ホール</div>'+
     '<div class="screen">スクリーン</div>'+
     '<div class="stage">演　台</div>'+
-    '<table><tbody>'+rows+'</tbody></table>'+
+    '<table><tbody>'+headerRow+rows+'</tbody></table>'+
     '<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>'+
     legend+
     '</body></html>';
