@@ -806,6 +806,14 @@ a{color:var(--red)}
   </div>
 </div>
 <div id="parking-other-block" style="display:none">
+  <div style="position:relative;width:100%;max-width:640px;margin:0 auto 12px;border-radius:8px;overflow:hidden;border:1px solid #e4e0d8">
+    <iframe src="https://maps.google.com/maps?q=ホテルコンコルド浜松&z=17&output=embed" width="100%" height="320" style="border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <div class="vpk-note" style="margin-bottom:10px">
+    🅿 <b>ホテルコンコルド浜松 公式サイトより（駐車場アクセス）：</b><br>
+    ホテル併設の2階建て平面駐車場（乗用車200台・大型車6台）。正面玄関前のスロープからそのまま「第1駐車場」「第2駐車場」へ入庫でき、入出庫がスムーズな構造です。宴会場（本イベント）ご利用のお客様は、利用に応じた優待サービスがあります（詳細は当日ホテルへご確認ください）。<br>
+    ⚠️ 満車時は真南（コンコルド敷地のすぐ南）にある<b>浜松城公園駐車場</b>を予備としてご案内します（下記②）。
+  </div>
   <div style="text-align:right;margin-bottom:8px"><button class="bsm r" onclick="addParkingEntry()">＋ 駐車場を追加</button></div>
   <div id="parking-list"></div>
 </div>
@@ -1532,7 +1540,8 @@ slideLinks:[
   {id:'sl27_1',year:'今回（2027年）',label:'経営方針発表会 メインスライド',url:''},
 ],
 parking:[
-  {id:'pk27_1',name:'ホテルコンコルド浜松 駐車場',address:'〒430-0942 静岡県浜松市中央区元城町218-8',mapUrl:'https://www.google.com/maps/search/?api=1&query=ホテルコンコルド浜松+駐車場',note:'台数・料金は確認中（会場詳細は君塚さん・清水さんが確認中）'},
+  {id:'pk27_1',type:'official',name:'ホテルコンコルド浜松 駐車場（本館併設）',address:'〒430-0942 静岡県浜松市中央区元城町218-8',mapUrl:'https://www.google.com/maps/search/?api=1&query=ホテルコンコルド浜松+駐車場',note:'2階建て平面駐車場・乗用車200台／大型車(バス・トラック)6台。玄関前のスロープから「第1駐車場」「第2駐車場」へ直接入庫可（看板の表示に従って進む）。宴会場ご利用のお客様は利用に応じた優待サービスあり（詳細は当日ホテルへ確認）。高さ2.2m以上の車両は事前相談要。バイク専用駐車場（ヘルメット収納ロッカー付・台数制限あり）は第1駐車場1階。'},
+  {id:'pk27_2',type:'backup',name:'浜松城公園駐車場（満車時の予備）',address:'静岡県浜松市中央区元城町（浜松城公園内・コンコルド南側すぐ）',mapUrl:'https://www.google.com/maps/search/?api=1&query=浜松城公園駐車場+浜松市中央区元城町',note:'ホテル敷地の真南、スターバックスコーヒー浜松城公園店隣接。8:00〜21:30・入庫から90分無料、以降100円／30分（土日祝は当日最大520円）。高さ2.30m・長さ5.00m・幅2.50mまでの車両対応。'},
 ],
 layout:{url:'',memo:''},
 programs:[
@@ -1696,8 +1705,9 @@ function loadLocal27(){
   });}
   if(!D.slideLinks){D.slideLinks=cloneD(INIT27.slideLinks||[]);}
   if(!D.parking){D.parking=cloneD(INIT27.parking||[]);}
-  // 駐車場データの形式移行（旧spots/fee形式→address/mapUrl形式、260901更新）
+  // 駐車場データの形式移行（旧spots/fee形式→address/mapUrl形式、260901更新／満車時の浜松城公園駐車場を追加、260902更新）
   else if(D.parking[0]&&D.parking[0].address===undefined){D.parking=cloneD(INIT27.parking||[]);}
+  else if(!D.parking.some(function(p){return p.id==='pk27_2';})){D.parking=cloneD(INIT27.parking||[]);}
   if(!D.vendors){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
   else if(D.vendors.length!==VENDOR_ROSTER_SEED.length||!D.vendors.some(function(v){return v.id==='vd105';})){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
   if(!D.banquet){D.banquet={tables:cloneD(BANQUET_SEED)};}
