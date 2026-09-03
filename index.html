@@ -8,7 +8,7 @@
 <!-- deploy-marker: firebase-sync-v2 -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<title>経営方針発表会 2026年7月28日 クリエート浜松2階 大ホール</title>
+<title>経営方針発表会 タスク管理</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -521,9 +521,9 @@ a{color:var(--red)}
 
 <header>
   <div>
-    <div class="sub" id="header-sub">株式会社LIFEFUND ／ 2026年7月28日（火）クリエート浜松2階 大ホール</div>
+    <div class="sub" id="header-sub">株式会社LIFEFUND ／ 2027年1月26日（火）ホテルコンコルド2F 雲海の間</div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <h1 id="header-title">🎤 経営方針発表会 2026</h1>
+      <h1 id="header-title">🎤 経営方針発表会 2027</h1>
       <div style="display:flex;gap:4px">
         <button id="period-btn-26" class="btn btn-w" style="font-size:.75rem;padding:5px 10px" onclick="switchPeriod('2026')">2026/7</button>
         <button id="period-btn-27" class="btn btn-ol" style="font-size:.75rem;padding:5px 10px" onclick="switchPeriod('2027')">2027/1</button>
@@ -834,7 +834,7 @@ a{color:var(--red)}
     </div>
   </div>
   <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
-    📌 <b>クリエート浜松 2階 大ホール</b>
+    📌 <b id="seating-venue-name">クリエート浜松 2階 大ホール</b>
     <br>ドラッグ＆ドロップで席を移動できます。「未配置」エリアの名札を席へドロップしてください。
   </div>
   <!-- 凡例 -->
@@ -843,6 +843,7 @@ a{color:var(--red)}
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#f8d7da;display:inline-block;border:1px solid #c9748e"></span>欠席</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff3cd;display:inline-block;border:1px solid #c4a000"></span>AI委託/入社予定</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#e9ecef;display:inline-block;border:1px solid #adb5bd"></span>空席</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;background:#e67e22;color:#fff;font-size:.62rem">🚪</span>出入口</span>
     <span style="color:var(--sub)">💡 ダブルクリックで未配置に戻す</span>
   </div>
   <!-- ホール全体 -->
@@ -856,9 +857,10 @@ a{color:var(--red)}
       </div>
       <!-- 座席グリッド -->
       <div id="seating-grid-wrap" style="display:flex;gap:4px;justify-content:center;align-items:flex-start">
-        <!-- 行ラベル（司会者・発表者ヘッダー行込み） -->
+        <!-- 出入口ラベル（左端・A〜C付近とJ〜L付近にJSで追加） -->
+        <div id="seating-entry-labels" style="display:flex;flex-direction:column;gap:6px;padding-top:2px"></div>
+        <!-- 行ラベル -->
         <div id="seating-row-labels" style="display:flex;flex-direction:column;gap:6px;padding-top:2px">
-          <!-- 司会者・発表者はA列の上にJSで追加 -->
         </div>
         <!-- ブロック1（列1-4） -->
         <div id="seating-block-L" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -878,12 +880,6 @@ a{color:var(--red)}
         <div style="width:20px"></div>
         <!-- ブロック5（列17-20） -->
         <div id="seating-block-R" style="display:flex;flex-direction:column;gap:6px"></div>
-      </div>
-      <!-- 出入口（左右の端）＋コーヒーカウンター（中央） -->
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
-        <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
-        <div style="border:2.5px solid #e67e22;border-radius:6px;padding:6px 24px;color:#e67e22;font-size:.78rem;font-weight:700;letter-spacing:.05em;margin-right:auto;margin-left:40px">☕ コーヒーカウンター</div>
-        <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
       </div>
     </div>
   </div>
@@ -979,11 +975,7 @@ a{color:var(--red)}
       <button class="btn btn-gray" onclick="addProgRow()">＋ 行を追加</button>
     </div>
   </div>
-  <div class="prog-info-bar">
-    <span>📅 2026年7月28日（火）</span>
-    <span>📍 クリエート浜松 2階 大ホール</span>
-    <span>⏰ 開会 12:00 → 閉会 17:15</span>
-    <span>👥 委員集合 8:30</span>
+  <div class="prog-info-bar" id="prog-info-bar">
   </div>
   <div class="prog-wrap">
     <table class="prog-tbl">
@@ -1755,6 +1747,7 @@ function updatePeriodUI(){
   if(sub){sub.textContent='株式会社LIFEFUND ／ '+(is26?'2026年7月28日（火）クリエート浜松2階 大ホール':'2027年1月26日（火）ホテルコンコルド2F 雲海の間');}
   if(title){title.textContent='🎤 経営方針発表会 '+(is26?'2026':'2027');}
   if(header){header.style.background=is26?'':'#1a3a6a';}
+  document.title='経営方針発表会 '+(is26?'2026年7月28日 クリエート浜松2階 大ホール':'2027年1月26日 ホテルコンコルド2F 雲海の間');
 }
 
 function persist(){D._t=Date.now();localStorage.setItem(curPeriod==='2026'?SK:SK27,JSON.stringify(D));fbPush();}
@@ -3455,9 +3448,13 @@ function renderSeating(){
       if(!EMPLOYEES.find(function(e){return e.no===c.no;}))EMPLOYEES.push(c);
     });
   }
+  var venueNameEl=document.getElementById('seating-venue-name');
+  if(venueNameEl)venueNameEl.textContent=(D.venue&&D.venue.name)||'クリエート浜松 2階 大ホール';
   var unplaced=document.getElementById('unplaced-area');
   unplaced.innerHTML='';
   var rowLabels=document.getElementById('seating-row-labels');
+  var entryLabels=document.getElementById('seating-entry-labels');
+  if(entryLabels)entryLabels.innerHTML='';
   var blockL=document.getElementById('seating-block-L');
   var blockCL=document.getElementById('seating-block-CL');
   var blockC=document.getElementById('seating-block-C');
@@ -3468,20 +3465,29 @@ function renderSeating(){
   var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
   var BLOCK_INFO=[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]];
 
-  // A列の上に司会者・発表者マーカー行を挿入
+  // R列（右端・列17-20）の上に司会者・発表者マーカー行を挿入
   var hdrLbl=document.createElement('div');
   hdrLbl.style.cssText='height:32px;width:26px';
   rowLabels.appendChild(hdrLbl);
   var hdrRow=document.createElement('div');
-  hdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;align-items:flex-end;height:32px;margin-bottom:2px';
+  hdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;align-items:flex-end;height:32px;margin-bottom:2px;justify-content:flex-end';
   hdrRow.innerHTML='<div style="border:2.5px solid #e74c3c;border-radius:6px;padding:5px 8px;color:#e74c3c;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">司会者</div>'
     +'<div style="border:2.5px solid #3498db;border-radius:4px;padding:5px 8px;color:#3498db;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">発表者</div>';
-  blockL.appendChild(hdrRow);
+  blockR.appendChild(hdrRow);
   var hdrBlank=document.createElement('div');hdrBlank.style.height='32px';hdrBlank.style.marginBottom='2px';
+  if(entryLabels)entryLabels.appendChild(hdrBlank.cloneNode());
+  blockL.appendChild(hdrBlank.cloneNode());
   blockCL.appendChild(hdrBlank.cloneNode());
   blockC.appendChild(hdrBlank.cloneNode());
   blockCR.appendChild(hdrBlank.cloneNode());
-  blockR.appendChild(hdrBlank.cloneNode());
+
+  // 出入口ラベル（左端・A〜C付近とJ〜L付近に表示）
+  if(entryLabels){
+    var entryColHdr=document.createElement('div');
+    entryColHdr.style.cssText='height:20px;width:26px';
+    entryColHdr.style.marginBottom='2px';
+    entryLabels.appendChild(entryColHdr);
+  }
 
   // 列番号ヘッダー（1〜20）：座席の通番を見やすくする
   var colHdrLbl=document.createElement('div');
@@ -3500,6 +3506,16 @@ function renderSeating(){
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
 
   for(var r=0;r<SEAT_ROWS;r++){
+    // 出入口ラベル（左端・A〜C付近＝r===1／J〜L付近＝r===10に表示）
+    if(entryLabels){
+      var entryCell=document.createElement('div');
+      entryCell.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
+      if(r===1||r===10){
+        entryCell.title='出入口';
+        entryCell.innerHTML='<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#e67e22;color:#fff;font-size:.85rem">🚪</span>';
+      }
+      entryLabels.appendChild(entryCell);
+    }
     // 行ラベル（丸背景で視認性アップ）
     var lbl=document.createElement('div');
     lbl.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
@@ -3825,8 +3841,11 @@ function printSeating(){
     '<span class="lbox" style="background:#efefef">空席</span>'+
     '</div>';
 
+  var pv=D.venue||{};
+  var pvName=pv.name||'クリエート浜松 2階 大ホール';
+  var pvDatetime=pv.datetime||'2026年7月28日（火） 12:00〜17:00';
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
-    '<title>座席表 2026年7月28日</title>'+
+    '<title>座席表 '+esc(pvDatetime)+'</title>'+
     '<style>'+
     '@page{size:A3 landscape;margin:10mm 8mm;}'+
     '*{box-sizing:border-box;}'+
@@ -3845,8 +3864,8 @@ function printSeating(){
     '.legend{display:flex;gap:8px;justify-content:center;margin-top:6px;flex-wrap:wrap;}'+
     '.lbox{padding:2px 8px;border:1px solid #bbb;border-radius:3px;font-size:8px;}'+
     '</style></head><body>'+
-    '<h1>経営方針発表会 2026　座席表</h1>'+
-    '<div class="sub">2026年7月28日（火）｜クリエート浜松 2階 大ホール</div>'+
+    '<h1>経営方針発表会　座席表</h1>'+
+    '<div class="sub">'+esc(pvDatetime)+'｜'+esc(pvName)+'</div>'+
     '<div class="screen">スクリーン</div>'+
     '<div class="stage">演　台</div>'+
     '<table><tbody>'+headerRow+rows+'</tbody></table>'+
@@ -4321,6 +4340,11 @@ function _durStr(m){if(m===undefined||m===null||m==='')return '';var h=Math.floo
 function _stripDeco(t){return (t||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/,'').replace(/^（(.*)）$/,'$1');}
 
 function renderPrograms(){
+  var infoBar=document.getElementById('prog-info-bar');
+  if(infoBar){
+    var v=D.venue||{};
+    infoBar.innerHTML='<span>📅 '+esc(v.datetime||'')+'</span><span>📍 '+esc(v.name||'')+'</span>';
+  }
   var realItems=D.programs.filter(function(p){return p.type!=='end';});
   document.getElementById('prog-body').innerHTML=realItems.map(function(p,i){
     var isFiller=p.type==='transit'||p.type==='break';
