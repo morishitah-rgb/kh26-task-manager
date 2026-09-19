@@ -843,7 +843,7 @@ a{color:var(--red)}
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#f8d7da;display:inline-block;border:1px solid #c9748e"></span>欠席</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff3cd;display:inline-block;border:1px solid #c4a000"></span>AI委託/入社予定</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#e9ecef;display:inline-block;border:1px solid #adb5bd"></span>空席</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;background:#e67e22;color:#fff;font-size:.62rem">🚪</span>出入口</span>
+    <span id="seating-legend-entry" style="display:flex;align-items:center;gap:4px"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;background:#e67e22;color:#fff;font-size:.62rem">🚪</span>出入口</span>
     <span style="color:var(--sub)">💡 ダブルクリックで未配置に戻す</span>
   </div>
   <!-- ホール全体 -->
@@ -869,8 +869,8 @@ a{color:var(--red)}
         <!-- ブロック2（列5-8） -->
         <div id="seating-block-CL" style="display:flex;flex-direction:column;gap:6px"></div>
         <!-- 通路（8と9の間） -->
-        <div style="width:20px"></div>
-        <!-- ブロック3（列9-12） -->
+        <div id="seating-aisle-2" style="width:20px"></div>
+        <!-- ブロック3（列9-12・2027以降のみ使用） -->
         <div id="seating-block-C" style="display:flex;flex-direction:column;gap:6px"></div>
         <!-- 通路（12と13の間） -->
         <div style="width:20px"></div>
@@ -880,6 +880,12 @@ a{color:var(--red)}
         <div style="width:20px"></div>
         <!-- ブロック5（列17-20） -->
         <div id="seating-block-R" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <!-- 出入口（左右の端）＋コーヒーカウンター（中央）：2026期のみ -->
+      <div id="seating-bottom-2026" style="display:none;justify-content:space-between;align-items:center;margin-top:16px">
+        <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
+        <div style="border:2.5px solid #e67e22;border-radius:6px;padding:6px 24px;color:#e67e22;font-size:.78rem;font-weight:700;letter-spacing:.05em;margin-right:auto;margin-left:40px">☕ コーヒーカウンター</div>
+        <div style="background:#e67e22;color:#fff;padding:6px 18px;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:1px">🚪 出入口</div>
       </div>
     </div>
   </div>
@@ -3448,41 +3454,50 @@ function renderSeating(){
       if(!EMPLOYEES.find(function(e){return e.no===c.no;}))EMPLOYEES.push(c);
     });
   }
+  var is26=curPeriod==='2026';
   var venueNameEl=document.getElementById('seating-venue-name');
   if(venueNameEl)venueNameEl.textContent=(D.venue&&D.venue.name)||'クリエート浜松 2階 大ホール';
   var unplaced=document.getElementById('unplaced-area');
   unplaced.innerHTML='';
   var rowLabels=document.getElementById('seating-row-labels');
   var entryLabels=document.getElementById('seating-entry-labels');
-  if(entryLabels)entryLabels.innerHTML='';
+  if(entryLabels){entryLabels.innerHTML='';entryLabels.style.display=is26?'none':'flex';}
+  var aisle2=document.getElementById('seating-aisle-2');
+  if(aisle2)aisle2.style.display=is26?'none':'';
+  var bottom2026=document.getElementById('seating-bottom-2026');
+  if(bottom2026)bottom2026.style.display=is26?'flex':'none';
+  var legendEntry=document.getElementById('seating-legend-entry');
+  if(legendEntry)legendEntry.style.display=is26?'none':'flex';
   var blockL=document.getElementById('seating-block-L');
   var blockCL=document.getElementById('seating-block-CL');
   var blockC=document.getElementById('seating-block-C');
   var blockCR=document.getElementById('seating-block-CR');
   var blockR=document.getElementById('seating-block-R');
+  blockC.style.display=is26?'none':'flex';
   rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockC.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
   var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
-  var BLOCK_INFO=[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]];
+  // 2026期（クリエート浜松）は5列ごと4ブロック（旧レイアウト）、2027期以降は4列ごと5ブロック
+  var BLOCK_INFO=is26
+    ?[['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['CR',blockCR,[10,11,12,13,14]],['R',blockR,[15,16,17,18,19]]]
+    :[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]];
 
-  // R列（右端・列17-20）の上に司会者・発表者マーカー行を挿入
+  // 司会者・発表者マーカー行を挿入（2026＝左端A列上、2027以降＝右端R列上）
+  var markerBlock=is26?blockL:blockR;
   var hdrLbl=document.createElement('div');
   hdrLbl.style.cssText='height:32px;width:26px';
   rowLabels.appendChild(hdrLbl);
   var hdrRow=document.createElement('div');
-  hdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;align-items:flex-end;height:32px;margin-bottom:2px;justify-content:flex-end';
+  hdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;align-items:flex-end;height:32px;margin-bottom:2px;justify-content:'+(is26?'flex-start':'flex-end');
   hdrRow.innerHTML='<div style="border:2.5px solid #e74c3c;border-radius:6px;padding:5px 8px;color:#e74c3c;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">司会者</div>'
     +'<div style="border:2.5px solid #3498db;border-radius:4px;padding:5px 8px;color:#3498db;font-size:.62rem;font-weight:700;text-align:center;line-height:1.3;white-space:nowrap">発表者</div>';
-  blockR.appendChild(hdrRow);
+  markerBlock.appendChild(hdrRow);
   var hdrBlank=document.createElement('div');hdrBlank.style.height='32px';hdrBlank.style.marginBottom='2px';
   if(entryLabels)entryLabels.appendChild(hdrBlank.cloneNode());
-  blockL.appendChild(hdrBlank.cloneNode());
-  blockCL.appendChild(hdrBlank.cloneNode());
-  blockC.appendChild(hdrBlank.cloneNode());
-  blockCR.appendChild(hdrBlank.cloneNode());
+  BLOCK_INFO.forEach(function(binfo){if(binfo[1]!==markerBlock)binfo[1].appendChild(hdrBlank.cloneNode());});
 
-  // 出入口ラベル（左端・A〜C付近とJ〜L付近に表示）
-  if(entryLabels){
+  // 出入口ラベル（左端・A〜C付近とJ〜L付近に表示／2027期以降のみ）
+  if(entryLabels&&!is26){
     var entryColHdr=document.createElement('div');
     entryColHdr.style.cssText='height:20px;width:26px';
     entryColHdr.style.marginBottom='2px';
@@ -3506,8 +3521,8 @@ function renderSeating(){
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
 
   for(var r=0;r<SEAT_ROWS;r++){
-    // 出入口ラベル（左端・A〜C付近＝r===1／J〜L付近＝r===10に表示）
-    if(entryLabels){
+    // 出入口ラベル（左端・A〜C付近＝r===1／J〜L付近＝r===10に表示／2027期以降のみ）
+    if(entryLabels&&!is26){
       var entryCell=document.createElement('div');
       entryCell.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
       if(r===1||r===10){
@@ -3793,11 +3808,15 @@ function resetSeating(){
 }
 
 function printSeating(){
+  var is26=curPeriod==='2026';
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
 
-  var COL_GROUPS=[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[16,17,18,19]];
+  // 2026期（クリエート浜松）は5列ごと、2027期以降は4列ごとに通路
+  var COL_GROUPS=is26
+    ?[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19]]
+    :[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[16,17,18,19]];
 
   // 列番号ヘッダー行
   var hdrCells='<td class="rl"></td>';
