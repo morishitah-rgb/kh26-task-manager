@@ -872,13 +872,13 @@ a{color:var(--red)}
         <div id="seating-aisle-2" style="width:20px"></div>
         <!-- ブロック3（列9-12・2027以降のみ使用） -->
         <div id="seating-block-C" style="display:flex;flex-direction:column;gap:6px"></div>
-        <!-- 通路（12と13の間） -->
-        <div style="width:20px"></div>
-        <!-- ブロック4（列13-16） -->
+        <!-- 通路（12と13の間・2027以降のみ使用） -->
+        <div id="seating-aisle-3" style="width:20px"></div>
+        <!-- ブロック4（列13-16・2027以降のみ使用） -->
         <div id="seating-block-CR" style="display:flex;flex-direction:column;gap:6px"></div>
-        <!-- 通路（16と17の間） -->
-        <div style="width:20px"></div>
-        <!-- ブロック5（列17-20） -->
+        <!-- 通路（16と17の間・2027以降のみ使用） -->
+        <div id="seating-aisle-4" style="width:20px"></div>
+        <!-- ブロック5（列17-20・2027以降のみ使用） -->
         <div id="seating-block-R" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
       <!-- 出入口（左右の端）＋コーヒーカウンター（中央）：2026期のみ -->
@@ -3464,6 +3464,10 @@ function renderSeating(){
   if(entryLabels){entryLabels.innerHTML='';entryLabels.style.display=is26?'none':'flex';}
   var aisle2=document.getElementById('seating-aisle-2');
   if(aisle2)aisle2.style.display=is26?'none':'';
+  var aisle3=document.getElementById('seating-aisle-3');
+  if(aisle3)aisle3.style.display=is26?'none':'';
+  var aisle4=document.getElementById('seating-aisle-4');
+  if(aisle4)aisle4.style.display=is26?'none':'';
   var bottom2026=document.getElementById('seating-bottom-2026');
   if(bottom2026)bottom2026.style.display=is26?'flex':'none';
   var legendEntry=document.getElementById('seating-legend-entry');
@@ -3474,12 +3478,14 @@ function renderSeating(){
   var blockCR=document.getElementById('seating-block-CR');
   var blockR=document.getElementById('seating-block-R');
   blockC.style.display=is26?'none':'flex';
+  blockCR.style.display=is26?'none':'flex';
+  blockR.style.display=is26?'none':'flex';
   rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockC.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
   var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
-  // 2026期（クリエート浜松）は5列ごと4ブロック（旧レイアウト）、2027期以降は4列ごと5ブロック
+  // 2026期（クリエート浜松）は列1-8のみ・2ブロック（旧レイアウト、列9-20は使用しない）、2027期以降は列1-20・4列ごと5ブロック
   var BLOCK_INFO=is26
-    ?[['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['CR',blockCR,[10,11,12,13,14]],['R',blockR,[15,16,17,18,19]]]
+    ?[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]]]
     :[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]];
 
   // 司会者・発表者マーカー行を挿入（2026＝左端A列上、2027以降＝右端R列上）
@@ -3813,9 +3819,9 @@ function printSeating(){
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
 
-  // 2026期（クリエート浜松）は5列ごと、2027期以降は4列ごとに通路
+  // 2026期（クリエート浜松）は列1-8のみ、2027期以降は列1-20・4列ごとに通路
   var COL_GROUPS=is26
-    ?[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19]]
+    ?[[0,1,2,3],[4,5,6,7]]
     :[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[16,17,18,19]];
 
   // 列番号ヘッダー行
