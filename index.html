@@ -3463,9 +3463,9 @@ function renderSeating(){
   var entryLabels=document.getElementById('seating-entry-labels');
   if(entryLabels){entryLabels.innerHTML='';entryLabels.style.display=is26?'none':'flex';}
   var aisle2=document.getElementById('seating-aisle-2');
-  if(aisle2)aisle2.style.display=is26?'none':'';
+  if(aisle2)aisle2.style.display='';
   var aisle3=document.getElementById('seating-aisle-3');
-  if(aisle3)aisle3.style.display=is26?'none':'';
+  if(aisle3)aisle3.style.display='';
   var aisle4=document.getElementById('seating-aisle-4');
   if(aisle4)aisle4.style.display=is26?'none':'';
   var bottom2026=document.getElementById('seating-bottom-2026');
@@ -3477,15 +3477,16 @@ function renderSeating(){
   var blockC=document.getElementById('seating-block-C');
   var blockCR=document.getElementById('seating-block-CR');
   var blockR=document.getElementById('seating-block-R');
-  blockC.style.display=is26?'none':'flex';
-  blockCR.style.display=is26?'none':'flex';
+  blockC.style.display='flex';
+  blockCR.style.display='flex';
   blockR.style.display=is26?'none':'flex';
   rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockC.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
   var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
-  // 2026期（クリエート浜松）は列1-8のみ・2ブロック（旧レイアウト、列9-20は使用しない）、2027期以降は列1-20・4列ごと5ブロック
+  // 2026期（クリエート浜松）は列1-8のみ・4ブロック×2列（通路が2/3・4/5・6/7の間、旧レイアウト、列9-20は使用しない）
+  // 2027期以降は列1-20・4列ごと5ブロック
   var BLOCK_INFO=is26
-    ?[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]]]
+    ?[['L',blockL,[0,1]],['CL',blockCL,[2,3]],['C',blockC,[4,5]],['CR',blockCR,[6,7]]]
     :[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]];
 
   // 司会者・発表者マーカー行を挿入（2026＝左端A列上、2027以降＝右端R列上）
@@ -3819,9 +3820,9 @@ function printSeating(){
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
 
-  // 2026期（クリエート浜松）は列1-8のみ、2027期以降は列1-20・4列ごとに通路
+  // 2026期（クリエート浜松）は列1-8のみ・2列ごとに通路、2027期以降は列1-20・4列ごとに通路
   var COL_GROUPS=is26
-    ?[[0,1,2,3],[4,5,6,7]]
+    ?[[0,1],[2,3],[4,5],[6,7]]
     :[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[16,17,18,19]];
 
   // 列番号ヘッダー行
