@@ -1506,13 +1506,49 @@ links:[
 // ===== 2027年上期 初期データ =====
 const INIT27 = {
 tasks:[
-  {id:'t27_1',title:'会場（コンコルドホテル）との打合せ',assignee:'君塚さん・清水さん',category:'会場・備品',start:'2026-08-01',due:'2026-10-31',status:'todo',memo:'雲海の間の設備・レイアウト確認'},
-  {id:'t27_2',title:'タイムテーブル作成',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-09-01',due:'2026-12-01',status:'todo',memo:''},
-  {id:'t27_3',title:'発表者・発表内容の決定',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-09-01',due:'2026-11-01',status:'todo',memo:''},
-  {id:'t27_4',title:'360°FBアンケート作成',assignee:'髙松さん・岡さん',category:'360°フィードバック',start:'2026-10-01',due:'2026-12-01',status:'todo',memo:''},
-  {id:'t27_5',title:'当日の担当割り振り',assignee:'松下さん・森下さん',category:'当日役割',start:'2026-11-01',due:'2026-12-15',status:'todo',memo:''},
-  {id:'t27_6',title:'備品・設備手配',assignee:'波多野さん・君塚さん',category:'会場・備品',start:'2026-10-01',due:'2027-01-15',status:'todo',memo:''},
-  {id:'t27_7',title:'リハーサル実施',assignee:'委員会全員',category:'当日役割',start:'2027-01-01',due:'2027-01-20',status:'todo',memo:''},
+  {id:'t27_1',title:'会場（コンコルドホテル）予約内容の最終確認',assignee:'君塚さん・清水さん',category:'会場・備品',start:'2026-09-01',due:'2026-10-31',status:'todo',memo:'雲海の間の設備・レイアウト確認（下見実施後に確定）'},
+  {id:'t27_2',title:'会場レイアウト決定',assignee:'君塚さん・清水さん',category:'会場・備品',start:'2026-10-15',due:'2026-11-15',status:'todo',memo:''},
+  {id:'t27_3',title:'備品・設備手配',assignee:'波多野さん・君塚さん',category:'会場・備品',start:'2026-11-01',due:'2026-12-26',status:'todo',memo:'マイク・プロジェクター・スクリーン等'},
+  {id:'t27_4',title:'卓上名札作成',assignee:'委員会（要アサイン）',category:'会場・備品',start:'2026-11-01',due:'2027-01-15',status:'todo',memo:'参加者分の卓上名札'},
+  {id:'t27_5',title:'受付簿作成・印刷（来賓・業者）',assignee:'委員会（要アサイン）',category:'会場・備品',start:'2026-11-01',due:'2027-01-15',status:'todo',memo:''},
+  {id:'t27_6',title:'事前現地確認・動作確認',assignee:'委員会全員',category:'会場・備品',start:'2026-12-01',due:'2026-12-15',status:'todo',memo:'会場下見と合わせて実施'},
+  {id:'t27_7',title:'お茶・飲み物発注',assignee:'森下さん',category:'会場・備品',start:'2026-11-01',due:'2027-01-07',status:'todo',memo:''},
+  {id:'t27_8',title:'お弁当選定・発注',assignee:'委員会（要アサイン）',category:'会場・備品',start:'2026-11-01',due:'2027-01-19',status:'todo',memo:''},
+  {id:'t27_9',title:'駐車場案内図・精算方法の確定',assignee:'森下さん',category:'会場・備品',start:'2026-11-01',due:'2026-12-28',status:'todo',memo:'浜松城公園駐車場（予備）の案内含む'},
+  {id:'t27_10',title:'横断幕作成',assignee:'角谷さん・松下さん',category:'会場・備品',start:'2026-11-01',due:'2027-01-12',status:'todo',memo:'※去年ヨレが課題だったため早め発注'},
+  {id:'t27_11',title:'バックパネル組立・アイロンがけ',assignee:'委員会（要アサイン）',category:'会場・備品',start:'2027-01-20',due:'2027-01-25',status:'todo',memo:''},
+  {id:'t27_12',title:'使用PC選定',assignee:'髙松さん',category:'座席・受付',start:'2026-12-01',due:'2026-12-15',status:'todo',memo:''},
+  {id:'t27_13',title:'座席位置決め（来賓・業者）',assignee:'森下さん・松下さん',category:'座席・受付',start:'2026-11-01',due:'2026-12-13',status:'todo',memo:''},
+  {id:'t27_14',title:'座席位置決め（社員）',assignee:'委員会（要アサイン）',category:'座席・受付',start:'2026-11-01',due:'2026-12-20',status:'todo',memo:''},
+  {id:'t27_15',title:'席次表作成・冊子デザイン',assignee:'髙松さん',category:'座席・受付',start:'2026-11-01',due:'2026-12-26',status:'todo',memo:'※去年「席次が見にくい」との声あり、視認性を改善'},
+  {id:'t27_16',title:'タイムキーパー用プラカード作成',assignee:'委員会（要アサイン）',category:'座席・受付',start:'2026-12-01',due:'2027-01-10',status:'todo',memo:''},
+  {id:'t27_17',title:'終了後アンケート作成（デジタル・紙）',assignee:'髙松さん',category:'座席・受付',start:'2026-12-01',due:'2027-01-10',status:'todo',memo:'招待状の返信もGoogleフォーム化を検討（去年の改善提案）'},
+  {id:'t27_18',title:'方針書・メモ用紙の印刷',assignee:'委員会（要アサイン）',category:'座席・受付',start:'2027-01-15',due:'2027-01-24',status:'todo',memo:''},
+  {id:'t27_19',title:'社員名簿・懇親会出席の入手',assignee:'委員会（要アサイン）',category:'座席・受付',start:'2026-11-01',due:'2026-12-26',status:'todo',memo:''},
+  {id:'t27_20',title:'タイムテーブル作成',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-09-01',due:'2026-12-01',status:'todo',memo:''},
+  {id:'t27_21',title:'ラクモ（予定表）登録',assignee:'森下さん・松下さん',category:'タイムテーブル・スライド',start:'2026-11-01',due:'2026-11-15',status:'todo',memo:''},
+  {id:'t27_22',title:'日時・場所・服装・駐車場等の全体通知',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-12-01',due:'2027-01-13',status:'todo',memo:'最終案内含む'},
+  {id:'t27_23',title:'発表者へのスライド提出期限チャット通知',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-11-25',due:'2027-01-20',status:'todo',memo:''},
+  {id:'t27_24',title:'参加者・懇親会出席リスト作成',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2026-11-01',due:'2026-12-26',status:'todo',memo:'社員名簿・業者名簿の「懇親会出席」チェック欄を活用'},
+  {id:'t27_25',title:'参加者確認（来賓・業者）',assignee:'森下さん・松下さん',category:'参加者・表彰',start:'2026-11-01',due:'2026-12-10',status:'todo',memo:''},
+  {id:'t27_26',title:'表彰アンケート・表彰者決定',assignee:'森下さん・松下さん',category:'参加者・表彰',start:'2026-11-01',due:'2027-01-12',status:'todo',memo:'殿堂入り制度の運用を反映'},
+  {id:'t27_27',title:'表彰状・賞金袋の準備',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2027-01-05',due:'2027-01-15',status:'todo',memo:''},
+  {id:'t27_28',title:'来賓招待状の作成・郵送',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2026-09-01',due:'2026-11-30',status:'todo',memo:'スリーカウント鈴木代表・大岡成光建築事務所・住家 梅原代表の3名含む（社長指定）'},
+  {id:'t27_29',title:'来賓謝礼・業者表彰金の準備',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2027-01-10',due:'2027-01-20',status:'todo',memo:'来賓講話のお礼は当日会場で手渡し（去年の改善メモ）'},
+  {id:'t27_30',title:'司会者台本作成',assignee:'松下さん',category:'発表者・司会',start:'2026-12-01',due:'2027-01-20',status:'todo',memo:'台本リハーサルも実施'},
+  {id:'t27_31',title:'オープニングムービー作成',assignee:'髙松さん',category:'発表者・司会',start:'2026-11-01',due:'2027-01-15',status:'todo',memo:'実写→AI生成のハイブリッド構成を検討'},
+  {id:'t27_32',title:'表彰スライド完成',assignee:'森下さん・髙松さん',category:'発表者・司会',start:'2027-01-01',due:'2027-01-15',status:'todo',memo:''},
+  {id:'t27_33',title:'発表者スライド統合',assignee:'髙松さん・松下さん',category:'発表者・司会',start:'2026-11-01',due:'2027-01-23',status:'todo',memo:''},
+  {id:'t27_34',title:'リハーサル実施（1〜2回目）',assignee:'委員会全員',category:'当日役割',start:'2027-01-01',due:'2027-01-20',status:'todo',memo:'実動1週間前を目安に調整'},
+  {id:'t27_35',title:'各発表者へのスライド雛形共有・提出依頼',assignee:'松下さん',category:'タイムテーブル・スライド',start:'2026-11-01',due:'2026-11-15',status:'todo',memo:'社長・来賓・各部署課長・AI・マルシェ・司会・総集 等'},
+  {id:'t27_36',title:'招待業者・経営者リストアップ',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2026-09-01',due:'2026-10-15',status:'todo',memo:'招待基準（取引実績・決裁権・戦略性・過去参加実績）に沿って選定'},
+  {id:'t27_37',title:'招待状の文面作成・発注・発送',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2026-10-01',due:'2026-11-30',status:'todo',memo:''},
+  {id:'t27_38',title:'撮影業者との打ち合わせ',assignee:'委員会（要アサイン）',category:'当日役割',start:'2026-12-01',due:'2027-01-10',status:'todo',memo:'集合写真は委員会メンバーも写れるよう外部業者へ依頼'},
+  {id:'t27_39',title:'当日の担当割り振り',assignee:'松下さん・森下さん',category:'当日役割',start:'2026-11-01',due:'2026-12-15',status:'todo',memo:'シフト表形式で事前共有（去年の改善提案）'},
+  {id:'t27_40',title:'当日役割リハーサル・シフト確認',assignee:'委員会全員',category:'当日役割',start:'2027-01-20',due:'2027-01-25',status:'todo',memo:''},
+  {id:'t27_41',title:'終了後アンケートの仕分け・共有',assignee:'委員会（要アサイン）',category:'座席・受付',start:'2027-01-27',due:'2027-02-05',status:'todo',memo:'発表者・社長への共有含む'},
+  {id:'t27_42',title:'備品片付け・Wi-Fi返却',assignee:'委員会（要アサイン）',category:'会場・備品',start:'2027-01-26',due:'2027-01-30',status:'todo',memo:''},
+  {id:'t27_43',title:'振り返り・活動報告まとめ',assignee:'委員会全員',category:'その他',start:'2027-01-27',due:'2027-02-15',status:'todo',memo:'次期委員会への引き継ぎ資料として残す'},
 ],
 schedule:[
   {id:'s27_1',title:'① 第1回 委員会MTG',date:'2026-08-11',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会（角谷さんお休み）',type:'mtg',memo:'※角谷さんお休み'},
@@ -1710,6 +1746,9 @@ function loadLocal27(){
   // 2026のboardIDが混入していたらINIT27にリセット（ポーリング汚染対策）
   if(D.board&&D.board.some(function(b){return b.id&&!b.id.startsWith('b27_');})){D=cloneD(INIT27);}
   if(!D.deletedIds)D.deletedIds=[];
+  // タスク（261002更新・去年1月実績のガントチャートを基に洗い出した詳細版に置き換え）
+  // 旧プレースホルダー版（t27_1〜t27_7のみ・追加タスクなし）が残っている場合だけ安全に全体差し替えする
+  if(D.tasks&&D.tasks.length<=7&&!D.tasks.some(function(x){return x.id==='t27_8';})){D.tasks=cloneD(INIT27.tasks);}
   ['tasks','members','minutes','budget','schedule','board','links'].forEach(function(key){
     if(!D[key]){D[key]=cloneD(INIT27[key]||[]);}
     else{(INIT27[key]||[]).forEach(function(item){if(!D[key].find(function(x){return x.id===item.id;})&&D.deletedIds.indexOf(item.id)===-1)D[key].push(cloneD(item));});}
