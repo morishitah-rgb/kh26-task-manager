@@ -5709,6 +5709,18 @@ function saveNewTable(){
 }
 
 // ===== リンク集 =====
+// データURLのPDFはブラウザにブロックされるため、Blob URLに変換して新しいタブで開く
+document.addEventListener('click',function(ev){
+  var a=ev.target.closest&&ev.target.closest('a[href^="data:application/pdf"]');
+  if(!a)return;
+  ev.preventDefault();
+  try{
+    var b64=a.getAttribute('href').split(',')[1];
+    var bin=atob(b64),arr=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+    window.open(URL.createObjectURL(new Blob([arr],{type:'application/pdf'})),'_blank');
+  }catch(e){alert('PDFを開けませんでした');}
+});
 function renderLinks(){
   var list=document.getElementById('links-list');
   if(!D.links||!D.links.length){list.innerHTML='<div class="empty">リンクがありません</div>';return;}
