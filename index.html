@@ -3747,6 +3747,8 @@ function saveRoster(){
 
 // ===== 座席表 =====
 var SEAT_ROWS=12,SEAT_COLS=20;
+// 座席表レイアウト切替：false＝標準グリッド（A〜L×1〜20）／true＝雲海図面ベース（SEAT_LAYOUT27）
+var SEAT_LAYOUT27_ON=false;
 // 2027年1月 ホテルコンコルド浜松 2F雲海の間（スクール形式250席・野澤様 10/19レイアウト案）
 // 行A〜L＝スクリーン側から後方へ12列、各行5ブロック（左→右）、[席数,配置(L/C/R)]
 var SEAT_LAYOUT27=[[[0,"C"],[0,"C"],[0,"C"],[0,"C"],[0,"C"]],[[4,"C"],[4,"C"],[0,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[5,"C"],[4,"C"],[4,"C"],[4,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]]];
@@ -3778,13 +3780,17 @@ function getSeatablePeople(){
 }
 
 function renderSeating(){
-  // 2027期：座席レイアウト刷新時、旧配置は seatsPrev に退避（消さずに保管）
+  // 2027期：座席レイアウトの切替（配置はレイアウトごとに別保管し、切り替えても消さない）
   if(curPeriod!=='2026'){
     if(!D.seating)D.seating={};
-    if(D.seating.layout27!=='v1'){
-      if(D.seating.seats&&Object.keys(D.seating.seats).length&&!D.seating.seatsPrev)D.seating.seatsPrev=D.seating.seats;
-      D.seating.seats={};D.seating.layout27='v1';
+    var wantKey=SEAT_LAYOUT27_ON?'v1':'orig';
+    var curKey=D.seating.layoutKey||(D.seating.layout27==='v1'?'v1':'orig');
+    if(curKey!==wantKey){
+      if(!D.seating.byLayout)D.seating.byLayout={};
+      D.seating.byLayout[curKey]=D.seating.seats||{};
+      D.seating.seats=D.seating.byLayout[wantKey]||(wantKey==='orig'&&D.seating.seatsPrev)||{};
     }
+    D.seating.layoutKey=wantKey;
   }
   var saved=D.seating||{};
   // 保存済みカスタム人物をEMPLOYEESに復元（重複しないよう）
@@ -3794,6 +3800,7 @@ function renderSeating(){
     });
   }
   var is26=curPeriod==='2026';
+  var useL27=!is26&&SEAT_LAYOUT27_ON;
   var venueNameEl=document.getElementById('seating-venue-name');
   if(venueNameEl)venueNameEl.textContent=(D.venue&&D.venue.name)||'クリエート浜松 2階 大ホール';
   var unplaced=document.getElementById('unplaced-area');
@@ -3810,7 +3817,7 @@ function renderSeating(){
   var bottom2026=document.getElementById('seating-bottom-2026');
   if(bottom2026)bottom2026.style.display=is26?'flex':'none';
   var bottom2027=document.getElementById('seating-bottom-2027');
-  if(bottom2027)bottom2027.style.display=is26?'none':'flex';
+  if(bottom2027)bottom2027.style.display=useL27?'flex':'none';
   var legendEntry=document.getElementById('seating-legend-entry');
   if(legendEntry)legendEntry.style.display=is26?'none':'flex';
   var blockL=document.getElementById('seating-block-L');
@@ -3828,7 +3835,7 @@ function renderSeating(){
   // 2027期以降は列1-20・4列ごと5ブロック
   var BLOCK_INFO=is26
     ?[['L',blockL,[0,1]],['CL',blockCL,[2,3]],['C',blockC,[4,5]],['CR',blockCR,[6,7]]]
-    :[['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['C',blockC,[10,11,12,13,14]],['CR',blockCR,[15,16,17,18,19]],['R',blockR,[20,21,22,23,24]]];
+    :(useL27?[['L',blockL,[0,1,2,3,4]],['CL',blockCL,[5,6,7,8,9]],['C',blockC,[10,11,12,13,14]],['CR',blockCR,[15,16,17,18,19]],['R',blockR,[20,21,22,23,24]]]:[['L',blockL,[0,1,2,3]],['CL',blockCL,[4,5,6,7]],['C',blockC,[8,9,10,11]],['CR',blockCR,[12,13,14,15]],['R',blockR,[16,17,18,19]]]);
 
   // 司会者・発表者マーカー行を挿入（2026＝左端A列上、2027以降＝右端R列上）
   var markerBlock=is26?blockL:blockR;
@@ -3859,7 +3866,7 @@ function renderSeating(){
   BLOCK_INFO.forEach(function(binfo){
     var colHdrRow=document.createElement('div');
     colHdrRow.style.cssText='display:flex;gap:'+SEAT_GAP+'px;margin-bottom:2px';
-    if(is26){
+    if(!useL27){
     colHdrRow.innerHTML=binfo[2].map(function(c){
       return '<div style="width:'+SEAT_W+'px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#5a6472;background:#e8eaf0;border-radius:4px">'+(c+1)+'</div>';
     }).join('');
@@ -3869,7 +3876,7 @@ function renderSeating(){
     binfo[1].appendChild(colHdrRow);
   });
 
-  var validSeat27=is26?null:new Set(seatList27());
+  var validSeat27=useL27?new Set(seatList27()):null;
   var placedKeys=new Set(Object.keys(saved.seats||{}).filter(function(sk){return !validSeat27||validSeat27.has(sk);}).map(function(sk){var k=saved.seats[sk];return typeof k==='number'?'e'+k:k;}));
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
 
@@ -3878,7 +3885,7 @@ function renderSeating(){
     if(entryLabels&&!is26){
       var entryCell=document.createElement('div');
       entryCell.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
-      if(r===3||r===6){
+      if(useL27?(r===3||r===6):(r===1||r===10)){
         entryCell.title='出入口';
         entryCell.innerHTML='<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#e67e22;color:#fff;font-size:.85rem">🚪</span>';
       }
@@ -3895,7 +3902,7 @@ function renderSeating(){
       var wrap=document.createElement('div');
       wrap.style.cssText='display:flex;gap:'+SEAT_GAP+'px';
       var lay27=null;
-      if(!is26){
+      if(useL27){
         lay27=SEAT_LAYOUT27[r][BLOCK_INFO.indexOf(binfo)];
         wrap.style.width=(5*SEAT_W+4*SEAT_GAP)+'px';
         wrap.style.justifyContent=lay27[1]==='L'?'flex-start':lay27[1]==='R'?'flex-end':'center';
@@ -3906,7 +3913,7 @@ function renderSeating(){
         var cell=document.createElement('div');
         cell.id='seat-'+seatId;
         cell.dataset.seatId=seatId;
-        cell.title=(ROW_LABELS[r]||r)+'-'+(is26?c+1:seatSeq27(r,c));
+        cell.title=(ROW_LABELS[r]||r)+'-'+(useL27?seatSeq27(r,c):c+1);
         cell.style.cssText='width:'+SEAT_W+'px;height:'+SEAT_H+'px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
         cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
         cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-person-key]');if(t)this.style.background='';});
@@ -4169,6 +4176,7 @@ function resetSeating(){
 
 function printSeating(){
   var is26=curPeriod==='2026';
+  var useL27=!is26&&SEAT_LAYOUT27_ON;
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
@@ -4176,7 +4184,7 @@ function printSeating(){
   // 2026期（クリエート浜松）は列1-8のみ・2列ごとに通路、2027期以降は列1-20・4列ごとに通路
   var COL_GROUPS=is26
     ?[[0,1],[2,3],[4,5],[6,7]]
-    :[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]];
+    :(useL27?[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],[16,17,18,19]]);
 
   // 列番号ヘッダー行
   var hdrCells='<td class="rl"></td>';
@@ -4194,7 +4202,7 @@ function printSeating(){
     COL_GROUPS.forEach(function(pair,bi){
       if(bi>0) cells+='<td class="aisle"></td>';
       pair.forEach(function(c){
-        if(!is26){var l27=SEAT_LAYOUT27[r][bi];if((c%5)>=l27[0]){cells+='<td class="seat" style="border:none;background:none"></td>';return;}}
+        if(useL27){var l27=SEAT_LAYOUT27[r][bi];if((c%5)>=l27[0]){cells+='<td class="seat" style="border:none;background:none"></td>';return;}}
         var sid='r'+r+'c'+c;
         var key=saved[sid];
         var person=key?resolvePerson(key):null;
@@ -4702,7 +4710,7 @@ function autoArrangeSeating(){
   var attending=getSeatablePeople();
   var seats={};
   var idx=0;
-  if(curPeriod!=='2026'){
+  if(SEAT_LAYOUT27_ON&&curPeriod!=='2026'){
     seatList27().forEach(function(sid){if(idx<attending.length){seats[sid]=attending[idx].key;idx++;}});
   }else{
   for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
