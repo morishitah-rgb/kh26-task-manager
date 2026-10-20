@@ -890,7 +890,7 @@ a{color:var(--red)}
       <div id="seating-bottom-2027" style="display:none;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px">
         <div style="border:2.5px solid #16a085;border-radius:6px;padding:6px 24px;color:#16a085;font-size:.78rem;font-weight:700">📷 カメラ（後方中央）</div>
         <div style="border:2.5px solid #c0392b;border-radius:6px;padding:6px 18px;color:#c0392b;font-size:.78rem;font-weight:700">🏆 表彰盆（前方・左端）</div>
-        <div style="font-size:.74rem;color:var(--sub)">🚪 出入口は左側（D〜E列間の通路1200・G〜H列間）｜ホテルコンコルド 雲海 スクール形式250席（10/19時点の図面）</div>
+        <div style="font-size:.74rem;color:var(--sub)">🚪 出入口は左側（D〜E列間の通路1200・G〜H列間）｜ホテルコンコルド 雲海 スクール形式250席（10/19時点の図面）から、スクリーン前のA列12席を撤去＝238席</div>
       </div>
       <!-- 出入口（左右の端）＋コーヒーカウンター（中央）：2026期のみ -->
       <div id="seating-bottom-2026" style="display:none;justify-content:space-between;align-items:center;margin-top:16px">
@@ -3748,7 +3748,7 @@ function saveRoster(){
 var SEAT_ROWS=12,SEAT_COLS=20;
 // 2027年1月 ホテルコンコルド浜松 2F雲海の間（スクール形式250席・野澤様 10/19レイアウト案）
 // 行A〜L＝スクリーン側から後方へ12列、各行5ブロック（左→右）、[席数,配置(L/C/R)]
-var SEAT_LAYOUT27=[[[2,"R"],[4,"C"],[0,"C"],[4,"C"],[2,"L"]],[[4,"C"],[4,"C"],[0,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[5,"C"],[4,"C"],[4,"C"],[4,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]]];
+var SEAT_LAYOUT27=[[[0,"C"],[0,"C"],[0,"C"],[0,"C"],[0,"C"]],[[4,"C"],[4,"C"],[0,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[5,"C"],[4,"C"],[4,"C"],[4,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]]];
 function seatList27(){var out=[];SEAT_LAYOUT27.forEach(function(row,r){row.forEach(function(b,bi){for(var i=0;i<b[0];i++)out.push('r'+r+'c'+(bi*5+i));});});return out;}
 function seatSeq27(r,c){var bi=Math.floor(c/5),n=0;for(var k=0;k<bi;k++)n+=SEAT_LAYOUT27[r][k][0];return n+(c%5)+1;}
 var seatingDragSrc=null;
