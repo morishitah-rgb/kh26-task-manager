@@ -853,7 +853,7 @@ a{color:var(--red)}
   </div>
   <!-- ホール全体 -->
   <div style="overflow-x:auto">
-    <div style="min-width:700px;padding:16px;background:#f0f2f5;border-radius:12px;border:2px solid var(--line)">
+    <div style="min-width:700px;width:max-content;padding:16px;background:#f0f2f5;border-radius:12px;border:2px solid var(--line)">
       <!-- スクリーン -->
       <div style="display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:12px">
         <div style="flex:1"></div>
@@ -890,7 +890,7 @@ a{color:var(--red)}
       <div id="seating-bottom-2027" style="display:none;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px">
         <div style="border:2.5px solid #16a085;border-radius:6px;padding:6px 24px;color:#16a085;font-size:.78rem;font-weight:700">📷 カメラ（後方中央）</div>
         <div style="border:2.5px solid #c0392b;border-radius:6px;padding:6px 18px;color:#c0392b;font-size:.78rem;font-weight:700">🏆 表彰盆（前方・左端）</div>
-        <div style="font-size:.74rem;color:var(--sub)">🚪 出入口は左側（D〜E列間の通路1200・G〜H列間）｜ホテルコンコルド 雲海 スクール形式250席（10/19時点の図面）から、スクリーン前のA列12席を撤去＝238席</div>
+        <div style="font-size:.74rem;color:var(--sub)">🚪 出入口は左側（図面の下の扉2か所）｜ホテルコンコルド 雲海 スクール形式250席（野澤様 10/19 案2を90°回してスクリーンを上に）＋前方テーブル4席｜本編の対象：社員名簿で「出席」の人・業者名簿で「本編出席」にチェックした人</div>
       </div>
       <!-- 出入口（左右の端）＋コーヒーカウンター（中央）：2026期のみ -->
       <div id="seating-bottom-2026" style="display:none;justify-content:space-between;align-items:center;margin-top:16px">
@@ -940,6 +940,7 @@ a{color:var(--red)}
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <input id="vendor-search" placeholder="🔍 会社名・担当者・職種で検索" oninput="renderVendors()" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.85rem;min-width:220px">
       <button class="btn btn-r" onclick="openVendorModal()">＋ 業者追加</button>
+      <button class="btn btn-ol" id="vendor-import-btn" onclick="openVendorImportModal()">📥 招待者リストを取り込む</button>
       <span id="vendor-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
     </div>
   </div>
@@ -947,6 +948,7 @@ a{color:var(--red)}
     <table style="width:100%;border-collapse:collapse;font-size:.83rem;min-width:760px">
       <thead>
         <tr style="background:var(--navy);color:#fff">
+          <th style="padding:8px 10px;text-align:center">ランク</th>
           <th style="padding:8px 10px;text-align:left">会社名</th>
           <th style="padding:8px 10px;text-align:left">担当者</th>
           <th style="padding:8px 10px;text-align:left">職種</th>
@@ -954,6 +956,7 @@ a{color:var(--red)}
           <th style="padding:8px 10px;text-align:left">メールアドレス</th>
           <th style="padding:8px 10px;text-align:left">住所</th>
           <th style="padding:8px 10px;text-align:left">備考</th>
+          <th style="padding:8px 10px;text-align:center">本編出席</th>
           <th style="padding:8px 10px;text-align:center">懇親会出席</th>
           <th style="padding:8px 10px;text-align:center;width:70px"></th>
         </tr>
@@ -972,7 +975,7 @@ a{color:var(--red)}
       <span id="banquet-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
     </div>
   </div>
-  <div class="card" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
+  <div class="card" id="banquet-info" style="padding:10px;margin-bottom:8px;font-size:.82rem;color:var(--sub)">
     📌 去年（2026年7月）の懇親会座席表（ホテルコンコルド想定）をもとに作成。A〜Fは業者・来賓卓、G〜Jは社員卓、K・Lは増席用の空テーブルです。人数が増える場合は後方のテーブル・席を増やしてください。<br>
     社員名簿・業者名簿で「懇親会出席」にチェックが付いた人だけが下の「未配置」に表示され、テーブルの席へドラッグ＆ドロップで配置できます（席の名札をダブルクリックで未配置に戻せます）。
   </div>
@@ -1762,6 +1765,12 @@ tasks:[
   {id:'t27_239',title:'委員会投票の賞金の受け取り（美香さん用意済み）',assignee:'松下さん',category:'参加者・表彰',start:'2026-10-20',due:'2026-10-20',status:'prog',memo:'10/20のMTG後に森美香さんのところへ立ち寄る'},
   {id:'t27_240',title:'軽食・飲み物のコンコルドへの持ち込み可否確認（個包装の菓子・お茶・水・ホットコーヒー）',assignee:'君塚さん',category:'会場・備品',start:'2026-10-20',due:'2026-11-06',status:'todo',memo:'ホテルのケータリングは割高（サンドウィッチ1,000円・フィナンシェ240円・プチケーキ550円・コーヒーポット10人前4,400円セルフ）。自前で用意する方向で再検討中のため、持ち込みの可否・条件を確認。期限は仮'},
   {id:'t27_241',title:'懇親会の会費の徴収方法の検討・決定',assignee:'委員会（要アサイン）',category:'参加者・表彰',start:'2026-10-20',due:'2026-11-06',status:'todo',memo:'誰から集めるか（来賓・業者・社員）、金額、集め方（当日現金・事前振込・無料など）を決める。招待状は11月発送のため、記載が必要なら発送前に決定。8/21の会議メモに「参加者からの会費徴収は廃止」とあり、対象が本編か懇親会かは要確認。担当・期限は仮'},
+  {id:'t27_242',title:'コンコルド当日レイアウト案（雲海 案1・案2）と荷物置場図の受領・共有',assignee:'君塚さん',category:'会場・備品',start:'2026-10-20',due:'2026-10-20',status:'done',memo:'コンコルド野澤さんから受領し共有（お客様用荷物置場2F金木犀・社員用荷物置場の図を含む）。雲海会場レイアウトは案2で検討（Chatwork 10/20）。t27_2・t27_229に関連'},
+  {id:'t27_243',title:'招待状の印刷・投函代行の見積確認（160部・カラーロゴ入り）',assignee:'髙松さん',category:'参加者・表彰',start:'2026-10-20',due:'2026-10-20',status:'done',memo:'160部・投函代行・カラーロゴ入りで56,914円。地図印刷は場所が分かりやすいため入れていない（Chatwork 10/20）。t27_213・t27_238に関連'},
+  {id:'t27_244',title:'ロゴデータの作成・共有（波多野さん用）',assignee:'髙松さん',category:'会場・備品',start:'2026-10-20',due:'2026-10-20',status:'done',memo:'ロゴのみ無かったため作成しBoxで共有（Chatwork 10/20）。用途は横断幕（t27_216）と思われるが要確認'},
+  {id:'t27_245',title:'記念撮影用看板のデザイン修正（LIFEFUNDマーク追加・正式フォントに変更）',assignee:'森下さん',category:'会場・備品',start:'2026-10-26',due:'2026-11-05',status:'prog',memo:'社長指示（松下さん確認 10/26）。マークとロゴの大きさ・間隔は公式のものを参照。マークが大きいと立体化時に文字が底板から浮くため、公式データを業者に提供したうえで調整を話し合う（Chatwork 10/27）。t27_206に関連。期限は仮'},
+  {id:'t27_246',title:'記念撮影用看板の相見積もり取得（新規の看板業者＋スズキ工芸へ再見積依頼）',assignee:'森下さん',category:'会場・備品',start:'2026-10-27',due:'2026-11-05',status:'prog',memo:'運営委員会からの依頼。ロゴ変更後に他社へ相見積もり、11/5（木）までに終えたい（松下さん 10/27）。森下さんは期限は守れるか分からないが対応すると回答。t27_206に関連'},
+  {id:'t27_247',title:'招待状郵送の完了（招待状タスクマネージャーで進行管理・各担当間の引き継ぎ連絡）',assignee:'委員会全員',category:'参加者・表彰',start:'2026-10-31',due:'2026-11-10',status:'prog',memo:'松下さんが招待状郵送完了用のタスクマネージャー（claude.aiのアーティファクト・編集可）を作成し共有（Chatwork 10/31）。全員一度確認、期限は一旦11/10。現実的でなければ松下さんへ連絡。次の担当へのパス（例：山本さん・森下さん→岡さん・髙松さん）は事前に連絡を取り合う。t27_238に関連'},
 ],
 schedule:[
   {id:'s27_1',title:'① 第1回 委員会MTG',date:'2026-08-11',startTime:'13:00',endTime:'15:00',location:'アーチ鴨江事務所',attendees:'委員会（角谷さんお休み）',type:'mtg',memo:'※角谷さんお休み'},
@@ -2035,7 +2044,8 @@ function loadLocal27(){
   else if(D.parking[0]&&D.parking[0].address===undefined){D.parking=cloneD(INIT27.parking||[]);}
   else if(!D.parking.some(function(p){return p.id==='pk27_2';})){D.parking=cloneD(INIT27.parking||[]);}
   if(!D.vendors){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
-  else if(D.vendors.length!==VENDOR_ROSTER_SEED.length||!D.vendors.some(function(v){return v.id==='vd105';})){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
+  // 261101：招待者リストを取り込んだあとは、去年の105件に戻さない
+  else if(!D.vendorsImported27&&(D.vendors.length!==VENDOR_ROSTER_SEED.length||!D.vendors.some(function(v){return v.id==='vd105';}))){D.vendors=cloneD(VENDOR_ROSTER_SEED);}
   if(!D.banquet){D.banquet={tables:cloneD(BANQUET_SEED)};}
   if(!D.layout){D.layout=cloneD(INIT27.layout||{url:'',memo:''});}
   if(!D.programs){D.programs=cloneD(INIT27.programs||[]);}
@@ -3756,11 +3766,19 @@ function saveRoster(){
 var SEAT_ROWS=12,SEAT_COLS=20;
 // 座席表レイアウト切替：false＝標準グリッド（A〜L×1〜20）／true＝雲海図面ベース（SEAT_LAYOUT27）
 var SEAT_LAYOUT27_ON=false;
+// 2027期：席を置かない所（11/1 森下さんのオレンジの線）。A1・A2・A19・A20と、9〜12列のA・B列
+var SKIP27={r0c0:1,r0c1:1,r0c18:1,r0c19:1,r0c8:1,r0c9:1,r0c10:1,r0c11:1,r1c8:1,r1c9:1,r1c10:1,r1c11:1};
+var AISLE27=0;
 // 2027年1月 ホテルコンコルド浜松 2F雲海の間（スクール形式250席・野澤様 10/19レイアウト案）
 // 行A〜L＝スクリーン側から後方へ12列、各行5ブロック（左→右）、[席数,配置(L/C/R)]
-var SEAT_LAYOUT27=[[[0,"C"],[0,"C"],[0,"C"],[0,"C"],[0,"C"]],[[4,"C"],[4,"C"],[0,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[5,"C"],[4,"C"],[4,"C"],[4,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]]];
+// 図面（ステージが左）を90°回して、スクリーンを上にしている。図面の下（扉側）がアプリの左、図面の上がアプリの右。
+// 261101：A列12席を図面どおりに戻して250席（10/30にA列を外して238席にしていたのは仮の判断だった）
+var SEAT_LAYOUT27=[[[2,"R"],[4,"C"],[0,"C"],[4,"C"],[2,"L"]],[[4,"C"],[4,"C"],[0,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[4,"C"],[4,"C"],[4,"C"],[4,"C"],[4,"C"]],[[5,"C"],[4,"C"],[4,"C"],[4,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]],[[5,"C"],[5,"C"],[5,"C"],[5,"C"],[5,"C"]]];
 function seatList27(){var out=[];SEAT_LAYOUT27.forEach(function(row,r){row.forEach(function(b,bi){for(var i=0;i<b[0];i++)out.push('r'+r+'c'+(bi*5+i));});});return out;}
-function seatSeq27(r,c){var bi=Math.floor(c/5),n=0;for(var k=0;k<bi;k++)n+=SEAT_LAYOUT27[r][k][0];return n+(c%5)+1;}
+// 1ブロック5つの位置のうち、どこに席を置くか（図面の机の並びとそろえる）
+function slots27(n,al){if(n>=5)return[0,1,2,3,4];if(n===4)return[0,1,3,4];if(n===2)return al==='R'?[3,4]:al==='L'?[0,1]:[1,3];if(n===3)return[0,2,4];if(n===1)return al==='R'?[4]:al==='L'?[0]:[2];return[];}
+// A列の席番号は、すぐ下のB列の席と同じ番号にする（11/1 森下さん：A-11→A-13 の表記）
+function seatSeq27(r,c){if(r===0){var _bi=Math.floor(c/5),_a=SEAT_LAYOUT27[0][_bi],_b=SEAT_LAYOUT27[1][_bi],_p=slots27(_a[0],_a[1])[c%5],_kb=slots27(_b[0],_b[1]).indexOf(_p);if(_kb>=0)return seatSeq27(1,_bi*5+_kb);}var bi=Math.floor(c/5),n=0;for(var k=0;k<bi;k++)n+=SEAT_LAYOUT27[r][k][0];return n+(c%5)+1;}
 var seatingDragSrc=null;
 
 // 社員(e)・業者(v)を統一キーで扱うためのヘルパー（懇親会出席チェック済みの人だけが座席表の対象）
@@ -3777,7 +3795,7 @@ function resolvePerson(key){
   var no=parseInt(key.slice(1),10);
   var e=EMPLOYEES.find(function(x){return x.no===no;});
   if(!e)return null;
-  return {key:key,name:e.name,sub:e.dept,role:e.role,cat:e.cat,attendance:e.attendance,isVendor:false,party:!!e.party,no:e.no};
+  return {key:key,name:e.name,sub:e.dept,role:(curPeriod!=='2026'?roles27(e):e.role),cat:e.cat,attendance:e.attendance,isVendor:false,party:!!e.party,no:e.no};
 }
 function getSeatablePeople(){
   var list=[];
@@ -3808,6 +3826,7 @@ function renderSeating(){
   }
   var is26=curPeriod==='2026';
   var useL27=!is26&&SEAT_LAYOUT27_ON;
+  var _ps=document.getElementById('page-seating');if(_ps)_ps.style.maxWidth=!is26?'none':'';
   var venueNameEl=document.getElementById('seating-venue-name');
   if(venueNameEl)venueNameEl.textContent=(D.venue&&D.venue.name)||'クリエート浜松 2階 大ホール';
   var unplaced=document.getElementById('unplaced-area');
@@ -3838,6 +3857,10 @@ function renderSeating(){
   rowLabels.innerHTML='';blockL.innerHTML='';blockCL.innerHTML='';blockC.innerHTML='';blockCR.innerHTML='';blockR.innerHTML='';
 
   var SEAT_W=74, SEAT_H=40, SEAT_GAP=4;
+  if(!is26){var _pw=(document.getElementById('page-seating')||{}).clientWidth||1400;
+    var _min=window.innerWidth<820?52:74;  // スマホは少し小さく（横にスクロールして見る）
+    SEAT_W=Math.max(_min,Math.min(124,Math.floor((_pw-32-60-4*20-20*SEAT_GAP-40)/20)));SEAT_H=Math.round(SEAT_W*0.56);}
+  window.__seatF=SEAT_W/74;document.documentElement.style.setProperty('--sf',window.__seatF);
   // 2026期（クリエート浜松）は列1-8のみ・4ブロック×2列（通路が2/3・4/5・6/7の間、旧レイアウト、列9-20は使用しない）
   // 2027期以降は列1-20・4列ごと5ブロック
   var BLOCK_INFO=is26
@@ -3883,7 +3906,7 @@ function renderSeating(){
     binfo[1].appendChild(colHdrRow);
   });
 
-  var validSeat27=useL27?new Set(seatList27()):null;
+  var validSeat27=useL27?new Set(seatList27().concat(FRONT27_KEYS)):null;
   var placedKeys=new Set(Object.keys(saved.seats||{}).filter(function(sk){return !validSeat27||validSeat27.has(sk);}).map(function(sk){var k=saved.seats[sk];return typeof k==='number'?'e'+k:k;}));
   var ROW_LABELS='ABCDEFGHIJKL'.split('');
 
@@ -3896,12 +3919,14 @@ function renderSeating(){
         entryCell.title='出入口';
         entryCell.innerHTML='<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#e67e22;color:#fff;font-size:.85rem">🚪</span>';
       }
+      if(useL27&&r===3)entryCell.style.marginBottom=AISLE27+'px';
       entryLabels.appendChild(entryCell);
     }
     // 行ラベル（丸背景で視認性アップ）
     var lbl=document.createElement('div');
     lbl.style.cssText='height:'+SEAT_H+'px;display:flex;align-items:center;justify-content:center;width:26px';
     lbl.innerHTML='<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--navy,#1F3A5F);color:#fff;font-weight:800;font-size:.82rem">'+(ROW_LABELS[r]||r)+'</span>';
+    if(useL27&&r===3)lbl.style.marginBottom=AISLE27+'px';
     rowLabels.appendChild(lbl);
 
     // 各ブロックに行ラッパーを追加
@@ -3912,10 +3937,16 @@ function renderSeating(){
       if(useL27){
         lay27=SEAT_LAYOUT27[r][BLOCK_INFO.indexOf(binfo)];
         wrap.style.width=(5*SEAT_W+4*SEAT_GAP)+'px';
+        wrap.style.minHeight=SEAT_H+'px';
+        if(r===3)wrap.style.marginBottom=AISLE27+'px';  // 図面のD列とE列の間の通路（1200）
         wrap.style.justifyContent=lay27[1]==='L'?'flex-start':lay27[1]==='R'?'flex-end':'center';
       }
-      binfo[2].forEach(function(c){
-        if(lay27&&(c%5)>=lay27[0])return;
+      binfo[2].forEach(function(c0){
+        var c=c0;
+        if(!is26&&!lay27&&SKIP27['r'+r+'c'+c0]){var _sk=document.createElement('div');_sk.style.cssText='width:'+SEAT_W+'px;height:'+SEAT_H+'px;flex-shrink:0';wrap.appendChild(_sk);return;}
+        if(lay27){var _pos=slots27(lay27[0],lay27[1]),_k=_pos.indexOf(c0%5);
+          if(_k<0){var _sp=document.createElement('div');_sp.style.cssText='width:'+SEAT_W+'px;height:'+SEAT_H+'px;flex-shrink:0';wrap.appendChild(_sp);return;}
+          c=Math.floor(c0/5)*5+_k;}
         var seatId='r'+r+'c'+c;
         var cell=document.createElement('div');
         cell.id='seat-'+seatId;
@@ -3924,6 +3955,7 @@ function renderSeating(){
         cell.style.cssText='width:'+SEAT_W+'px;height:'+SEAT_H+'px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
         cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
         cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-person-key]');if(t)this.style.background='';});
+        if(useL27){cell.dataset.label=(ROW_LABELS[r]||r)+'-'+seatSeq27(r,c);}else if(!is26){cell.dataset.label=(ROW_LABELS[r]||r)+'-'+(c+1);}
         cell.addEventListener('drop',onSeatDrop);
         var occupiedKey=(saved.seats||{})[seatId];
         if(occupiedKey){
@@ -3936,8 +3968,18 @@ function renderSeating(){
     });
   }
 
-  // 未配置エリア（懇親会出席チェック済みの社員・業者のみ対象）
-  getSeatablePeople().forEach(function(p){
+  // 前方テーブル4席（図面の上部・ステージ寄りの机。2027期）
+  var oldFront=document.getElementById('seating-front-27');if(oldFront)oldFront.remove();
+  if(useL27){
+    var fr=document.createElement('div');fr.id='seating-front-27';
+    fr.style.cssText='display:grid;grid-template-columns:repeat(2,74px);gap:4px;margin-left:14px;padding:6px 8px;border:2px solid #8e44ad;border-radius:10px;background:#faf5ff;align-self:flex-start;margin-top:'+(32+2+6+20+2+6+SEAT_H+6-30)+'px';
+    fr.innerHTML='<div style="grid-column:1/-1;font-size:.66rem;font-weight:800;color:#8e44ad;text-align:center;line-height:1.3">前方テーブル 4席（B〜C列の横）</div>';
+    FRONT27_KEYS.forEach(function(sid,i){fr.appendChild(makeSeatCell27(sid,'前-'+(i+1),saved));});
+    fr.insertAdjacentHTML('beforeend','<div style="grid-column:1/-1;font-size:.58rem;color:#8e44ad;text-align:center;line-height:1.3">図面の上部の机（使い方は確認中）</div>');
+    document.getElementById('seating-grid-wrap').appendChild(fr);
+  }
+  // 未配置エリア（2027期＝社員名簿「出席」＋業者名簿「本編出席」／2026期＝懇親会出席チェック済み）
+  (!is26?getMainSeatablePeople():getSeatablePeople()).forEach(function(p){
     if(!placedKeys.has(p.key)) unplaced.appendChild(makeNameTag(p,null));
   });
   document.getElementById('unplaced-count').textContent=unplaced.children.length;
@@ -3961,7 +4003,9 @@ function makeNameTag(person,seatId){
   var isCommittee=roles.indexOf('委員会')>=0;
   var isPresenter=roles.indexOf('発表者')>=0;
   var roleBorder='none';
-  if(isCommittee&&isPresenter){roleBorder='3px solid #9b59b6';}
+  var isMC=roles.indexOf('司会')>=0;
+  if(isMC){roleBorder='3px solid #e74c3c';}
+  else if(isCommittee&&isPresenter){roleBorder='3px solid #9b59b6';}
   else if(isCommittee){roleBorder='3px solid #e67e22';}
   else if(isPresenter){roleBorder='3px solid #2980b9';}
   var tag=document.createElement('div');
@@ -3970,13 +4014,14 @@ function makeNameTag(person,seatId){
   if(seatId)tag.dataset.seatId=seatId;
   tag.style.cssText='position:relative;background:'+st.bg+';color:'+st.color+';border-radius:6px;padding:3px 4px;font-size:.7rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.2;min-width:66px;max-width:70px;text-shadow:0 1px 1px rgba(0,0,0,.2)'+(roleBorder!=='none'?';border:'+roleBorder:'');
 
-  if(person.isVendor||isCommittee||isPresenter){
+  if(person.isVendor||isCommittee||isPresenter||isMC){
     var badgeRow=document.createElement('div');
     badgeRow.className='role-badge-row';
     badgeRow.style.cssText='display:flex;gap:2px;justify-content:center;margin-bottom:2px';
     if(person.isVendor){var b0=document.createElement('span');b0.style.cssText='font-size:.55rem;background:#7f8c8d;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b0.textContent='業者';badgeRow.appendChild(b0);}
     if(isCommittee){var b1=document.createElement('span');b1.style.cssText='font-size:.55rem;background:#e67e22;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b1.textContent='委員';badgeRow.appendChild(b1);}
     if(isPresenter){var b2=document.createElement('span');b2.style.cssText='font-size:.55rem;background:#2980b9;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b2.textContent='発表';badgeRow.appendChild(b2);}
+    if(isMC){var b3=document.createElement('span');b3.style.cssText='font-size:.55rem;background:#e74c3c;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b3.textContent='司会';badgeRow.appendChild(b3);}
     tag.appendChild(badgeRow);
   }
 
@@ -3994,6 +4039,7 @@ function makeNameTag(person,seatId){
   }
 
   tag.title=person.isVendor?(person.sub||''):(person.sub||'');
+  if(curPeriod!=='2026'&&window.__seatF&&Math.abs(window.__seatF-1)>0.02&&seatId)tag.style.zoom=window.__seatF;  // 席の大きさに合わせて名札も大きく（スマホは小さく）
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('[id^="seat-"]').forEach(function(c){if(!c.querySelector('[data-person-key]')){c.style.background='#e9ecef';c.style.borderColor='#adb5bd';}});});
   tag.addEventListener('dblclick',function(){returnToUnplaced(this);});
@@ -4197,7 +4243,8 @@ function printSeating(){
   var hdrCells='<td class="rl"></td>';
   COL_GROUPS.forEach(function(pair,bi){
     if(bi>0) hdrCells+='<td class="aisle"></td>';
-    pair.forEach(function(c){hdrCells+='<td class="colnum">'+(c+1)+'</td>';});
+    if(useL27){hdrCells+='<td class="colnum" colspan="5">ブロック'+(bi+1)+'</td>';}
+    else pair.forEach(function(c){hdrCells+='<td class="colnum">'+(c+1)+'</td>';});
   });
   var headerRow='<tr>'+hdrCells+'</tr>';
 
@@ -4209,8 +4256,11 @@ function printSeating(){
     COL_GROUPS.forEach(function(pair,bi){
       if(bi>0) cells+='<td class="aisle"></td>';
       pair.forEach(function(c){
-        if(useL27){var l27=SEAT_LAYOUT27[r][bi];if((c%5)>=l27[0]){cells+='<td class="seat" style="border:none;background:none"></td>';return;}}
-        var sid='r'+r+'c'+c;
+        // 2027期：画面と同じく左寄せ・右寄せ・中央に並べる（空きの位置を合わせる）
+        var cc=c;
+        if(!useL27&&!is26&&SKIP27['r'+r+'c'+c]){cells+='<td class="seat" style="border:none;background:none"></td>';return;}
+        if(useL27){var l27=SEAT_LAYOUT27[r][bi],_k=slots27(l27[0],l27[1]).indexOf(c%5);if(_k<0){cells+='<td class="seat" style="border:none;background:none"></td>';return;}cc=bi*5+_k;}
+        var sid='r'+r+'c'+cc;
         var key=saved[sid];
         var person=key?resolvePerson(key):null;
         var bg='#efefef';
@@ -4221,10 +4271,12 @@ function printSeating(){
           bg=person.isVendor?'#e2e6ea':(catBg[person.cat]||attBg[person.attendance]||'#e8e8e8');
           nameStr=person.name;
         }
+        if(!nameStr&&!is26)nameStr='<span style="color:#aaa;font-weight:400">'+ROW_LABELS[r]+'-'+(useL27?seatSeq27(r,cc):cc+1)+'</span>';
         cells+='<td class="seat" style="background:'+bg+'">'+nameStr+'</td>';
       });
     });
     rows+='<tr>'+cells+'</tr>';
+    if(useL27&&r===3)rows+='<tr><td colspan="40" style="height:14px;font-size:8px;color:#888;text-align:center;letter-spacing:4px">通　路</td></tr>';
   }
 
   // 凡例
@@ -4237,8 +4289,8 @@ function printSeating(){
     '</div>';
 
   var pv=D.venue||{};
-  var pvName=pv.name||'クリエート浜松 2階 大ホール';
-  var pvDatetime=pv.datetime||'2026年7月28日（火） 12:00〜17:00';
+  var pvName=pv.name||(useL27?'ホテルコンコルド浜松 2F 雲海':'クリエート浜松 2階 大ホール');
+  var pvDatetime=pv.datetime||(useL27?'2027年1月26日（火）':'2026年7月28日（火） 12:00〜17:00');
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
     '<title>座席表 '+esc(pvDatetime)+'</title>'+
     '<style>'+
@@ -4264,7 +4316,7 @@ function printSeating(){
     '<div class="screen">スクリーン</div>'+
     '<div class="stage">演　台</div>'+
     '<table><tbody>'+headerRow+rows+'</tbody></table>'+
-    '<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>'+
+    (useL27?'<div style="text-align:center;margin-top:6px;font-size:10px"><b>前方テーブル（4席）：</b>'+FRONT27_KEYS.map(function(sid,i){var p=saved[sid]?resolvePerson(saved[sid]):null;return '前-'+(i+1)+' '+(p?esc(p.name):'＿＿＿');}).join('　')+'</div>'+'<div class="exits"><div class="exit">🚪 出入口：左側（D列・G列付近）</div><div class="exit" style="background:#16a085">📷 カメラ：後方中央</div></div>':'<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>')+
     legend+
     '</body></html>';
 
@@ -4713,8 +4765,9 @@ function addRosterPerson(){
 }
 
 function autoArrangeSeating(){
-  if(!confirm('懇親会出席チェック済みの社員・業者を自動配置します。現在の配置はリセットされます。よいですか？'))return;
-  var attending=getSeatablePeople();
+  var _l27=curPeriod!=='2026';
+  if(!confirm(_l27?'本編の対象（社員名簿「出席」・業者名簿「本編出席」）を自動配置します。現在の配置（前方テーブルを含む）はリセットされます。よいですか？':'懇親会出席チェック済みの社員・業者を自動配置します。現在の配置はリセットされます。よいですか？'))return;
+  var attending=_l27?getMainSeatablePeople():getSeatablePeople();
   var seats={};
   var idx=0;
   if(SEAT_LAYOUT27_ON&&curPeriod!=='2026'){
@@ -4722,6 +4775,7 @@ function autoArrangeSeating(){
   }else{
   for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
     for(var c=0;c<SEAT_COLS&&idx<attending.length;c++){
+      if(curPeriod!=='2026'&&SKIP27['r'+r+'c'+c])continue;  // 2027期：席を置かない所には入れない
       seats['r'+r+'c'+c]=attending[idx].key;
       idx++;
     }
@@ -5502,24 +5556,27 @@ function saveMember(){
 // ===== 業者名簿 =====
 function renderVendors(){
   if(!D.vendors)D.vendors=[];
+  var _ib=document.getElementById('vendor-import-btn');if(_ib)_ib.style.display=curPeriod==='2026'?'none':'';
   var kw=(getV('vendor-search')||'').trim().toLowerCase();
   var list=D.vendors.filter(function(v){
     if(!kw)return true;
-    return [v.company,v.person,v.role,v.tel,v.email,v.note].some(function(f){return (f||'').toLowerCase().indexOf(kw)>-1;});
+    return [v.company,v.person,v.role,v.tel,v.email,v.note,v.rank,v.dept].some(function(f){return (f||'').toLowerCase().indexOf(kw)>-1;});
   });
   var stats=document.getElementById('vendor-stats');
   if(stats)stats.textContent='全'+D.vendors.length+'社中 '+list.length+'件表示';
   var tb=document.getElementById('vendor-tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty" style="padding:20px;text-align:center">業者データがありません</td></tr>';return;}
+  if(!list.length){tb.innerHTML='<tr><td colspan="11" class="empty" style="padding:20px;text-align:center">業者データがありません</td></tr>';return;}
   tb.innerHTML=list.map(function(v){
     return '<tr style="border-top:1px solid var(--line)">'+
-      '<td style="padding:7px 10px">'+esc(v.company||'')+'</td>'+
+      '<td style="padding:7px 10px;text-align:center;font-weight:700">'+esc(v.rank||'')+'</td>'+
+      '<td style="padding:7px 10px">'+esc(v.company||'')+(v.dept?'<div style="font-size:.7rem;color:var(--sub)">'+esc(v.dept)+'</div>':'')+'</td>'+
       '<td style="padding:7px 10px">'+esc(v.person||'')+'</td>'+
       '<td style="padding:7px 10px">'+esc(v.role||'')+'</td>'+
       '<td style="padding:7px 10px">'+esc(v.tel||'')+'</td>'+
       '<td style="padding:7px 10px">'+esc(v.email||'')+'</td>'+
       '<td style="padding:7px 10px;font-size:.8rem">'+esc(v.address||'')+'</td>'+
       '<td style="padding:7px 10px;color:var(--sub);font-size:.8rem">'+esc(v.note||'')+'</td>'+
+      '<td style="padding:7px 10px;text-align:center"><input type="checkbox" '+(v.main?'checked':'')+' onchange="toggleVendorMain(\''+v.id+'\',this.checked)"></td>'+
       '<td style="padding:7px 10px;text-align:center"><input type="checkbox" '+(v.party?'checked':'')+' onchange="toggleVendorParty(\''+v.id+'\',this.checked)"></td>'+
       '<td style="padding:7px 10px;text-align:center;white-space:nowrap">'+
         '<button class="mb-edit-btn" onclick="openVendorModal(\''+v.id+'\')">編集</button> '+
@@ -5553,13 +5610,14 @@ function openVendorModal(id){
     '<div class="frow"><label>メールアドレス</label><input id="vd-email" value="'+(v?esc(v.email||''):'')+'"></div>'+
     '<div class="frow"><label>住所</label><input id="vd-address" value="'+(v?esc(v.address||''):'')+'"></div>'+
     '<div class="frow"><label>備考</label><input id="vd-note" value="'+(v?esc(v.note||''):'')+'"></div>'+
+    '<div class="frow"><label>本編出席</label><input type="checkbox" id="vd-main" '+(v&&v.main?'checked':'')+' style="width:auto"></div>'+
     '<div class="frow"><label>懇親会出席</label><input type="checkbox" id="vd-party" '+(v&&v.party?'checked':'')+' style="width:auto"></div>'+
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="saveVendor()">保存</button></div>');
 }
 function saveVendor(){
   var company=getV('vd-company'),id=getV('vd-id');
   if(!company){alert('会社名を入力してください');return;}
-  var data={company:company,person:getV('vd-person'),role:getV('vd-role'),tel:getV('vd-tel'),email:getV('vd-email'),address:getV('vd-address'),note:getV('vd-note'),party:!!(document.getElementById('vd-party')&&document.getElementById('vd-party').checked)};
+  var data={company:company,person:getV('vd-person'),role:getV('vd-role'),tel:getV('vd-tel'),email:getV('vd-email'),address:getV('vd-address'),note:getV('vd-note'),main:!!(document.getElementById('vd-main')&&document.getElementById('vd-main').checked),party:!!(document.getElementById('vd-party')&&document.getElementById('vd-party').checked)};
   if(!D.vendors)D.vendors=[];
   if(id){var i=D.vendors.findIndex(function(x){return x.id===id;});if(i>=0)D.vendors[i]=Object.assign({},D.vendors[i],data);}
   else{data.id=uid();D.vendors.push(data);}
@@ -5569,6 +5627,10 @@ function saveVendor(){
 // ===== 懇親会座席表 =====
 var banquetDragSrc=null;
 function renderBanquetSeating(){
+  if(curPeriod!=='2026'){renderBanquet27();return;}
+  var _pg=document.getElementById('page-banquet');if(_pg)_pg.style.maxWidth='';
+  var _ab=document.querySelector('#page-banquet [onclick="openAddTableModal()"]');if(_ab)_ab.style.display='';
+  var _bi=document.getElementById('banquet-info');if(_bi&&_bi.dataset.orig!==undefined)_bi.innerHTML=_bi.dataset.orig;
   if(!D.banquet)D.banquet={tables:cloneD(BANQUET_SEED)};
   var tables=D.banquet.tables||[];
   var totalSeats=0,filledSeats=0;
@@ -5713,6 +5775,319 @@ function saveNewTable(){
   var seats=[];for(var i=0;i<n;i++)seats.push('');
   D.banquet.tables.push({id:uid(),label:label,seats:seats});
   persist();renderBanquetSeating();cm();
+}
+
+// ===== 2027/1 座席表・懇親会・招待者の取り込み（261101追加） =====
+// 本編：雲海 案2（野澤様 10/19）を90°回転してスクリーンを上に。250席＋前方テーブル4席
+// 懇親会：葵の間 立食220名。島テーブル27（左・中・右に3×3）＋メインテーブル。1島の目安8名・上限10名
+(function(){
+  var s=document.createElement('style');
+  s.textContent='[id^="seat-"][data-label]:empty::before{content:attr(data-label);color:#9aa3ad;font-size:calc(.6rem * var(--sf,1));font-weight:700;letter-spacing:.02em}'+
+    '.bq27-room{position:relative;background:#fff;border:3px solid #9fb3c8;border-radius:10px;padding:14px 18px 12px;min-width:1240px}'+
+    '.bq27-zones{display:flex;gap:0;align-items:stretch}'+
+    '.bq27-zone{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:10px 12px}'+
+    '.bq27-zone+.bq27-zone{border-left:2px dashed #b8c4d0}'+
+    '.bq27-isl{background:#f4fbfd;border:2px solid #9ad3e0;border-radius:10px;min-height:150px;display:flex;flex-direction:column;transition:background .15s,border-color .15s}'+
+    '.bq27-isl.over{border-color:#3498db;background:#e3f0ff}'+
+    '.bq27-isl.warn{border-color:#f39c12;background:#fff8e6}'+
+    '.bq27-isl.full{border-color:#e74c3c;background:#fdecea}'+
+    '.bq27-hd{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid #d6e9ef;font-weight:800;font-size:.78rem;color:#1F3A5F;white-space:nowrap}'+
+    '.bq27-cnt{font-size:.7rem;font-weight:800;border-radius:10px;padding:1px 7px;background:#e8eef4;color:#1F3A5F}'+
+    '.bq27-isl.warn .bq27-cnt{background:#f39c12;color:#fff}.bq27-isl.full .bq27-cnt{background:#e74c3c;color:#fff}'+
+    '.bq27-body{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;padding:5px;align-content:start}'+
+    '.bq27-empty{grid-column:1/-1;font-size:.68rem;color:#aab4be;text-align:center;padding-top:40px}'+
+    '.bq27-tag{min-width:0;border-radius:5px;padding:2px 5px;font-size:.66rem;font-weight:700;color:#fff;cursor:grab;user-select:none;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 1px rgba(0,0,0,.2)}'+
+    '.bq27-tag small{display:block;font-size:.52rem;font-weight:400;opacity:.85;overflow:hidden;text-overflow:ellipsis}'+
+    '#banquet-unplaced-area .bq27-tag{width:118px}'+
+    '.bq27-main{margin:0 auto 12px;width:50%;min-height:64px;background:#fdf6e3;border:2px solid #d4a72c;border-radius:10px;display:flex;flex-direction:column}'+
+    '.bq27-main .bq27-body{grid-template-columns:repeat(5,minmax(0,1fr))}'+
+    '.bq27-main .bq27-empty{padding-top:6px}'+
+    '.bq27-main.over{border-color:#3498db;background:#e3f0ff}'+
+    '.bq27-mark{font-size:.7rem;font-weight:700;border-radius:6px;padding:4px 10px;white-space:nowrap}';
+  document.head.appendChild(s);
+})();
+
+var FRONT27_KEYS=['x0','x1','x2','x3'];
+// 2027/1 の発表者・司会（11/1 森下さん）。7月（2026期）の印は名簿の role のまま
+var PRESENTERS27=['白都卓磨','倉田剛','森下周太郎','宇田身江子','藤平恭輔','川島隆義','山本英之','袴田晴久','三山大智'];
+var MC27=['鵜飼玲奈'];
+// 2027期の役割：委員会＝メンバー表（⑮）にいる人、発表者・司会＝上の一覧
+function roles27(e){
+  var n=String(e.name||'').replace(/[\s　]/g,''),r=[];
+  if((D.members||[]).some(function(m){return String(m.name||'').replace(/[\s　]/g,'')===n;}))r.push('委員会');
+  if(PRESENTERS27.indexOf(n)>=0)r.push('発表者');
+  if(MC27.indexOf(n)>=0)r.push('司会');
+  return r.join(',');
+}
+// 画面の幅が変わったら、座席表の大きさも合わせ直す（2027期）
+(function(){var t=null;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){if(typeof curTab!=='undefined'&&curTab==='seating'&&curPeriod!=='2026')renderSeating();},300);});})();
+// 本編の座席の対象：社員名簿で「出席」の人＋業者名簿で「本編出席」にチェックした人（2027期）
+function getMainSeatablePeople(){
+  var list=[];
+  EMPLOYEES.forEach(function(e){if(e.attendance==='出席')list.push(resolvePerson('e'+e.no));});
+  (D.vendors||[]).forEach(function(v){if(v.main)list.push(resolvePerson('v'+v.id));});
+  return list.filter(Boolean);
+}
+// 本編の席（前方テーブル用。通常の席と同じ見た目・同じドロップ処理）
+function makeSeatCell27(seatId,label,saved){
+  var cell=document.createElement('div');
+  cell.id='seat-'+seatId;
+  cell.dataset.seatId=seatId;
+  cell.dataset.label=label;
+  cell.title=label;
+  cell.style.cssText='width:74px;height:40px;background:#e9ecef;border:2px dashed #adb5bd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#adb5bd;transition:background .15s;overflow:hidden';
+  cell.addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#3498db';this.style.background='#e3f0ff';});
+  cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-person-key]');if(t)this.style.background='';});
+  cell.addEventListener('drop',onSeatDrop);
+  var k=(saved.seats||{})[seatId];
+  if(k){var p=resolvePerson(k);if(p){cell.style.background='';cell.style.border='2px solid rgba(0,0,0,.1)';cell.appendChild(makeNameTag(p,seatId));}}
+  return cell;
+}
+
+// ---------- 業者名簿：本編出席・招待者リストの取り込み ----------
+function toggleVendorMain(id,checked){
+  var v=(D.vendors||[]).find(function(x){return x.id===id;});
+  if(!v)return;
+  v.main=checked;
+  persist();
+  if(curTab==='seating')renderSeating();
+}
+function openVendorImportModal(){
+  openModal('<h2>📥 招待者リストを取り込む</h2>'+
+    '<div style="font-size:.8rem;line-height:1.6;color:var(--sub);margin-bottom:8px">'+
+    '招待者リスト確定版（Excel）のシートで、<b>見出しの行（No・ランク・区分・会社名…）から最後の行まで</b>を選んでコピーし、下に貼り付けてください。<br>'+
+    '・「Aランク」「Bランク」の人だけを取り込みます（「呼ばない」と区切りの行は取り込みません）。<br>'+
+    '・今の業者名簿は、取り込んだ一覧に<b>置き換わります</b>（本編出席・懇親会出席のチェックは、同じ会社・同じ氏名の人だけ引き継ぎます）。</div>'+
+    '<textarea id="vd-import-text" style="width:100%;height:220px;font-size:.75rem;font-family:monospace" placeholder="ここに貼り付け"></textarea>'+
+    '<div id="vd-import-preview" style="font-size:.8rem;margin-top:6px;color:#1F3A5F"></div>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button>'+
+    '<button class="btn btn-ol" onclick="previewVendorImport()">内容を確かめる</button>'+
+    '<button class="btn btn-r" onclick="runVendorImport()">取り込む</button></div>');
+}
+function parseVendorImport(text){
+  var lines=String(text||'').replace(/\r/g,'').split('\n');
+  var hi=-1,hdr=null;
+  for(var i=0;i<lines.length;i++){var c=lines[i].split('\t');if(c.indexOf('会社名')>=0&&c.indexOf('ランク')>=0){hi=i;hdr=c.map(function(x){return x.trim();});break;}}
+  if(hi<0)return {error:'見出しの行（「ランク」と「会社名」がある行）が見つかりません。見出しの行も一緒にコピーしてください。'};
+  var col=function(name){return hdr.indexOf(name);};
+  var out=[],skip=0;
+  for(var j=hi+1;j<lines.length;j++){
+    var c2=lines[j].split('\t');
+    var g=function(name){var k=col(name);return k>=0&&c2[k]!==undefined?String(c2[k]).trim():'';};
+    var rank=g('ランク'),company=g('会社名');
+    if(!company||(rank!=='A'&&rank!=='B')){if(lines[j].trim())skip++;continue;}
+    var no=g('No')||String(out.length+1);
+    out.push({id:'iv'+no.replace(/[^0-9A-Za-z]/g,''),no:no,rank:rank,dept:g('区分'),company:company,
+      person:g('氏名').replace(/\s*様$/,''),role:g('役職'),staff:g('当社担当者'),partyPlan:g('懇親会'),
+      note:g('備考'),tel:g('電話番号'),email:g('メールアドレス'),address:[g('郵便番号'),g('住所')].filter(Boolean).join(' '),
+      main:false,party:false});
+  }
+  return {list:out,skip:skip};
+}
+function previewVendorImport(){
+  var r=parseVendorImport(getV('vd-import-text'));
+  var el=document.getElementById('vd-import-preview');
+  if(r.error){el.innerHTML='<span style="color:var(--red)">'+esc(r.error)+'</span>';return;}
+  var a=r.list.filter(function(v){return v.rank==='A';}).length,b=r.list.length-a;
+  el.innerHTML='取り込む人：<b>'+r.list.length+'人</b>（Aランク '+a+'人・Bランク '+b+'人）／取り込まない行 '+r.skip+'行';
+}
+function runVendorImport(){
+  if(curPeriod==='2026'){alert('招待者リストの取り込みは2027/1のときだけ使えます');return;}
+  var r=parseVendorImport(getV('vd-import-text'));
+  if(r.error){alert(r.error);return;}
+  if(!r.list.length){alert('取り込む人がいません');return;}
+  if(!confirm('業者名簿を、招待者リストの '+r.list.length+'人に置き換えます。よいですか？'))return;
+  var old={};(D.vendors||[]).forEach(function(v){old[(v.company||'')+'|'+(v.person||'')]=v;});
+  r.list.forEach(function(v){var o=old[v.company+'|'+v.person];if(o){v.main=!!o.main;v.party=!!o.party;}});
+  D.vendors=r.list;
+  D.vendorsImported27=new Date().toISOString();
+  bq27Clean();
+  persist();cm();renderVendors();
+  showToast('✓ 招待者リストを取り込みました（'+r.list.length+'人）');
+}
+
+// ---------- 懇親会（2027期）：島テーブル ----------
+var BQ27_TARGET=8,BQ27_MAX=10;
+function bq27Init(){
+  // クラウド保存で空の配列・オブジェクトが消えることがあるので、毎回形をそろえる
+  if(!D.banquet27)D.banquet27={};
+  var b=D.banquet27;
+  if(!b.main)b.main={};
+  if(!Array.isArray(b.main.members))b.main.members=[];
+  var old=Array.isArray(b.islands)?b.islands:(b.islands?Object.keys(b.islands).map(function(k){return b.islands[k];}):[]);
+  var isl=[];
+  ['左','中','右'].forEach(function(z,zi){for(var k=0;k<9;k++){
+    var no=zi*9+k+1,id='bq'+no;
+    var o=old.find(function(x){return x&&x.id===id;});
+    isl.push({id:id,no:no,zone:z,members:(o&&Array.isArray(o.members))?o.members:[]});
+  }});
+  b.islands=isl;
+  return b;
+}
+// 名簿から消えた人（取り込みで置き換わった業者など）のキーを島から外す
+function bq27Clean(){
+  var b=bq27Init(),ok=function(k){return !!resolvePerson(k);};
+  b.main.members=b.main.members.filter(ok);
+  b.islands.forEach(function(t){t.members=t.members.filter(ok);});
+}
+function bq27Placed(){
+  var b=bq27Init(),m={};
+  b.main.members.forEach(function(k){m[k]='main';});
+  b.islands.forEach(function(t){t.members.forEach(function(k){m[k]=t.id;});});
+  return m;
+}
+function bq27Group(id){var b=bq27Init();if(id==='main')return b.main;return b.islands.find(function(t){return t.id===id;});}
+function bq27Move(key,toId){
+  var b=bq27Init();
+  b.main.members=b.main.members.filter(function(k){return k!==key;});
+  b.islands.forEach(function(t){t.members=t.members.filter(function(k){return k!==key;});});
+  if(toId){var g=bq27Group(toId);if(g)g.members.push(key);}
+  persist();renderBanquetSeating();
+}
+var bq27DragKey=null;
+function makeBq27Tag(p){
+  var tag=document.createElement('div');
+  tag.className='bq27-tag';
+  tag.draggable=true;
+  tag.dataset.personKey=p.key;
+  tag.style.background=p.isVendor?'#34495e':'#2980b9';
+  tag.title=(p.sub||'')+(p.isVendor?'（社外）':'')+'｜ダブルクリックで未配置に戻す';
+  tag.innerHTML=esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':'');
+  tag.addEventListener('dragstart',function(e){bq27DragKey=this.dataset.personKey;e.dataTransfer.effectAllowed='move';});
+  tag.addEventListener('dragend',function(){bq27DragKey=null;});
+  tag.addEventListener('dblclick',function(){bq27Move(this.dataset.personKey,null);});
+  return tag;
+}
+function bq27Drop(el,id){
+  el.addEventListener('dragover',function(e){e.preventDefault();this.classList.add('over');});
+  el.addEventListener('dragleave',function(){this.classList.remove('over');});
+  el.addEventListener('drop',function(e){e.preventDefault();this.classList.remove('over');if(bq27DragKey)bq27Move(bq27DragKey,id);});
+}
+function renderBanquet27(){
+  var b=bq27Init();
+  bq27Clean();
+  var pg=document.getElementById('page-banquet');if(pg)pg.style.maxWidth='1640px';
+  var addBtn=document.querySelector('#page-banquet [onclick="openAddTableModal()"]');
+  if(addBtn)addBtn.style.display='none';
+  var info=document.getElementById('banquet-info');
+  if(info){
+    if(info.dataset.orig===undefined)info.dataset.orig=info.innerHTML;
+    info.innerHTML='📌 2027年1月26日 懇親会：ホテルコンコルド浜松 3F 葵の間（立食220名・島テーブル27＋メインテーブル）。会場図面のとおり、メインテーブルを上にしています。<br>'+
+      '懇親会は1人1席ではなく、<b>島テーブルごとに名前を並べます</b>（スタート時にその島に付いてもらう）。1島の目安は'+BQ27_TARGET+'名、'+BQ27_MAX+'名を超えると赤になります。<br>'+
+      '社員名簿・業者名簿で「懇親会出席」にチェックが付いた人が「未配置」に出ます。名札を島へドラッグしてください（名札をダブルクリックで未配置に戻せます）。';
+  }
+  var placed=bq27Placed();
+  var people=getSeatablePeople();
+  var map={};people.forEach(function(p){map[p.key]=p;});
+  var unplaced=document.getElementById('banquet-unplaced-area');
+  var q=((document.getElementById('bq27-q')||{}).value||'').trim().toLowerCase();
+  var nUn=0;
+  if(unplaced){
+    unplaced.innerHTML='';
+    // 描き直すたびに受付が増えないよう、代入で付ける
+    unplaced.ondragover=function(e){if(bq27DragKey)e.preventDefault();};
+    unplaced.ondrop=function(e){e.preventDefault();if(bq27DragKey)bq27Move(bq27DragKey,null);};
+    people.forEach(function(p){
+      if(placed[p.key])return;
+      nUn++;
+      if(q&&((p.name||'')+(p.sub||'')).toLowerCase().indexOf(q)<0)return;
+      unplaced.appendChild(makeBq27Tag(p));
+    });
+    var cntEl=document.getElementById('banquet-unplaced-count');
+    if(cntEl)cntEl.textContent=nUn;
+  }
+  var total=b.main.members.length;b.islands.forEach(function(t){total+=t.members.length;});
+  var stats=document.getElementById('banquet-stats');
+  if(stats)stats.textContent='島27・配置 '+total+'人／未配置 '+nUn+'人';
+
+  var wrap=document.getElementById('banquet-tables');
+  wrap.innerHTML='';
+  var bar=document.createElement('div');
+  bar.style.cssText='display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.78rem';
+  bar.innerHTML='<input id="bq27-q" placeholder="🔍 未配置から名前・会社で探す" value="'+esc(q)+'" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.82rem;min-width:220px">'+
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#34495e;display:inline-block"></span>社外（業者・来賓）</span>'+
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#2980b9;display:inline-block"></span>社員</span>'+
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff8e6;border:2px solid #f39c12;display:inline-block"></span>'+(BQ27_TARGET+1)+'〜'+BQ27_MAX+'名</span>'+
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fdecea;border:2px solid #e74c3c;display:inline-block"></span>'+BQ27_MAX+'名を超えた</span>'+
+    '<button class="btn btn-r" style="margin-left:auto" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
+  wrap.appendChild(bar);
+  var qi=bar.querySelector('#bq27-q');
+  // 日本語の変換中は描き直さない（変換が終わったときに描き直す）
+  var reQ=function(el){var pos=el.selectionStart;renderBanquetSeating();var n=document.getElementById('bq27-q');if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}};
+  qi.addEventListener('input',function(e){if(e.isComposing)return;reQ(this);});
+  qi.addEventListener('compositionend',function(){reQ(this);});
+
+  var sc=document.createElement('div');sc.style.cssText='overflow-x:auto;padding-bottom:4px';
+  var room=document.createElement('div');room.className='bq27-room';
+  // 上：演台・メインテーブル
+  var top=document.createElement('div');top.style.cssText='display:flex;align-items:flex-start;justify-content:center;gap:12px';
+  var podium=document.createElement('div');podium.className='bq27-mark';podium.style.cssText+='border:2px solid #3498db;color:#3498db;margin-top:18px';podium.textContent='🎤 演台';
+  var mainEl=document.createElement('div');mainEl.className='bq27-main';
+  mainEl.innerHTML='<div class="bq27-hd" style="border-bottom-color:#ecd9a3"><span>⭐ メインテーブル（前方）</span><span class="bq27-cnt">'+b.main.members.length+'名</span></div>';
+  var mb=document.createElement('div');mb.className='bq27-body';
+  b.main.members.forEach(function(k){var p=map[k]||resolvePerson(k);if(p)mb.appendChild(makeBq27Tag(p));});
+  if(!b.main.members.length)mb.innerHTML='<span class="bq27-empty">ここへドラッグ（座る人は後で決めます）</span>';
+  mainEl.appendChild(mb);bq27Drop(mainEl,'main');
+  top.appendChild(podium);top.appendChild(mainEl);
+  var spacer=document.createElement('div');spacer.style.cssText='width:70px';top.appendChild(spacer);
+  room.appendChild(top);
+  // 島テーブル（左・中・右に3×3）
+  var zones=document.createElement('div');zones.className='bq27-zones';
+  ['左','中','右'].forEach(function(z){
+    var zd=document.createElement('div');zd.className='bq27-zone';
+    b.islands.filter(function(t){return t.zone===z;}).forEach(function(t){
+      var n=t.members.length;
+      var el=document.createElement('div');el.className='bq27-isl'+(n>BQ27_MAX?' full':n>BQ27_TARGET?' warn':'');
+      el.innerHTML='<div class="bq27-hd"><span>テーブル '+t.no+'</span><span class="bq27-cnt">'+n+'名</span></div>';
+      var bd=document.createElement('div');bd.className='bq27-body';
+      t.members.forEach(function(k){var p=map[k]||resolvePerson(k);if(p)bd.appendChild(makeBq27Tag(p));});
+      if(!n)bd.innerHTML='<span class="bq27-empty">空き</span>';
+      el.appendChild(bd);bq27Drop(el,t.id);
+      zd.appendChild(el);
+    });
+    zones.appendChild(zd);
+  });
+  room.appendChild(zones);
+  // 出入口（左の壁の中央・下の壁に3か所）
+  var lDoor=document.createElement('div');lDoor.className='bq27-mark';lDoor.style.cssText+='position:absolute;left:-14px;top:50%;transform:translate(-100%,-50%);background:#e67e22;color:#fff';lDoor.textContent='🚪 出入口';
+  room.appendChild(lDoor);
+  room.style.marginLeft='90px';
+  var bottom=document.createElement('div');bottom.style.cssText='display:flex;justify-content:space-around;margin-top:8px';
+  bottom.innerHTML='<span class="bq27-mark" style="background:#e67e22;color:#fff">🚪 出入口</span><span class="bq27-mark" style="background:#e67e22;color:#fff">🚪 出入口</span><span class="bq27-mark" style="background:#e67e22;color:#fff">🚪 出入口</span>';
+  room.appendChild(bottom);
+  var food=document.createElement('div');
+  food.style.cssText='margin:10px 8% -2px;text-align:center;background:#eaf6f9;border:2px solid #9ad3e0;border-radius:8px;padding:6px;font-size:.78rem;font-weight:700;color:#1F3A5F';
+  food.textContent='🍽 料理卓（扉の外・下の通路側）';
+  room.appendChild(food);
+  sc.appendChild(room);
+  wrap.appendChild(sc);
+}
+function printBanquet27(){
+  var b=bq27Init();
+  var name=function(k){var p=resolvePerson(k);return p?esc(p.name)+(p.isVendor&&p.sub?'<span class="co">'+esc(p.sub)+'</span>':''):'';};
+  var box=function(title,list,cls){
+    return '<div class="isl '+(cls||'')+'"><div class="hd"><b>'+title+'</b><span>'+list.length+'名</span></div><div class="bd">'+
+      list.map(function(k){return '<div class="nm">'+name(k)+'</div>';}).join('')+'</div></div>';
+  };
+  var zones=['左','中','右'].map(function(z){
+    return '<div class="zone">'+b.islands.filter(function(t){return t.zone===z;}).map(function(t){return box('テーブル '+t.no,t.members,t.members.length>BQ27_MAX?'full':'');}).join('')+'</div>';
+  }).join('');
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>懇親会 島テーブル 2027年1月26日</title><style>'+
+    '@page{size:A3 landscape;margin:8mm;}*{box-sizing:border-box;}body{font-family:"BIZ UDPGothic","Meiryo",sans-serif;margin:0;font-size:9px;}'+
+    'h1{text-align:center;font-size:16px;margin:0 0 2px;}.sub{text-align:center;font-size:9px;color:#555;margin-bottom:6px;}'+
+    '.top{display:flex;justify-content:center;margin-bottom:6px}.main{width:45%}'+
+    '.zones{display:flex;gap:0;border:2px solid #9fb3c8;border-radius:6px;padding:4px}.zone{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:4px}.zone+.zone{border-left:1.5px dashed #b8c4d0}'+
+    '.isl{border:1.5px solid #7fbfd0;border-radius:5px;min-height:95px}.isl.full{border-color:#e74c3c}.hd{display:flex;justify-content:space-between;padding:2px 5px;background:#eef7fa;border-bottom:1px solid #cfe5ec;font-size:9px}'+
+    '.bd{padding:3px 5px;columns:2;column-gap:6px}.nm{font-weight:700;font-size:8.5px;line-height:1.25;break-inside:avoid;margin-bottom:2px}.co{display:block;font-weight:400;font-size:7px;color:#666}'+
+    '.foot{display:flex;justify-content:space-between;margin-top:5px;font-size:8px;color:#555}'+
+    '</style></head><body><h1>経営方針発表会　懇親会（島テーブル）</h1><div class="sub">2027年1月26日（火）｜ホテルコンコルド浜松 3F 葵の間（立食）</div>'+
+    '<div class="top"><div class="main">'+box('⭐ メインテーブル（前方）',b.main.members,'')+'</div></div>'+
+    '<div class="zones">'+zones+'</div>'+
+    '<div class="foot"><span>🚪 出入口：左の壁・下の壁3か所</span><span>🍽 料理卓：下の通路側</span><span>1島の目安'+BQ27_TARGET+'名・上限'+BQ27_MAX+'名</span></div>'+
+    '</body></html>';
+  var w=window.open('','_blank','width=1100,height=800');
+  w.document.write(html);w.document.close();w.focus();
+  setTimeout(function(){w.print();},500);
 }
 
 // ===== リンク集 =====
