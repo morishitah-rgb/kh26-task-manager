@@ -3790,7 +3790,7 @@ function resolvePerson(key){
     var vid=key.slice(1);
     var v=(D.vendors||[]).find(function(x){return x.id===vid;});
     if(!v)return null;
-    return {key:key,name:v.person||v.company,sub:v.company,role:v.role,cat:'業者',attendance:'',isVendor:true,party:!!v.party};
+    return {key:key,name:v.person||v.company,sub:v.company,role:v.role,cat:'業者',attendance:'',isVendor:true,party:!!v.party,dept:v.dept||''};
   }
   var no=parseInt(key.slice(1),10);
   var e=EMPLOYEES.find(function(x){return x.no===no;});
@@ -3978,6 +3978,14 @@ function renderSeating(){
     fr.insertAdjacentHTML('beforeend','<div style="grid-column:1/-1;font-size:.58rem;color:#8e44ad;text-align:center;line-height:1.3">図面の上部の机（使い方は確認中）</div>');
     document.getElementById('seating-grid-wrap').appendChild(fr);
   }
+  // 座席の下に、社外の方の色の注釈（2027期）
+  var oldVl=document.getElementById('seating-vendor-legend-27');if(oldVl)oldVl.remove();
+  if(!is26){
+    var vl=document.createElement('div');vl.id='seating-vendor-legend-27';
+    vl.style.cssText='display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:10px 0 4px;padding:8px 10px;border:1px solid #d5dbe3;border-radius:8px;background:#fafbfc;font-size:.76rem';
+    vl.innerHTML=vendorLegendHtml27();
+    document.getElementById('seating-grid-wrap').insertAdjacentElement('afterend',vl);
+  }
   // 未配置エリア（2027期＝社員名簿「出席」＋業者名簿「本編出席」／2026期＝懇親会出席チェック済み）
   (!is26?getMainSeatablePeople():getSeatablePeople()).forEach(function(p){
     if(!placedKeys.has(p.key)) unplaced.appendChild(makeNameTag(p,null));
@@ -3985,6 +3993,29 @@ function renderSeating(){
   document.getElementById('unplaced-count').textContent=unplaced.children.length;
 }
 
+// 社外の方（招待者リストの取り込み分）は、当社の担当部署（区分）ごとに色を分ける（2027期。11/1 森下さん）
+var VENDOR_DEPT27=[
+  ['社長','社長来賓','#7b241c'],
+  ['管理本部','管理本部（金融機関・士業など）','#1a5276'],
+  ['建設課','建設課の取引先','#a04000'],
+  ['設計課','設計課の取引先','#b7950b'],
+  ['不動産','不動産統括の取引先','#283747'],
+  ['マーケティング','マーケティング課の取引先','#c2185b'],
+  ['PGHOUSE','PGHOUSE アドバイザー課の取引先','#6e2c00']
+];
+function vendorDeptColor27(dept){
+  var d=String(dept||'');
+  for(var i=0;i<VENDOR_DEPT27.length;i++){if(d.indexOf(VENDOR_DEPT27[i][0])>=0)return VENDOR_DEPT27[i][2];}
+  return '#34495e';
+}
+function shortCompany27(s){
+  return String(s||'').replace(/株式会社|有限会社|合同会社|一般社団法人|社会保険労務士法人|監査法人|[（(]株[)）]|[（(]有[)）]|㈱|㈲/g,'').replace(/[\s　]+/g,' ').trim();
+}
+function vendorLegendHtml27(){
+  return '<div style="font-weight:800;color:#1F3A5F;margin-right:4px">社外の方の色（当社の担当部署）：</div>'+
+    VENDOR_DEPT27.map(function(x){return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:'+x[2]+';display:inline-block"></span>'+esc(x[1])+'</span>';}).join('')+
+    '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:#27ae60;display:inline-block"></span>社員（出席）</span>';
+}
 function makeNameTag(person,seatId){
   // 背景色・文字色（カテゴリ優先、次に出席状況／業者は専用色）
   var styles={
@@ -3998,7 +4029,7 @@ function makeNameTag(person,seatId){
     '社外':      {bg:'#2980b9',color:'#fff'},
     'カメラマン':{bg:'#16a085',color:'#fff'},
   };
-  var st=person.isVendor?{bg:'#34495e',color:'#fff'}:(catStyles[person.cat]||styles[person.attendance]||{bg:'#7f8c8d',color:'#fff'});
+  var st=person.isVendor?{bg:(curPeriod!=='2026'?vendorDeptColor27(person.dept):'#34495e'),color:'#fff'}:(catStyles[person.cat]||styles[person.attendance]||{bg:'#7f8c8d',color:'#fff'});
   var roles=(person.role||'').split(',');
   var isCommittee=roles.indexOf('委員会')>=0;
   var isPresenter=roles.indexOf('発表者')>=0;
@@ -4014,11 +4045,13 @@ function makeNameTag(person,seatId){
   if(seatId)tag.dataset.seatId=seatId;
   tag.style.cssText='position:relative;background:'+st.bg+';color:'+st.color+';border-radius:6px;padding:3px 4px;font-size:.7rem;font-weight:700;cursor:grab;user-select:none;text-align:center;line-height:1.2;min-width:66px;max-width:70px;text-shadow:0 1px 1px rgba(0,0,0,.2)'+(roleBorder!=='none'?';border:'+roleBorder:'');
 
-  if(person.isVendor||isCommittee||isPresenter||isMC){
+  // 社外の方には「業者」の札を付けない（色で分ける。2027期）。2026期はこれまでどおり
+  var showVendorBadge=person.isVendor&&curPeriod==='2026';
+  if(showVendorBadge||isCommittee||isPresenter||isMC){
     var badgeRow=document.createElement('div');
     badgeRow.className='role-badge-row';
     badgeRow.style.cssText='display:flex;gap:2px;justify-content:center;margin-bottom:2px';
-    if(person.isVendor){var b0=document.createElement('span');b0.style.cssText='font-size:.55rem;background:#7f8c8d;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b0.textContent='業者';badgeRow.appendChild(b0);}
+    if(showVendorBadge){var b0=document.createElement('span');b0.style.cssText='font-size:.55rem;background:#7f8c8d;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b0.textContent='業者';badgeRow.appendChild(b0);}
     if(isCommittee){var b1=document.createElement('span');b1.style.cssText='font-size:.55rem;background:#e67e22;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b1.textContent='委員';badgeRow.appendChild(b1);}
     if(isPresenter){var b2=document.createElement('span');b2.style.cssText='font-size:.55rem;background:#2980b9;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b2.textContent='発表';badgeRow.appendChild(b2);}
     if(isMC){var b3=document.createElement('span');b3.style.cssText='font-size:.55rem;background:#e74c3c;color:#fff;border-radius:3px;padding:0 3px;line-height:1.4';b3.textContent='司会';badgeRow.appendChild(b3);}
@@ -4030,6 +4063,14 @@ function makeNameTag(person,seatId){
   var nameLen=person.name.replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g,'').length;
   nameEl.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:'+(nameLen>=6?'.52rem':nameLen>=5?'.58rem':'.66rem');
   tag.appendChild(nameEl);
+  // 社外の方は、名前の下に会社名を小さく（「株式会社」などは省く。全部はマウスを当てると出る。2027期）
+  if(person.isVendor&&curPeriod!=='2026'&&person.sub&&person.sub!==person.name){
+    var compEl=document.createElement('div');
+    compEl.textContent=shortCompany27(person.sub);
+    compEl.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.46rem;font-weight:600;opacity:.92;line-height:1.15';
+    tag.appendChild(compEl);
+    tag.title=person.sub+'　'+person.name;
+  }
 
   if(!person.isVendor&&person.attendance==='欠席'){
     var abEl=document.createElement('span');
@@ -4268,8 +4309,8 @@ function printSeating(){
         if(person){
           var attBg={'出席':'#d9f0df','欠席':'#fadadd','未定':'#e8e8e8'};
           var catBg={'AI業務委託':'#fef9c3','入社予定':'#fef9c3','社外':'#ede0f8','カメラマン':'#dbeafe'};
-          bg=person.isVendor?'#e2e6ea':(catBg[person.cat]||attBg[person.attendance]||'#e8e8e8');
-          nameStr=person.name;
+          bg=person.isVendor?(is26?'#e2e6ea':vendorDeptColor27(person.dept)+'33'):(catBg[person.cat]||attBg[person.attendance]||'#e8e8e8');
+          nameStr=esc(person.name)+(person.isVendor&&!is26&&person.sub&&person.sub!==person.name?'<div style="font-size:5px;font-weight:400;color:#444;white-space:nowrap;overflow:hidden">'+esc(shortCompany27(person.sub))+'</div>':'');
         }
         if(!nameStr&&!is26)nameStr='<span style="color:#aaa;font-weight:400">'+ROW_LABELS[r]+'-'+(useL27?seatSeq27(r,cc):cc+1)+'</span>';
         cells+='<td class="seat" style="background:'+bg+'">'+nameStr+'</td>';
@@ -4286,6 +4327,7 @@ function printSeating(){
     '<span class="lbox" style="background:#fef9c3">AI委託/入社予定</span>'+
     '<span class="lbox" style="background:#dbeafe">カメラマン等</span>'+
     '<span class="lbox" style="background:#efefef">空席</span>'+
+    (is26?'':VENDOR_DEPT27.map(function(x){return '<span class="lbox" style="background:'+x[2]+'33">'+esc(x[1])+'</span>';}).join(''))+
     '</div>';
 
   var pv=D.venue||{};
