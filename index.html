@@ -3995,13 +3995,13 @@ function renderSeating(){
 
 // 社外の方（招待者リストの取り込み分）は、当社の担当部署（区分）ごとに色を分ける（2027期。11/1 森下さん）
 var VENDOR_DEPT27=[
-  ['社長','社長来賓','#7b241c'],
-  ['管理本部','管理本部（金融機関・士業など）','#1a5276'],
-  ['建設課','建設課の取引先','#a04000'],
-  ['設計課','設計課の取引先','#b7950b'],
-  ['不動産','不動産統括の取引先','#283747'],
-  ['マーケティング','マーケティング課の取引先','#c2185b'],
-  ['PGHOUSE','PGHOUSE アドバイザー課の取引先','#6e2c00']
+  ['社長','社長来賓','#b03060'],
+  ['管理本部','管理本部（金融機関・士業など）','#3d5a80'],
+  ['建設課','建設課の取引先','#c8553d'],
+  ['設計課','設計課の取引先','#7b6fa8'],
+  ['不動産','不動産統括の取引先','#2a7f8f'],
+  ['マーケティング','マーケティング課の取引先','#b5835a'],
+  ['PGHOUSE','PGHOUSE アドバイザー課の取引先','#6b705c']
 ];
 function vendorDeptColor27(dept){
   var d=String(dept||'');
@@ -4062,8 +4062,7 @@ function makeNameTag(person,seatId){
   nameEl.textContent=person.name;
   var nameLen=person.name.replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g,'').length;
   nameEl.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:'+(nameLen>=6?'.52rem':nameLen>=5?'.58rem':'.66rem');
-  tag.appendChild(nameEl);
-  // 社外の方は、名前の下に会社名を小さく（「株式会社」などは省く。全部はマウスを当てると出る。2027期）
+  // 社外の方は、名前の上に会社名を小さく（「株式会社」などは省く。全部はマウスを当てると出る。2027期）
   if(person.isVendor&&curPeriod!=='2026'&&person.sub&&person.sub!==person.name){
     var compEl=document.createElement('div');
     compEl.textContent=shortCompany27(person.sub);
@@ -4071,6 +4070,7 @@ function makeNameTag(person,seatId){
     tag.appendChild(compEl);
     tag.title=person.sub+'　'+person.name;
   }
+  tag.appendChild(nameEl);
 
   if(!person.isVendor&&person.attendance==='欠席'){
     var abEl=document.createElement('span');
@@ -4310,7 +4310,7 @@ function printSeating(){
           var attBg={'出席':'#d9f0df','欠席':'#fadadd','未定':'#e8e8e8'};
           var catBg={'AI業務委託':'#fef9c3','入社予定':'#fef9c3','社外':'#ede0f8','カメラマン':'#dbeafe'};
           bg=person.isVendor?(is26?'#e2e6ea':vendorDeptColor27(person.dept)+'33'):(catBg[person.cat]||attBg[person.attendance]||'#e8e8e8');
-          nameStr=esc(person.name)+(person.isVendor&&!is26&&person.sub&&person.sub!==person.name?'<div style="font-size:5px;font-weight:400;color:#444;white-space:nowrap;overflow:hidden">'+esc(shortCompany27(person.sub))+'</div>':'');
+          nameStr=(person.isVendor&&!is26&&person.sub&&person.sub!==person.name?'<div style="font-size:5px;font-weight:400;color:#444;white-space:nowrap;overflow:hidden">'+esc(shortCompany27(person.sub))+'</div>':'')+esc(person.name);
         }
         if(!nameStr&&!is26)nameStr='<span style="color:#aaa;font-weight:400">'+ROW_LABELS[r]+'-'+(useL27?seatSeq27(r,cc):cc+1)+'</span>';
         cells+='<td class="seat" style="background:'+bg+'">'+nameStr+'</td>';
