@@ -4282,7 +4282,8 @@ function printSeating(){
 
   // 列番号ヘッダー行
   // 2027期は画面と同じく、左端に出入口の列（D列・G列の横に🚪）を置き、「ブロック」の見出しは出さない
-  var hdrCells=(useL27?'<td class="ent"></td>':'')+'<td class="rl"></td>';
+  var ENT_ROWS=useL27?[3,6]:[1,10];  // 画面の出入口の行（2027期：配置案2はD・G列、今の228席はB・K列）
+  var hdrCells=(!is26?'<td class="ent"></td>':'')+'<td class="rl"></td>';
   COL_GROUPS.forEach(function(pair,bi){
     if(bi>0) hdrCells+='<td class="aisle"></td>';
     if(useL27){hdrCells+='<td colspan="5"></td>';}
@@ -4294,7 +4295,7 @@ function printSeating(){
   for(var r=0;r<SEAT_ROWS;r++){
     var cells='';
     // 行ラベル
-    if(useL27)cells+='<td class="ent">'+((r===3||r===6)?'<div class="door">🚪<br>出入口</div>':'')+'</td>';
+    if(!is26)cells+='<td class="ent">'+(ENT_ROWS.indexOf(r)>=0?'<div class="door">🚪<br>出入口</div>':'')+'</td>';
     cells+='<td class="rl">'+ROW_LABELS[r]+'</td>';
     COL_GROUPS.forEach(function(pair,bi){
       if(bi>0) cells+='<td class="aisle"></td>';
@@ -4373,7 +4374,7 @@ function printSeating(){
           var nm=p?((p.isVendor&&p.sub&&p.sub!==p.name?'<div style="font-size:5px;font-weight:400;color:#444">'+esc(shortCompany27(p.sub))+'</div>':'')+esc(p.name)):'<span style="color:#aaa;font-weight:400">前-'+(i+1)+'</span>';
           return '<div class="s" style="background:'+bg+'"><div>'+nm+'</div></div>';}).join('')+'</div></div>'+
         '<div class="exits"><div class="exit">🚪 出入口：左の壁（D列・G列の横）</div><div class="exit" style="background:#16a085">📷 カメラ：後方中央</div></div>'
-      :'<table><tbody>'+headerRow+rows+'</tbody></table>'+'<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>')+
+      :'<table><tbody>'+headerRow+rows+'</tbody></table>'+(is26?'<div class="exits"><div class="exit">🚪 出入口</div><div class="exit">🚪 出入口</div></div>':'<div class="exits"><div class="exit">🚪 出入口：左の壁（B列・K列の横）</div></div>'))+
     legend+
     '</body></html>';
 
