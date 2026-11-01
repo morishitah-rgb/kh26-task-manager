@@ -5857,7 +5857,8 @@ function openVendorImportModal(){
     '<div style="font-size:.8rem;line-height:1.6;color:var(--sub);margin-bottom:8px">'+
     '招待者リスト確定版（Excel）のシートで、<b>見出しの行（No・ランク・区分・会社名…）から最後の行まで</b>を選んでコピーし、下に貼り付けてください。<br>'+
     '・「Aランク」「Bランク」の人だけを取り込みます（「呼ばない」と区切りの行は取り込みません）。<br>'+
-    '・今の業者名簿は、取り込んだ一覧に<b>置き換わります</b>（本編出席・懇親会出席のチェックは、同じ会社・同じ氏名の人だけ引き継ぎます）。</div>'+
+    '・<b>Aランクの人は、全員来る体で「本編出席」「懇親会出席」にチェックを入れて取り込みます</b>（社員と同じように座席に配置できます。来ない人は、あとで業者名簿のチェックを外してください）。Bランクはチェックなしです。<br>'+
+    '・今の業者名簿は、取り込んだ一覧に<b>置き換わります</b>（2回目からの取り込みでは、本編出席・懇親会出席のチェックを、同じ会社・同じ氏名の人だけ引き継ぎます）。</div>'+
     '<textarea id="vd-import-text" style="width:100%;height:220px;font-size:.75rem;font-family:monospace" placeholder="ここに貼り付け"></textarea>'+
     '<div id="vd-import-preview" style="font-size:.8rem;margin-top:6px;color:#1F3A5F"></div>'+
     '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button>'+
@@ -5880,7 +5881,7 @@ function parseVendorImport(text){
     out.push({id:'iv'+no.replace(/[^0-9A-Za-z]/g,''),no:no,rank:rank,dept:g('区分'),company:company,
       person:g('氏名').replace(/\s*様$/,''),role:g('役職'),staff:g('当社担当者'),partyPlan:g('懇親会'),
       note:g('備考'),tel:g('電話番号'),email:g('メールアドレス'),address:[g('郵便番号'),g('住所')].filter(Boolean).join(' '),
-      main:false,party:false});
+      main:rank==='A',party:rank==='A'});  // Aランクは全員来る体で、最初から出席にしておく（11/1 森下さん）
   }
   return {list:out,skip:skip};
 }
@@ -5898,7 +5899,8 @@ function runVendorImport(){
   if(!r.list.length){alert('取り込む人がいません');return;}
   if(!confirm('業者名簿を、招待者リストの '+r.list.length+'人に置き換えます。よいですか？'))return;
   var old={};(D.vendors||[]).forEach(function(v){old[(v.company||'')+'|'+(v.person||'')]=v;});
-  r.list.forEach(function(v){var o=old[v.company+'|'+v.person];if(o){v.main=!!o.main;v.party=!!o.party;}});
+  // 2回目以降の取り込みだけ、前のチェックを引き継ぐ（最初の取り込みは、去年の名簿のチェックを使わない）
+  if(D.vendorsImported27)r.list.forEach(function(v){var o=old[v.company+'|'+v.person];if(o){v.main=!!o.main;v.party=!!o.party;}});
   D.vendors=r.list;
   D.vendorsImported27=new Date().toISOString();
   bq27Clean();
