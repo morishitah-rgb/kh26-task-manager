@@ -5879,6 +5879,29 @@ function roles27(e){
 }
 // 画面の幅が変わったら、座席表の大きさも合わせ直す（2027期）
 (function(){var t=null;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){if(typeof curTab!=='undefined'&&curTab==='seating'&&curPeriod!=='2026')renderSeating();},300);});})();
+// 座席表を描き直しても、見ている位置（画面のスクロール）を動かさない（2026-11-02）
+// 描き直しの間に中身が一度空になってページが短くなり、画面が上へ戻ってしまうため、
+// ページの高さを一時的に保ち、描き直したあとに元の位置へ戻す。
+function keepScroll_(pageId,fn){
+  return function(){
+    var x=window.scrollX,y=window.scrollY,pg=document.getElementById(pageId),boxes=[];
+    if(pg){
+      pg.style.minHeight=pg.offsetHeight+'px';
+      pg.querySelectorAll('[id]').forEach(function(el){if(el.scrollTop||el.scrollLeft)boxes.push([el.id,el.scrollLeft,el.scrollTop]);});
+    }
+    try{return fn.apply(this,arguments);}
+    finally{
+      var back=function(){
+        boxes.forEach(function(b){var el=document.getElementById(b[0]);if(el){el.scrollLeft=b[1];el.scrollTop=b[2];}});
+        window.scrollTo(x,y);
+      };
+      back();
+      requestAnimationFrame(function(){back();if(pg)pg.style.minHeight='';});
+    }
+  };
+}
+renderSeating=keepScroll_('page-seating',renderSeating);
+renderBanquetSeating=keepScroll_('page-banquet',renderBanquetSeating);
 // 本編の座席の対象：社員名簿で「出席」の人＋業者名簿で「本編出席」にチェックした人（2027期）
 function getMainSeatablePeople(){
   var list=[];
