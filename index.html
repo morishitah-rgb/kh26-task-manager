@@ -6033,9 +6033,11 @@ function makeBq27Tag(p){
   tag.className='bq27-tag';
   tag.draggable=true;
   tag.dataset.personKey=p.key;
-  tag.style.background=p.isVendor?'#34495e':'#2980b9';
+  // 本編の座席表と同じ色：社外の方は当社の担当部署の色、社員は緑（11/2 森下さん）
+  tag.style.background=p.isVendor?vendorDeptColor27(p.dept):'#27ae60';
   tag.title=(p.sub||'')+(p.isVendor?'（社外）':'')+'｜ダブルクリックで未配置に戻す';
-  tag.innerHTML=esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':'');
+  // 社外の方は、会社名を名前の上に小さく（本編と同じ）
+  tag.innerHTML=(p.isVendor&&p.sub&&p.sub!==p.name?'<small>'+esc(shortCompany27(p.sub))+'</small>'+esc(p.name):esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':''));
   tag.addEventListener('dragstart',function(e){bq27DragKey=this.dataset.personKey;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){bq27DragKey=null;});
   tag.addEventListener('dblclick',function(){bq27Move(this.dataset.personKey,null);});
@@ -6088,8 +6090,6 @@ function renderBanquet27(){
   var bar=document.createElement('div');
   bar.style.cssText='display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.78rem';
   bar.innerHTML='<input id="bq27-q" placeholder="🔍 未配置から名前・会社で探す" value="'+esc(q)+'" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.82rem;min-width:220px">'+
-    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#34495e;display:inline-block"></span>社外（業者・来賓）</span>'+
-    '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#2980b9;display:inline-block"></span>社員</span>'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff8e6;border:2px solid #f39c12;display:inline-block"></span>'+(BQ27_TARGET+1)+'〜'+BQ27_MAX+'名</span>'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fdecea;border:2px solid #e74c3c;display:inline-block"></span>'+BQ27_MAX+'名を超えた</span>'+
     '<button class="btn btn-r" style="margin-left:auto" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
@@ -6144,14 +6144,22 @@ function renderBanquet27(){
   room.appendChild(food);
   sc.appendChild(room);
   wrap.appendChild(sc);
+  // 色の注釈（本編の座席表と同じもの）
+  var lg=document.createElement('div');
+  lg.style.cssText='margin-top:10px;padding:8px 12px;background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:.78rem';
+  lg.innerHTML=vendorLegendHtml27();
+  wrap.appendChild(lg);
 }
 function printBanquet27(){
   var b=bq27Init();
-  var name=function(k){var p=resolvePerson(k);return p?esc(p.name)+(p.isVendor&&p.sub?'<span class="co">'+esc(p.sub)+'</span>':''):'';};
+  // 画面と同じく、社外の方は会社名を上に・担当部署の色（薄く）、社員は薄い緑
+  var name=function(k){var p=resolvePerson(k);return p?(p.isVendor&&p.sub?'<span class="co">'+esc(shortCompany27(p.sub))+'</span>':'')+esc(p.name):'';};
+  var bgOf=function(k){var p=resolvePerson(k);return p?(p.isVendor?vendorDeptColor27(p.dept)+'33':'#d9f0df'):'';};
   var box=function(title,list,cls){
     return '<div class="isl '+(cls||'')+'"><div class="hd"><b>'+title+'</b><span>'+list.length+'名</span></div><div class="bd">'+
-      list.map(function(k){return '<div class="nm">'+name(k)+'</div>';}).join('')+'</div></div>';
+      list.map(function(k){return '<div class="nm" style="background:'+bgOf(k)+'">'+name(k)+'</div>';}).join('')+'</div></div>';
   };
+  var legend=VENDOR_DEPT27.map(function(x){return '<span class="lbox" style="background:'+x[2]+'33">'+esc(x[1])+'</span>';}).join('')+'<span class="lbox" style="background:#d9f0df">社員</span>';
   var zones=['左','中','右'].map(function(z){
     return '<div class="zone">'+b.islands.filter(function(t){return t.zone===z;}).map(function(t){return box('テーブル '+t.no,t.members,t.members.length>BQ27_MAX?'full':'');}).join('')+'</div>';
   }).join('');
@@ -6161,12 +6169,14 @@ function printBanquet27(){
     '.top{display:flex;justify-content:center;margin-bottom:6px}.main{width:45%}'+
     '.zones{display:flex;gap:0;border:2px solid #9fb3c8;border-radius:6px;padding:4px}.zone{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:4px}.zone+.zone{border-left:1.5px dashed #b8c4d0}'+
     '.isl{border:1.5px solid #7fbfd0;border-radius:5px;min-height:95px}.isl.full{border-color:#e74c3c}.hd{display:flex;justify-content:space-between;padding:2px 5px;background:#eef7fa;border-bottom:1px solid #cfe5ec;font-size:9px}'+
-    '.bd{padding:3px 5px;columns:2;column-gap:6px}.nm{font-weight:700;font-size:8.5px;line-height:1.25;break-inside:avoid;margin-bottom:2px}.co{display:block;font-weight:400;font-size:7px;color:#666}'+
+    '.bd{padding:3px 5px;columns:2;column-gap:6px}.nm{font-weight:700;font-size:8.5px;line-height:1.25;break-inside:avoid;margin-bottom:2px}.co{display:block;font-weight:400;font-size:7px;color:#444}.nm{border-radius:3px;padding:1px 3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+    '.lg{margin-top:4px;font-size:8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}.lbox{padding:1px 6px;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
     '.foot{display:flex;justify-content:space-between;margin-top:5px;font-size:8px;color:#555}'+
     '</style></head><body><h1>経営方針発表会　懇親会（島テーブル）</h1><div class="sub">2027年1月26日（火）｜ホテルコンコルド浜松 3F 葵の間（立食）</div>'+
     '<div class="top"><div class="main">'+box('⭐ メインテーブル（前方）',b.main.members,'')+'</div></div>'+
     '<div class="zones">'+zones+'</div>'+
     '<div class="foot"><span>🚪 出入口：左の壁・下の壁3か所</span><span>🍽 料理卓：下の通路側</span><span>1島の目安'+BQ27_TARGET+'名・上限'+BQ27_MAX+'名</span></div>'+
+    '<div class="lg"><b>色：社外の方は当社の担当部署</b>'+legend+'</div>'+
     '</body></html>';
   var w=window.open('','_blank','width=1100,height=800');
   w.document.write(html);w.document.close();w.focus();
