@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -3818,6 +3818,8 @@ function saveRoster(){
 
 // ===== 座席表 =====
 var SEAT_ROWS=12,SEAT_COLS=20;
+// 2027期は招待者160名＋社員で席が足りないため、後ろにM・Nの2列を足して14列にする（261121 森下さん「席の数を増やす」）
+function seatRows(){return (typeof curPeriod!=='undefined'&&curPeriod==='2026')?12:14;}
 // 座席表レイアウト切替：false＝標準グリッド（A〜L×1〜20）／true＝雲海図面ベース（SEAT_LAYOUT27）
 var SEAT_LAYOUT27_ON=false;
 // 2027期：席を置かない所（11/1 森下さんのオレンジの線）。A1・A2・A19・A20と、9〜12列のA・B列
@@ -3962,9 +3964,9 @@ function renderSeating(){
 
   var validSeat27=useL27?new Set(seatList27().concat(FRONT27_KEYS)):null;
   var placedKeys=new Set(Object.keys(saved.seats||{}).filter(function(sk){return !validSeat27||validSeat27.has(sk);}).map(function(sk){var k=saved.seats[sk];return typeof k==='number'?'e'+k:k;}));
-  var ROW_LABELS='ABCDEFGHIJKL'.split('');
+  var ROW_LABELS='ABCDEFGHIJKLMN'.split('');
 
-  for(var r=0;r<SEAT_ROWS;r++){
+  for(var r=0;r<seatRows();r++){
     // 出入口ラベル（左端・A〜C付近＝r===1／J〜L付近＝r===10に表示／2027期以降のみ）
     if(entryLabels&&!is26){
       var entryCell=document.createElement('div');
@@ -4325,7 +4327,7 @@ function resetSeating(){
 function printSeating(){
   var is26=curPeriod==='2026';
   var useL27=!is26&&SEAT_LAYOUT27_ON;
-  var ROW_LABELS='ABCDEFGHIJKL'.split('');
+  var ROW_LABELS='ABCDEFGHIJKLMN'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
 
@@ -4346,7 +4348,7 @@ function printSeating(){
   var headerRow='<tr>'+hdrCells+'</tr>';
 
   var rows='';
-  for(var r=0;r<SEAT_ROWS;r++){
+  for(var r=0;r<seatRows();r++){
     var cells='';
     // 行ラベル
     if(!is26)cells+='<td class="ent">'+(ENT_ROWS.indexOf(r)>=0?'<div class="door">🚪<br>出入口</div>':'')+'</td>';
@@ -4887,7 +4889,7 @@ function autoArrangeSeating(){
   if(SEAT_LAYOUT27_ON&&curPeriod!=='2026'){
     seatList27().forEach(function(sid){if(idx<attending.length){seats[sid]=attending[idx].key;idx++;}});
   }else{
-  for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
+  for(var r=0;r<seatRows()&&idx<attending.length;r++){
     for(var c=0;c<SEAT_COLS&&idx<attending.length;c++){
       if(curPeriod!=='2026'&&SKIP27['r'+r+'c'+c])continue;  // 2027期：席を置かない所には入れない
       seats['r'+r+'c'+c]=attending[idx].key;
