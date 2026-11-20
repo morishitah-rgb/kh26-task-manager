@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -3661,11 +3661,22 @@ var EMPLOYEES=[
 
 // ===== 名簿 =====
 var ROSTER_UPDATED='2026/10/20';
+// 名簿の保存用の1行。画面の「＋追加」で足した人（added）は、名前・区分なども一緒に残す（261118 森下：足した人が読み込み直すと消えていた）
+function rosterRecord(e){
+  var r={no:e.no,attendance:e.attendance,party:!!e.party};
+  if(e.added){r.added=true;r.name=e.name;r.cat=e.cat||'社員';r.dept=e.dept||'';r.role=e.role||'';if(e.note)r.note=e.note;}
+  return r;
+}
 function getEmployeeData(){
   if(D.roster&&D.roster.length){
     D.roster.forEach(function(r){
       var emp=EMPLOYEES.find(function(e){return e.no===r.no;});
       if(emp){emp.attendance=r.attendance;emp.party=!!r.party;}
+      else if(r.added&&r.name){
+        var n={no:r.no,dept:r.dept||'',name:r.name,role:r.role||'',cat:r.cat||'社員',attendance:r.attendance,party:!!r.party,added:true};
+        if(r.note)n.note=r.note;
+        EMPLOYEES.push(n);
+      }
     });
   }
   return EMPLOYEES;
@@ -3779,7 +3790,7 @@ function onRosterChange(no,val){
   if(emp){
     emp.attendance=val;
     updateRosterStats();
-    D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+    D.roster=EMPLOYEES.map(rosterRecord);
     persist();showToast('✓ 名簿を保存しました');
   }
 }
@@ -3787,7 +3798,7 @@ function onRosterPartyChange(no,checked){
   var emp=EMPLOYEES.find(function(e){return e.no===no;});
   if(emp){
     emp.party=checked;
-    D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+    D.roster=EMPLOYEES.map(rosterRecord);
     persist();showToast('✓ 名簿を保存しました');
     if(curTab==='seating')renderSeating();
     if(curTab==='banquet')renderBanquetSeating();
@@ -3801,7 +3812,7 @@ function updateRosterStats(){
   if(el)el.textContent='出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名 ／ 未定 '+(cnt['未定']||0)+'名（社員のみ）｜名簿更新日 '+ROSTER_UPDATED+'（2027年1月最新版 社員名簿一覧より）';
 }
 function saveRoster(){
-  D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+  D.roster=EMPLOYEES.map(rosterRecord);
   persist();showToast('✓ 名簿を保存しました');
 }
 
@@ -4842,14 +4853,16 @@ function addRosterPerson(){
   var note=document.getElementById('ar-note').value.trim();
   var maxNo=EMPLOYEES.reduce(function(m,e){return Math.max(m,e.no);},0);
   if(D.seating&&D.seating.custom)D.seating.custom.forEach(function(c){maxNo=Math.max(maxNo,c.no);});
+  if(D.roster)D.roster.forEach(function(r){maxNo=Math.max(maxNo,r.no||0);});
   var newNo=maxNo+1;
   var party=att!=='欠席';
-  var emp={no:newNo,name:name,cat:cat,attendance:att,party:party};
+  var emp={no:newNo,name:name,cat:cat,attendance:att,party:party,added:true};
   if(note)emp.note=note;
   EMPLOYEES.push(emp);
   // D.rosterにも追加
   if(!D.roster)D.roster=[];
-  D.roster.push({no:newNo,attendance:att,party:party});
+  D.roster.push(rosterRecord(emp));
+  if(typeof persist==='function')persist();
   cm();
   renderRoster();
   // 懇親会出席なら座席表の未配置エリアにも追加
