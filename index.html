@@ -6074,6 +6074,15 @@ function bq27Placed(){
   b.islands.forEach(function(t){t.members.forEach(function(k){m[k]=t.id;});});
   return m;
 }
+// 懇親会の配置をすべて外して、全員を未配置に戻す（261121 森下さん）
+function resetBanquet27(){
+  if(!confirm('懇親会の配置をリセットします。\nメインテーブルと島テーブルの名前がすべて「未配置」に戻ります。よいですか？'))return;
+  var b=bq27Init();
+  b.main.members=[];
+  b.islands.forEach(function(t){t.members=[];});
+  persist();renderBanquetSeating();
+  showToast('✓ 懇親会の配置をリセットしました');
+}
 function bq27Group(id){var b=bq27Init();if(id==='main')return b.main;return b.islands.find(function(t){return t.id===id;});}
 function bq27Move(key,toId){
   var b=bq27Init();
@@ -6147,7 +6156,8 @@ function renderBanquet27(){
   bar.innerHTML='<input id="bq27-q" placeholder="🔍 未配置から名前・会社で探す" value="'+esc(q)+'" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.82rem;min-width:220px">'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff8e6;border:2px solid #f39c12;display:inline-block"></span>'+(BQ27_TARGET+1)+'〜'+BQ27_MAX+'名</span>'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fdecea;border:2px solid #e74c3c;display:inline-block"></span>'+BQ27_MAX+'名を超えた</span>'+
-    '<button class="btn btn-r" style="margin-left:auto" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
+    '<button class="btn btn-gray" style="margin-left:auto" onclick="resetBanquet27()">↺ リセット（全員を未配置に戻す）</button>'+
+    '<button class="btn btn-r" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
   wrap.appendChild(bar);
   var qi=bar.querySelector('#bq27-q');
   // 日本語の変換中は描き直さない（変換が終わったときに描き直す）
