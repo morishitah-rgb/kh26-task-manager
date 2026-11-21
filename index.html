@@ -3786,6 +3786,12 @@ function onRosterChange(no,val){
   var emp=EMPLOYEES.find(function(e){return e.no===no;});
   if(emp){
     emp.attendance=val;
+    // 欠席にしたら、本編の席と懇親会の島からも外す（261121 森下さん）
+    if(val==='欠席'){
+      var key='e'+no;
+      if(D.seating&&D.seating.seats)Object.keys(D.seating.seats).forEach(function(k){if(D.seating.seats[k]===key)delete D.seating.seats[k];});
+      if(D.banquet27&&typeof bq27Init==='function'){var b=bq27Init();b.main.members=b.main.members.filter(function(k){return k!==key;});b.islands.forEach(function(t){t.members=t.members.filter(function(k){return k!==key;});});}
+    }
     updateRosterStats();
     D.roster=EMPLOYEES.map(rosterRecord);
     persist();showToast('✓ 名簿を保存しました');
@@ -3852,7 +3858,8 @@ function resolvePerson(key){
 }
 function getSeatablePeople(){
   var list=[];
-  EMPLOYEES.forEach(function(e){if(e.party)list.push(resolvePerson('e'+e.no));});
+  // 社員名簿で「欠席」の人は、懇親会のチェックが残っていても出さない（261121 森下さん）
+  EMPLOYEES.forEach(function(e){if(e.party&&e.attendance!=='欠席')list.push(resolvePerson('e'+e.no));});
   (D.vendors||[]).forEach(function(v){if(v.party)list.push(resolvePerson('v'+v.id));});
   return list.filter(Boolean);
 }
@@ -6064,7 +6071,12 @@ function bq27Init(){
 }
 // 名簿から消えた人（取り込みで置き換わった業者など）のキーを島から外す
 function bq27Clean(){
-  var b=bq27Init(),ok=function(k){return !!resolvePerson(k);};
+  var b=bq27Init(),ok=function(k){
+    if(!resolvePerson(k))return false;
+    // 社員名簿で「欠席」の人は島から外す
+    if(/^e\d+$/.test(k)){var e=EMPLOYEES.find(function(x){return 'e'+x.no===k;});if(e&&e.attendance==='欠席')return false;}
+    return true;
+  };
   b.main.members=b.main.members.filter(ok);
   b.islands.forEach(function(t){t.members=t.members.filter(ok);});
 }
