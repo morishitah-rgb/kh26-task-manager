@@ -941,35 +941,18 @@ a{color:var(--red)}
   </div>
   <div id="call-root"></div>
   <div id="vendor-roster-wrap" style="display:none">
-  <div class="sect-head">
-    <h2>⑩ 業者名簿</h2>
-    <div style="display:flex;gap:6px;flex-wrap:wrap">
-      <input id="vendor-search" placeholder="🔍 会社名・担当者・職種で検索" oninput="renderVendors()" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.85rem;min-width:220px">
+  <div class="vr-head">
+    <div class="vr-title"><h2>📋 業者名簿</h2><span id="vendor-stats" class="vr-stats"></span></div>
+    <div class="vr-tools">
+      <input id="vendor-search" class="vr-search" placeholder="🔍 会社名・お名前・業種・電話で探す" oninput="renderVendors()">
+      <select id="vendor-rank" class="vr-sel" onchange="renderVendors()"><option value="">すべてのランク</option><option value="A">Aランク（招待状）</option><option value="B">Bランク（候補）</option></select>
+      <select id="vendor-dept" class="vr-sel" onchange="renderVendors()"><option value="">すべての区分</option></select>
       <button class="btn btn-r" onclick="openVendorModal()">＋ 業者追加</button>
       <button class="btn btn-ol" id="vendor-import-btn" onclick="openVendorImportModal()">📥 招待者リストを取り込む</button>
-      <span id="vendor-stats" style="font-size:.82rem;color:var(--sub);align-self:center"></span>
     </div>
+    <div id="vendor-kpi" class="vr-kpi"></div>
   </div>
-  <div class="card" style="padding:0;overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:.83rem;min-width:760px">
-      <thead>
-        <tr style="background:var(--navy);color:#fff">
-          <th style="padding:8px 10px;text-align:center">ランク</th>
-          <th style="padding:8px 10px;text-align:left">会社名</th>
-          <th style="padding:8px 10px;text-align:left">担当者</th>
-          <th style="padding:8px 10px;text-align:left">職種</th>
-          <th style="padding:8px 10px;text-align:left">電話番号</th>
-          <th style="padding:8px 10px;text-align:left">メールアドレス</th>
-          <th style="padding:8px 10px;text-align:left">住所</th>
-          <th style="padding:8px 10px;text-align:left">備考</th>
-          <th style="padding:8px 10px;text-align:center">本編出席</th>
-          <th style="padding:8px 10px;text-align:center">懇親会出席</th>
-          <th style="padding:8px 10px;text-align:center;width:70px"></th>
-        </tr>
-      </thead>
-      <tbody id="vendor-tbody"></tbody>
-    </table>
-  </div>
+  <div id="vendor-list" class="vr-wrap"></div>
   </div><!-- /vendor-roster-wrap -->
 </div>
 
@@ -5682,35 +5665,89 @@ function saveMember(){
 }
 
 // ===== 業者名簿 =====
+var VR_CSS_DONE=false;
+function vrCss(){
+  if(VR_CSS_DONE)return;VR_CSS_DONE=true;
+  var s=document.createElement('style');s.textContent=
+  '.vr-head{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}'+
+  '.vr-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}.vr-title h2{font-size:1.15rem;margin:0}.vr-stats{font-size:.82rem;color:var(--sub)}'+
+  '.vr-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.vr-search{flex:1;min-width:220px;padding:9px 12px;border:1px solid #d6d1c6;border-radius:8px;font-size:.9rem}.vr-sel{padding:9px 10px;border:1px solid #d6d1c6;border-radius:8px;font-size:.88rem;background:#fff}'+
+  '.vr-kpi{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.vr-k{flex:1;min-width:120px;background:#f7f5f0;border-radius:10px;padding:8px 12px}.vr-k small{display:block;font-size:.72rem;color:var(--sub)}.vr-k b{font-size:1.25rem;color:#1f2d4d}'+
+  '.vr-wrap{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:auto;max-height:calc(100vh - 210px)}'+
+  '.vr-t{width:100%;border-collapse:separate;border-spacing:0;font-size:.84rem;min-width:1080px}'+
+  '.vr-t thead th{position:sticky;top:0;z-index:2;background:#1f2d4d;color:#fff;font-weight:700;font-size:.78rem;letter-spacing:.03em;padding:10px 10px;text-align:left;white-space:nowrap}'+
+  '.vr-t thead th.c{text-align:center}'+
+  '.vr-t tbody td{padding:9px 10px;border-bottom:1px solid #eee8dc;vertical-align:top}'+
+  '.vr-t tbody tr:nth-child(even) td{background:#fbfaf7}.vr-t tbody tr:hover td{background:#fff6e5}'+
+  '.vr-t tr.grp td{background:#eef1f7!important;color:#1f2d4d;font-weight:700;font-size:.8rem;padding:6px 12px;position:sticky;top:36px;z-index:1}'+
+  '.vr-no{color:#999;font-size:.75rem;text-align:right;white-space:nowrap}'+
+  '.vr-rank{display:inline-block;width:24px;height:24px;line-height:24px;border-radius:50%;text-align:center;font-weight:800;font-size:.8rem;color:#fff;background:#C8232A}.vr-rank.B{background:#8a94a6}'+
+  '.vr-co{font-weight:700;color:#1f2d4d;line-height:1.35}.vr-gyo{display:inline-block;margin-top:3px;background:#e8f0fe;color:#1a56b0;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700}'+
+  '.vr-per{font-weight:700}.vr-sub{font-size:.75rem;color:var(--sub);line-height:1.35}'+
+  '.vr-tel{display:inline-block;color:#1565c0;font-weight:700;text-decoration:none;white-space:nowrap}.vr-tel:hover{text-decoration:underline}.vr-mail{font-size:.75rem;color:#555;word-break:break-all}'+
+  '.vr-note{font-size:.76rem;color:#555;max-width:260px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}'+
+  '.vr-adr{font-size:.76rem;color:#555;min-width:150px;max-width:210px}.vr-t td.vr-stf{white-space:nowrap;font-size:.8rem}'+
+  '.vr-t td.vr-cks{white-space:nowrap}.vr-chk{display:flex;align-items:center;gap:4px;font-size:.74rem;color:#444;margin:1px 0}.vr-chk input{width:17px;height:17px;accent-color:#C8232A}'+
+  '.vr-act{white-space:nowrap}.vr-act button{border:1px solid #d6d1c6;background:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer}.vr-act button.del{color:#C8232A}'+
+  '.vr-empty{padding:28px;text-align:center;color:var(--sub)}'+
+  '@media(max-width:700px){.vr-wrap{max-height:none;background:none;box-shadow:none;overflow:visible}.vr-t{min-width:0}.vr-t thead{display:none}.vr-t,.vr-t tbody,.vr-t tr,.vr-t td{display:block;width:100%}'+
+  '.vr-t tbody tr{background:#fff;border-radius:12px;box-shadow:var(--shadow);margin-bottom:10px;padding:10px 12px;position:relative}.vr-t tbody tr td{border:none;padding:3px 0;background:none!important}'+
+  '.vr-t tr.grp{box-shadow:none;background:none;padding:4px 2px;margin:12px 0 6px}.vr-t tr.grp td{position:static;background:none!important;font-size:.85rem}'+
+  '.vr-t td.vr-no{position:absolute;right:12px;top:10px;width:auto}.vr-t td.vr-rk{display:none}.vr-note,.vr-adr{max-width:none}.vr-t td.vr-cks{display:flex;gap:14px}.vr-t td.vr-stf{font-size:.8rem;color:#555}.vr-t td.vr-stf::before{content:"当社担当：";color:#999}.vr-chk{flex-direction:row;font-size:.8rem}}';
+  document.head.appendChild(s);
+}
+function vrGyo(v){var m=String(v.note||'').match(/業種[：:]([^／\/]+)/);return m?m[1].trim():'';}
+function vrTel(t){return 'tel:'+String(t||'').replace(/[^0-9+]/g,'');}
 function renderVendors(){
+  vrCss();
   if(!D.vendors)D.vendors=[];
   var _ib=document.getElementById('vendor-import-btn');if(_ib)_ib.style.display=curPeriod==='2026'?'none':'';
   var kw=(getV('vendor-search')||'').trim().toLowerCase();
+  var rk=getV('vendor-rank')||'', dp=getV('vendor-dept')||'';
+  // 区分の選択肢をデータから作る（選んでいた値は残す）
+  var dsel=document.getElementById('vendor-dept');
+  if(dsel){var depts=[];D.vendors.forEach(function(v){if(v.dept&&depts.indexOf(v.dept)<0)depts.push(v.dept);});
+    dsel.innerHTML='<option value="">すべての区分</option>'+depts.map(function(d){return '<option'+(d===dp?' selected':'')+'>'+esc(d)+'</option>';}).join('');}
   var list=D.vendors.filter(function(v){
+    if(rk&&v.rank!==rk)return false;
+    if(dp&&v.dept!==dp)return false;
     if(!kw)return true;
-    return [v.company,v.person,v.role,v.tel,v.email,v.note,v.rank,v.dept].some(function(f){return (f||'').toLowerCase().indexOf(kw)>-1;});
+    return [v.company,v.person,v.role,v.tel,v.email,v.note,v.rank,v.dept,v.staff,v.address].some(function(f){return String(f||'').toLowerCase().indexOf(kw)>-1;});
   });
   var stats=document.getElementById('vendor-stats');
-  if(stats)stats.textContent='全'+D.vendors.length+'社中 '+list.length+'件表示';
-  var tb=document.getElementById('vendor-tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="11" class="empty" style="padding:20px;text-align:center">業者データがありません</td></tr>';return;}
-  tb.innerHTML=list.map(function(v){
-    return '<tr style="border-top:1px solid var(--line)">'+
-      '<td style="padding:7px 10px;text-align:center;font-weight:700">'+esc(v.rank||'')+'</td>'+
-      '<td style="padding:7px 10px">'+esc(v.company||'')+(v.dept?'<div style="font-size:.7rem;color:var(--sub)">'+esc(v.dept)+'</div>':'')+'</td>'+
-      '<td style="padding:7px 10px">'+esc(v.person||'')+'</td>'+
-      '<td style="padding:7px 10px">'+esc(v.role||'')+'</td>'+
-      '<td style="padding:7px 10px">'+esc(v.tel||'')+'</td>'+
-      '<td style="padding:7px 10px">'+esc(v.email||'')+'</td>'+
-      '<td style="padding:7px 10px;font-size:.8rem">'+esc(v.address||'')+'</td>'+
-      '<td style="padding:7px 10px;color:var(--sub);font-size:.8rem">'+esc(v.note||'')+'</td>'+
-      '<td style="padding:7px 10px;text-align:center"><input type="checkbox" '+(v.main?'checked':'')+' onchange="toggleVendorMain(\''+v.id+'\',this.checked)"></td>'+
-      '<td style="padding:7px 10px;text-align:center"><input type="checkbox" '+(v.party?'checked':'')+' onchange="toggleVendorParty(\''+v.id+'\',this.checked)"></td>'+
-      '<td style="padding:7px 10px;text-align:center;white-space:nowrap">'+
-        '<button class="mb-edit-btn" onclick="openVendorModal(\''+v.id+'\')">編集</button> '+
-        '<button class="mb-edit-btn" style="color:var(--red)" onclick="delVendor(\''+v.id+'\')">削除</button>'+
-      '</td></tr>';
-  }).join('');
+  if(stats)stats.textContent='全'+D.vendors.length+'件中 '+list.length+'件を表示';
+  var kpi=document.getElementById('vendor-kpi');
+  if(kpi){var A=D.vendors.filter(function(v){return v.rank==='A';}).length,B=D.vendors.filter(function(v){return v.rank==='B';}).length;
+    var mn=D.vendors.filter(function(v){return v.main;}).length,pt=D.vendors.filter(function(v){return v.party;}).length;
+    kpi.innerHTML=(A||B?'<div class="vr-k"><small>Aランク（招待状）</small><b>'+A+'</b> 人</div><div class="vr-k"><small>Bランク（候補）</small><b>'+B+'</b> 人</div>':'')+
+      '<div class="vr-k"><small>本編 出席</small><b>'+mn+'</b> 人</div><div class="vr-k"><small>懇親会 出席</small><b>'+pt+'</b> 人</div>';}
+  var box=document.getElementById('vendor-list');if(!box)return;
+  if(!list.length){box.innerHTML='<div class="vr-empty">条件に合う業者がいません</div>';return;}
+  // 並び：ランク → 区分 → No
+  var DORD=['社長','管理本部長','建設課','設計課','マーケティング課','PGHOUSE','不動産統括'];
+  var dIdx=function(d){d=String(d||'');for(var i=0;i<DORD.length;i++){if(d.indexOf(DORD[i])===0)return i;}return 99;};
+  var nNum=function(v){var m=String(v.no||'').match(/\d+/);return m?parseInt(m[0],10):9999;};
+  list=list.slice().sort(function(a,b){return String(a.rank||'Z').localeCompare(String(b.rank||'Z'))||(dIdx(a.dept)-dIdx(b.dept))||String(a.dept||'').localeCompare(String(b.dept||''),'ja')||(nNum(a)-nNum(b));});
+  var rows='',last=null;
+  list.forEach(function(v){
+    var g=(v.rank?v.rank+'ランク　':'')+(v.dept||'');
+    if(g!==last){last=g;var n=list.filter(function(x){return ((x.rank?x.rank+'ランク　':'')+(x.dept||''))===g;}).length;rows+='<tr class="grp"><td colspan="10">'+esc(g||'（区分なし）')+'　<span style="font-weight:400;color:#666">'+n+'人</span></td></tr>';}
+    var gy=vrGyo(v);
+    rows+='<tr>'+
+      '<td class="vr-no">'+(v.no?esc(v.no):'')+'</td>'+
+      '<td class="vr-rk">'+(v.rank?'<span class="vr-rank '+esc(v.rank)+'">'+esc(v.rank)+'</span>':'')+'</td>'+
+      '<td><div class="vr-co">'+esc(v.company||'')+'</div>'+(gy?'<span class="vr-gyo">'+esc(gy)+'</span>':'')+'</td>'+
+      '<td><div class="vr-per">'+esc(v.person||'')+(v.person&&!/様$/.test(v.person)?' 様':'')+'</div>'+(v.role&&v.role!=='ー'?'<div class="vr-sub">'+esc(v.role)+'</div>':'')+'</td>'+
+      '<td class="vr-stf">'+esc(v.staff||'―')+'</td>'+
+      '<td>'+(v.tel?'<a class="vr-tel" href="'+vrTel(v.tel)+'">📞 '+esc(v.tel)+'</a>':'<span class="vr-sub">電話なし</span>')+(v.email?'<div class="vr-mail">✉️ '+esc(v.email)+'</div>':'')+'</td>'+
+      '<td><div class="vr-adr">'+esc(v.address||'')+'</div></td>'+
+      '<td><div class="vr-note" title="'+esc(v.note||'')+'">'+esc(v.note||'')+'</div></td>'+
+      '<td class="vr-cks"><label class="vr-chk"><input type="checkbox" '+(v.main?'checked':'')+' onchange="toggleVendorMain(\''+v.id+'\',this.checked)">本編</label>'+
+        '<label class="vr-chk"><input type="checkbox" '+(v.party?'checked':'')+' onchange="toggleVendorParty(\''+v.id+'\',this.checked)">懇親会</label></td>'+
+      '<td class="vr-act"><button onclick="openVendorModal(\''+v.id+'\')">編集</button> <button class="del" onclick="delVendor(\''+v.id+'\')">削除</button></td>'+
+    '</tr>';
+  });
+  box.innerHTML='<table class="vr-t"><thead><tr><th class="c">No</th><th class="c">ランク</th><th>会社名・業種</th><th>お名前・役職</th><th>当社担当</th><th>連絡先</th><th>住所</th><th>備考</th><th class="c">出席</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 function toggleVendorParty(id,checked){
   var v=D.vendors.find(function(x){return x.id===id;});
@@ -6425,7 +6462,12 @@ var callF={who:null,state:'',q:''};
 '.kd-head{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;margin-bottom:12px}.kd-head h2{font-size:1.1rem;margin:0 0 4px}.kd-lead{font-size:.82rem;color:var(--sub);margin:0 0 10px}'+
 '.kd-bar{height:10px;background:#eee;border-radius:6px;overflow:hidden}.kd-bar>i{display:block;height:100%;background:#43a047}'+
 '.kd-tot{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;margin:8px 0 2px}.kd-tot b{font-size:1.05rem}'+
-'.kd-mem{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}.kd-chip{border:1px solid var(--line);background:#fff;border-radius:18px;padding:5px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}.kd-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.kd-chip small{opacity:.75;margin-left:3px}'+
+'.kd-prog{width:100%;border-collapse:collapse;font-size:.84rem;margin:2px 0 4px}.kd-prog th{background:#1f2d4d;color:#fff;font-weight:700;font-size:.74rem;padding:6px 6px;text-align:center;white-space:nowrap}.kd-prog th:first-child{text-align:left}'+
+'.kd-prog td{padding:6px 6px;border-bottom:1px solid #eee8dc;text-align:center;cursor:pointer}.kd-prog td.nm{text-align:left;font-weight:700;white-space:nowrap}.kd-prog td.g{color:#2e7d32;font-weight:700}.kd-prog td.o{color:#e65100;font-weight:700}.kd-prog td.r{color:#fff;background:#d32f2f;font-weight:800;border-radius:4px}.kd-prog td.pb{width:28%}'+
+'.kd-prog tr:hover td{background:#fff6e5}.kd-prog tr.on td{background:#fff0d6}.kd-prog tr.on td.r{background:#d32f2f}.kd-prog tr.fin td.nm::after{content:" ✔";color:#2e7d32}.kd-prog tbody tr:last-child td{border-top:2px solid #1f2d4d;font-weight:700}'+
+'.kd-todo{display:inline-block;background:#d32f2f;color:#fff;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:4px}'+
+'.kd-att{font-size:.8rem;color:#777;background:#f4f4f4;border-radius:8px;padding:7px 8px}.kd-att b{color:#1f2d4d}'+
+'.kd-mem{margin:10px 0 4px}.kd-chip{border:1px solid var(--line);background:#fff;border-radius:18px;padding:5px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}.kd-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.kd-chip small{opacity:.75;margin-left:3px}'+
 '.kd-ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.kd-ctl select,.kd-ctl input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;background:#fff}.kd-ctl input{flex:1;min-width:160px}'+
 '.kd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}'+
 '.kd-card{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;border-left:6px solid #b0bec5}.kd-card.done{border-left-color:#43a047;background:#f6fbf6}.kd-card.absent{border-left-color:#fb8c00;background:#fffaf2}'+
@@ -6483,18 +6525,26 @@ function callRender(){
   var rows=Object.keys(CALL.rows).map(function(k){return CALL.rows[k];}).sort(function(a,b){return a.no-b.no;});
   if(!rows.length){root.innerHTML='<div class="kd-empty">架電リストがまだありません</div>';return;}
   if(callF.who===null){callF.who=callMyMember()||'';}
-  var by={};CALL_MEMBERS.forEach(function(m){by[m]={n:0,d:0};});
+  var by={};CALL_MEMBERS.forEach(function(m){by[m]={n:0,d:0,a:0};});
   var done=0,abs=0;
-  rows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0};by[c].n++;if(s.state==='done'){by[c].d++;done++;}else if(s.state==='absent')abs++;});
+  rows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0,a:0};by[c].n++;if(s.state==='done'){by[c].d++;done++;}else if(s.state==='absent'){by[c].a++;abs++;}});
   var pct=Math.round(done*100/rows.length);
   var me=callMyMember();
-  var chips='<span class="kd-chip'+(callF.who===''?' on':'')+'" onclick="callF.who=\'\';callRender()">全員<small>'+done+'/'+rows.length+'</small></span>'+
-    CALL_MEMBERS.map(function(m){var b=by[m]||{n:0,d:0};return '<span class="kd-chip'+(callF.who===m?' on':'')+'" onclick="callF.who=\''+m+'\';callRender()">'+(m===me?'⭐':'')+esc(m)+'<small>'+b.d+'/'+b.n+'</small></span>';}).join('');
+  // 進み具合の表：だれが・何人まだかけていないかが、後から見てもひと目で分かるように（11/26 森下さん）
+  var prow=function(key,label,b){var left=b.n-b.d-b.a,p=b.n?Math.round(b.d*100/b.n):0;
+    return '<tr class="'+(callF.who===key?'on':'')+(left===0&&b.a===0&&b.n?' fin':'')+'" onclick="callF.who=\''+key+'\';callRender()">'+
+      '<td class="nm">'+label+'</td><td>'+b.n+'</td><td class="g">'+b.d+'</td><td class="o">'+(b.a||'')+'</td>'+
+      '<td class="'+(left?'r':'g')+'">'+(left?left+' 人':'完了')+'</td><td class="pb"><div class="kd-bar"><i style="width:'+p+'%"></i></div></td></tr>';};
+  var chips='<table class="kd-prog"><thead><tr><th>架電する人</th><th>担当</th><th>✅ かけた</th><th>📵 不在</th><th>⬜ まだ</th><th></th></tr></thead><tbody>'+
+    CALL_MEMBERS.map(function(m){return prow(m,(m===me?'⭐ ':'')+esc(m),by[m]||{n:0,d:0,a:0});}).join('')+
+    prow('','全員',{n:rows.length,d:done,a:abs})+'</tbody></table>'+
+    '<div class="kd-sub">名前を押すと、その人の担当だけを表示します。「まだ」が赤の人は、かけていない相手が残っています。</div>';
   var q=callNorm(callF.q).toLowerCase();
   var list=rows.filter(function(r){
     var s=callSt(r.id);
     if(callF.who&&callCaller(r)!==callF.who)return false;
     if(callF.state==='todo'&&s.state)return false;
+    if(callF.state==='notdone'&&s.state==='done')return false;
     if(callF.state==='absent'&&s.state!=='absent')return false;
     if(callF.state==='done'&&s.state!=='done')return false;
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
@@ -6506,7 +6556,7 @@ function callRender(){
     '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(rows.length-done-abs)+'</b></span><span>全 <b>'+rows.length+'</b> 人（'+pct+'%）</span></div>'+
     '<div class="kd-mem">'+chips+'</div>'+
     '<div class="kd-ctl"><select onchange="callF.state=this.value;callRender()">'+
-      [['','すべての状態'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
+      [['','すべての状態'],['notdone','⬜📵 まだ話せていない（まだ＋不在）'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
     '</select><input id="kd-q" placeholder="🔍 会社名・お名前・業種で探す" value="'+esc(callF.q)+'" oninput="callF.q=this.value;clearTimeout(window._clq);window._clq=setTimeout(function(){var p=document.getElementById(\'kd-q\');var pos=p?p.selectionStart:0;document.activeElement&&document.activeElement.blur();callRender();var n=document.getElementById(\'kd-q\');if(n){n.focus();n.setSelectionRange(pos,pos);}},350)"></div>'+
     '<div class="kd-sub" style="margin-top:6px">'+(me?'あなた（'+esc(me)+'）の担当は⭐。':'ログインの名前（'+esc(callMyName()||'不明')+'）が委員会メンバーと一致しないため、全員を表示しています。')+' 表示中 '+list.length+'人</div></div>';
   var cards=list.map(function(r){
@@ -6519,14 +6569,16 @@ function callRender(){
     var opt=function(cur){return CALL_ATT.map(function(o){return '<option value="'+esc(o)+'"'+((cur||'')===o?' selected':'')+'>'+(o||'（まだ）')+'</option>';}).join('');};
     var callerSel='<select onchange="callSave(\''+r.id+'\',{caller:this.value})">'+CALL_MEMBERS.map(function(m){return '<option'+(callCaller(r)===m?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>';
     return '<div class="kd-card'+cls+'">'+
-      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+'</div></div>'+
+      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
+      '<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>'+
       '<div class="kd-per">'+esc(r.person)+(r.role?'　<span class="kd-sub">'+esc(r.role)+'</span>':'')+'</div>'+
       '<div class="kd-sub">当社の担当：'+esc(r.staff||'不明')+'（'+esc(r.dept||'')+'）</div>'+
       tel+
       '<div class="kd-btns"><button class="b-done'+(s.state==='done'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'done\')">✅ かけた</button><button class="b-abs'+(s.state==='absent'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'absent\')">📵 不在</button></div>'+
       whoLine+
       '<div class="kd-f"><label>架電する人</label>'+callerSel+
-      '<label>確定出欠</label><select onchange="callSave(\''+r.id+'\',{att:this.value})">'+opt(s.att)+'</select>'+
+      // 確定出欠はQRコード（Googleフォーム）の回答から自動で入れる予定。架電の段階では書かない（11/26 森下さん）
+      '<label>確定出欠</label><div class="kd-att">'+(s.att?'<b>'+esc(s.att)+'</b>':'QRの回答から自動で入ります（準備中）')+'</div>'+
       '<label>変更出欠</label><select class="chg" onchange="callSave(\''+r.id+'\',{attChg:this.value})">'+opt(s.attChg)+'</select>'+
       '<label>不在のとき</label>'+fuBtns+
       '<label>備考</label><textarea placeholder="例：留守電に「招待状が届きます」と入れた／〇日に折り返し" onblur="if(this.value!==(callSt(\''+r.id+'\').note||\'\'))callSave(\''+r.id+'\',{note:this.value});setTimeout(function(){if(callPending)callRender();},300)">'+esc(s.note||'')+'</textarea></div>'+
