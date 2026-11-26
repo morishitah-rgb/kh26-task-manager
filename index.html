@@ -6467,6 +6467,8 @@ var callF={who:null,state:'',q:''};
 '.kd-prog tr:hover td{background:#fff6e5}.kd-prog tr.on td{background:#fff0d6}.kd-prog tr.on td.r{background:#d32f2f}.kd-prog tr.fin td.nm::after{content:" ✔";color:#2e7d32}.kd-prog tbody tr:last-child td{border-top:2px solid #1f2d4d;font-weight:700}'+
 '.kd-todo{display:inline-block;background:#d32f2f;color:#fff;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:4px}'+
 '.kd-notebox{min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:.88rem;white-space:pre-wrap;cursor:pointer}.kd-notebox:hover{border-color:#90caf9;background:#f5f9ff}.kd-notebox.empty{color:#999}'+
+'.kd-help,.kd-progwrap{margin:8px 0;border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:#fafafa}.kd-help summary,.kd-progwrap summary{cursor:pointer;font-weight:700;font-size:.88rem;color:#1f2d4d}.kd-help .kd-lead{margin:8px 0 2px}'+
+'@media(max-width:600px){.kd-prog th:last-child,.kd-prog td.pb{display:none}.kd-prog{font-size:.76rem}.kd-prog th{font-size:.66rem;padding:5px 3px}.kd-prog td{padding:5px 3px}.kd-tot{gap:6px 12px;font-size:.8rem}.kd-tot b{font-size:.95rem}.kd-manual{font-size:.84rem;padding:9px}.kd-view button{font-size:.8rem;padding:8px 6px}.kd-head{padding:10px 12px}.kd-head h2{font-size:1rem}.kd-grid{grid-template-columns:minmax(0,1fr)}.kd-gh{font-size:.82rem;overflow-wrap:anywhere}.kd-card{min-width:0}}'+
 '.kd-att{font-size:.8rem;color:#777;background:#f4f4f4;border-radius:8px;padding:7px 8px}.kd-att b{color:#1f2d4d}'+
 '.kd-manual{display:block;margin:10px 0 2px;padding:10px 12px;border-radius:9px;background:#C8232A;color:#fff!important;font-weight:700;font-size:.92rem;text-align:center;text-decoration:none}.kd-manual:hover{opacity:.9}'+
 '.kd-view{display:flex;gap:6px;margin:12px 0 6px}.kd-view button{flex:1;max-width:240px;padding:9px 10px;border:2px solid var(--line);background:#fff;border-radius:9px;font-weight:700;font-size:.88rem;cursor:pointer;color:#555}.kd-view button.on{border-color:#1f2d4d;background:#1f2d4d;color:#fff}'+
@@ -6581,15 +6583,15 @@ function callRender(opt){
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
-  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 18:30</small></h2>'+
-    '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
+  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 19:00</small></h2>'+
+    '<details class="kd-help"'+(callF.helpOpen?' open':'')+' ontoggle="callF.helpOpen=this.open"><summary>📖 使い方・注意（押して開く）</summary>'+'<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+'</details>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
     '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
     // 電話対応マニュアル（PDF）を開く・保存する（11/26 森下さん）
     '<a class="kd-manual" href="261126_招待状の事前連絡_電話対応マニュアル.pdf" target="_blank" rel="noopener" download>📄 電話対応マニュアル（PDF）を開く・ダウンロード</a>'+
     '<div class="kd-view"><button class="'+(callF.who===''?'on':'')+'" onclick="callF.who=\'\';callRender()">👥 全員の担当を見る</button>'+
       (me?'<button class="'+(callF.who===me?'on':'')+'" onclick="callF.who=\''+me+'\';callRender()">⭐ 自分の担当だけ</button>':'')+'</div>'+
-    '<div class="kd-mem">'+chips+'</div>'+
+    '<details class="kd-progwrap"'+((callF.progOpen===undefined?innerWidth>700:callF.progOpen)?' open':'')+' ontoggle="callF.progOpen=this.open"><summary>👥 みんなの進み具合（押して開く）</summary><div class="kd-mem">'+chips+'</div></details>'+
     '<div class="kd-ctl"><select onchange="callF.state=this.value;callRender()">'+
       [['','すべての状態'],['notdone','⬜📵 まだ話せていない（まだ＋不在）'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
     '</select><input id="kd-q" placeholder="🔍 会社名・お名前・業種で探す" value="'+esc(callF.q)+'" oninput="callF.q=this.value;clearTimeout(window._clq);window._clq=setTimeout(function(){var p=document.getElementById(\'kd-q\');var pos=p?p.selectionStart:0;document.activeElement&&document.activeElement.blur();callRender();var n=document.getElementById(\'kd-q\');if(n){n.focus();n.setSelectionRange(pos,pos);}},350)"></div>'+
