@@ -6470,6 +6470,7 @@ var callF={who:null,state:'',q:''};
 '.kd-view{display:flex;gap:6px;margin:12px 0 6px}.kd-view button{flex:1;max-width:240px;padding:9px 10px;border:2px solid var(--line);background:#fff;border-radius:9px;font-weight:700;font-size:.88rem;cursor:pointer;color:#555}.kd-view button.on{border-color:#1f2d4d;background:#1f2d4d;color:#fff}'+
 '.kd-gh{grid-column:1/-1;margin:10px 0 0;padding:8px 12px;background:#1f2d4d;color:#fff;border-radius:9px;font-weight:700;font-size:.92rem}.kd-gh span{font-weight:400;font-size:.8rem;opacity:.9}.kd-gh span.r{background:#d32f2f;border-radius:5px;padding:1px 7px;font-weight:700;opacity:1}.kd-gh span.g{background:#2e7d32;border-radius:5px;padding:1px 7px;font-weight:700;opacity:1}'+
 '.kd-gh.nc{background:#78909c}.kd-nc{margin:8px 0 2px;padding:8px 10px;border-radius:8px;background:#eceff1;color:#455a64;font-size:.82rem;font-weight:700}.kd-card.nocall{border-left-color:#78909c;background:#fafafa}'+
+'.kd-tel2{display:block;text-align:center;margin:-2px 0 8px;padding:7px;border:1px solid #90caf9;border-radius:9px;color:#1565c0!important;font-size:.85rem;font-weight:700;text-decoration:none;background:#f3f8ff}'+
 '.kd-mem{margin:10px 0 4px}.kd-chip{border:1px solid var(--line);background:#fff;border-radius:18px;padding:5px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}.kd-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.kd-chip small{opacity:.75;margin-left:3px}'+
 '.kd-ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.kd-ctl select,.kd-ctl input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;background:#fff}.kd-ctl input{flex:1;min-width:160px}'+
 '.kd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}'+
@@ -6558,7 +6559,7 @@ function callRender(){
   var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）</h2>'+
     '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人は、不動産部が連絡済みです（リストのいちばん下に「連絡済み」として載せています）。</p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不動産部で連絡済み '+ncRows+' 人</span></div>'+
+    '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋かけなくてよい '+ncRows+' 人（不動産部で連絡済み・案内状を別送）</span></div>'+
     '<div class="kd-view"><button class="'+(callF.who===''?'on':'')+'" onclick="callF.who=\'\';callRender()">👥 全員の担当を見る</button>'+
       (me?'<button class="'+(callF.who===me?'on':'')+'" onclick="callF.who=\''+me+'\';callRender()">⭐ 自分の担当だけ</button>':'')+'</div>'+
     '<div class="kd-mem">'+chips+'</div>'+
@@ -6572,7 +6573,7 @@ function callRender(){
   var lastCaller=null;
   var cards=list.map(function(r){
     var c=callCaller(r),hd='';
-    if(c!==lastCaller&&r.noCall){lastCaller=c;hd='<div class="kd-gh nc">🏢 不動産部のリスト（不動産部で連絡済み）　<span>'+ncRows+'人</span></div>';}
+    if(c!==lastCaller&&r.noCall){lastCaller=c;var nn=rows.filter(function(x){return x.noCall&&callCaller(x)===c;}).length;hd='<div class="kd-gh nc">'+(/不動産/.test(c)?'🏢 ':'🚫 ')+esc(c)+'　<span>'+nn+'人</span></div>';}
     else if(c!==lastCaller){lastCaller=c;var b=by[c]||{n:0,d:0,a:0},left=b.n-b.d-b.a;
       hd='<div class="kd-gh">'+(c===me?'⭐ ':'')+esc(c)+'さんの担当　<span>'+b.n+'人中 かけた '+b.d+'・不在 '+b.a+'・</span><span class="'+(left?'r':'g')+'">'+(left?'まだ '+left+'人':'全員かけ終わり')+'</span></div>';}
     return hd+callCard(r);
@@ -6585,6 +6586,7 @@ function callCard(r){
     var s=callSt(r.id),cls=s.state==='done'?' done':s.state==='absent'?' absent':'';
     var unk=/未確認/.test(r.gyoshu);
     var tel=r.tel?'<a class="kd-tel" href="'+callTelLink(r.tel)+'">📞 '+esc(r.tel)+(r.telType?' <small>'+esc(r.telType)+'</small>':'')+'</a>':'<div class="kd-notel">電話番号がありません。当社担当（'+esc(r.staff||'不明')+'）に確かめてください</div>';
+    if(r.tel2)tel+='<a class="kd-tel2" href="'+callTelLink(r.tel2)+'">つながらないときは '+esc(r.tel2Type||'')+'：📞 '+esc(r.tel2)+'</a>';
     var whoLine=s.state==='done'?'<div class="kd-who">✅ '+esc(s.at||'')+'　'+esc(s.by||'')+' がかけました</div>':s.state==='absent'?'<div class="kd-who abs">📵 '+esc(s.at||'')+'　'+esc(s.by||'')+'：不在・かけ直し</div>':'';
     if(s.fu)whoLine+='<div class="kd-fuline">↪ つながらなかったとき：'+esc(s.fu)+(s.note?'（'+esc(s.note)+'）':'')+'</div>';
     var fuBtns='<div class="kd-fu">'+['留守電','メール','その他'].map(function(o){var lab=o==='留守電'?'📞 留守電':o==='メール'?'✉️ メール':'📝 その他';return '<button class="'+(s.fu===o?'on':'')+'" onclick="callSave(\''+r.id+'\',{fu:'+(s.fu===o?'\'\'':'\''+o+'\'')+'})">'+lab+'</button>';}).join('')+'</div>';
@@ -6592,7 +6594,7 @@ function callCard(r){
     var callerSel='<select onchange="callSave(\''+r.id+'\',{caller:this.value})">'+CALL_MEMBERS.map(function(m){return '<option'+(callCaller(r)===m?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>';
     return '<div class="kd-card'+cls+(r.noCall?' nocall':'')+'">'+
       '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state||r.noCall?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
-      (r.noCall?'<div class="kd-nc">🏢 不動産部で連絡済み（かけなくて大丈夫です）</div>':'<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>')+
+      (r.noCall?'<div class="kd-nc">'+(/不動産/.test(r.caller)?'🏢 ':'🚫 ')+esc(r.ncNote||'かけなくて大丈夫です')+'</div>':'<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>')+
       '<div class="kd-per">'+esc(r.person)+(r.role?'　<span class="kd-sub">'+esc(r.role)+'</span>':'')+'</div>'+
       '<div class="kd-sub">当社の担当：'+esc(r.staff||'不明')+'（'+esc(r.dept||'')+'）</div>'+
       tel+
