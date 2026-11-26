@@ -6598,9 +6598,9 @@ function callRender(opt){
     // 変わったカードと上の数字だけ差し替える（入力中の欄があるところは、入力が終わってから）
     var tmp=document.createElement('div');tmp.innerHTML=html;var a2=document.activeElement;
     var hw=root.querySelector('#kd-headwrap'),nh=tmp.querySelector('#kd-headwrap');
-    if(hw&&nh){if(a2&&hw.contains(a2))callPending=true;else hw.innerHTML=nh.innerHTML;}
+    var typing=a2&&/^(TEXTAREA|INPUT|SELECT)$/.test(a2.tagName);if(hw&&nh){if(typing&&hw.contains(a2))callPending=true;else hw.innerHTML=nh.innerHTML;}
     opt.only.forEach(function(id){var o=root.querySelector('.kd-card[data-id="'+id+'"]'),n=tmp.querySelector('.kd-card[data-id="'+id+'"]');
-      if(!o||!n)return;if(a2&&o.contains(a2)){callPending=true;return;}o.replaceWith(n);});
+      if(!o||!n)return;if(typing&&o.contains(a2)){callPending=true;return;}o.replaceWith(n);});
     return;
   }
   root.innerHTML=html;
