@@ -6466,6 +6466,7 @@ var callF={who:null,state:'',q:''};
 '.kd-prog td{padding:6px 6px;border-bottom:1px solid #eee8dc;text-align:center;cursor:pointer}.kd-prog td.nm{text-align:left;font-weight:700;white-space:nowrap}.kd-prog td.g{color:#2e7d32;font-weight:700}.kd-prog td.o{color:#e65100;font-weight:700}.kd-prog td.r{color:#fff;background:#d32f2f;font-weight:800;border-radius:4px}.kd-prog td.pb{width:28%}'+
 '.kd-prog tr:hover td{background:#fff6e5}.kd-prog tr.on td{background:#fff0d6}.kd-prog tr.on td.r{background:#d32f2f}.kd-prog tr.fin td.nm::after{content:" ✔";color:#2e7d32}.kd-prog tbody tr:last-child td{border-top:2px solid #1f2d4d;font-weight:700}'+
 '.kd-todo{display:inline-block;background:#d32f2f;color:#fff;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:4px}'+
+'.kd-notebox{min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:.88rem;white-space:pre-wrap;cursor:pointer}.kd-notebox:hover{border-color:#90caf9;background:#f5f9ff}.kd-notebox.empty{color:#999}'+
 '.kd-att{font-size:.8rem;color:#777;background:#f4f4f4;border-radius:8px;padding:7px 8px}.kd-att b{color:#1f2d4d}'+
 '.kd-manual{display:block;margin:10px 0 2px;padding:10px 12px;border-radius:9px;background:#C8232A;color:#fff!important;font-weight:700;font-size:.92rem;text-align:center;text-decoration:none}.kd-manual:hover{opacity:.9}'+
 '.kd-view{display:flex;gap:6px;margin:12px 0 6px}.kd-view button{flex:1;max-width:240px;padding:9px 10px;border:2px solid var(--line);background:#fff;border-radius:9px;font-weight:700;font-size:.88rem;cursor:pointer;color:#555}.kd-view button.on{border-color:#1f2d4d;background:#1f2d4d;color:#fff}'+
@@ -6513,6 +6514,14 @@ function callListen(){
   });
 }
 function callSt(id){return CALL.st[id]||{};}
+function callNoteEdit(id){
+  var r=CALL.rows[id]||{},s=callSt(id);
+  openModal('<h2>備考：'+esc(r.company||'')+'　'+esc(r.person||'')+'</h2>'+
+    '<textarea id="kd-note-ta" style="width:100%;min-height:140px;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:1rem;font-family:inherit" placeholder="例：留守電に「招待状が届きます」と入れた／〇日に折り返し／追加希望（仮）：お名前・役職">'+esc(s.note||'')+'</textarea>'+
+    '<div class="fbtns"><button class="btn btn-gray" onclick="cm()">キャンセル</button><button class="btn btn-r" onclick="callNoteSave(\''+id+'\')">保存</button></div>');
+  setTimeout(function(){var t=document.getElementById('kd-note-ta');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}},50);
+}
+function callNoteSave(id){var t=document.getElementById('kd-note-ta');if(!t)return;var v=t.value;if(v!==(callSt(id).note||''))callSave(id,{note:v});cm();}
 // 架電リストで入力中か（入力中は画面を作り直さず、入力が終わってからまとめて反映する）
 function callTypingNow(){var r=document.getElementById('call-root'),a=document.activeElement;return !!(r&&a&&r.contains(a)&&/^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName));}
 document.addEventListener('focusout',function(e){var root=document.getElementById('call-root');if(!root||!root.contains(e.target))return;setTimeout(function(){var ae=document.activeElement;if(callPending&&!(ae&&root.contains(ae)&&/^(TEXTAREA|INPUT|SELECT)$/.test(ae.tagName)))callRender();},400);});
@@ -6572,7 +6581,7 @@ function callRender(opt){
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
-  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 18:00</small></h2>'+
+  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 18:30</small></h2>'+
     '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
     '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
@@ -6635,7 +6644,8 @@ function callCard(r){
       '<label>確定出欠</label><div class="kd-att">'+(s.att?'<b>'+esc(s.att)+'</b>':'QRの回答から自動で入ります（準備中）')+'</div>'+
       '<label>変更出欠</label><select class="chg" onchange="callSave(\''+r.id+'\',{attChg:this.value})">'+opt(s.attChg)+'</select>'+
       (r.noCall?'':'<label>不在のとき</label>'+fuBtns)+
-      '<label>備考</label><textarea placeholder="例：留守電に「招待状が届きます」と入れた／〇日に折り返し" onblur="if(this.value!==(callSt(\''+r.id+'\').note||\'\'))callSave(\''+r.id+'\',{note:this.value});setTimeout(function(){if(callPending)callRender();},300)">'+esc(s.note||'')+'</textarea></div>'+
+      // 備考は小窓で書いて保存する（カードの中で入力すると固まることがあったため。11/26）
+      '<label>備考</label><div class="kd-notebox'+(s.note?'':' empty')+'" onclick="callNoteEdit(\''+r.id+'\')">'+(s.note?esc(s.note):'✏️ 押して備考を書く')+'</div></div>'+
       '</div>';
   }
 }
