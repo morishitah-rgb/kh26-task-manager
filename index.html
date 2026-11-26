@@ -6098,6 +6098,12 @@ function runVendorImport(){
 
 // ---------- 懇親会（2027期）：島テーブル ----------
 var BQ27_TARGET=8,BQ27_MAX=10;
+// 懇親会（2027）の座席を初期化：メインテーブルと島に並べた名前を全部「未配置」に戻す（テーブルの形はそのまま）（11/26 森下さん）
+function bq27ResetAll(){
+  if(!confirm('懇親会の座席を初期化します。\nメインテーブルと島に並べた名前が、すべて「未配置」に戻ります（テーブルの形はそのまま）。\nよいですか？'))return;
+  var b=bq27Init();b.main.members=[];b.islands.forEach(function(t){t.members=[];});
+  persist();renderBanquetSeating();showToast('🔄 座席を初期化しました');
+}
 function bq27Init(){
   // クラウド保存で空の配列・オブジェクトが消えることがあるので、毎回形をそろえる
   if(!D.banquet27)D.banquet27={};
@@ -6199,7 +6205,8 @@ function renderBanquet27(){
   bar.innerHTML='<input id="bq27-q" placeholder="🔍 未配置から名前・会社で探す" value="'+esc(q)+'" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.82rem;min-width:220px">'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff8e6;border:2px solid #f39c12;display:inline-block"></span>'+(BQ27_TARGET+1)+'〜'+BQ27_MAX+'名</span>'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fdecea;border:2px solid #e74c3c;display:inline-block"></span>'+BQ27_MAX+'名を超えた</span>'+
-    '<button class="btn btn-r" style="margin-left:auto" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
+    '<button class="btn btn-gray" style="margin-left:auto" onclick="bq27ResetAll()">🔄 座席を初期化</button>'+
+    '<button class="btn btn-r" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
   wrap.appendChild(bar);
   var qi=bar.querySelector('#bq27-q');
   // 日本語の変換中は描き直さない（変換が終わったときに描き直す）
