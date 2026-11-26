@@ -2254,9 +2254,9 @@ function getV(id){var el=document.getElementById(id);return el?el.value.trim():'
 // ===== タブ =====
 let curTab='board';
 function goTab(name){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('show');});
-  document.querySelectorAll('.tnb').forEach(function(t){t.classList.remove('active');});
   var pg=document.getElementById('page-'+name);
+  document.querySelectorAll('.page').forEach(function(p){if(p!==pg)p.classList.remove('show');});
+  document.querySelectorAll('.tnb').forEach(function(t){t.classList.remove('active');});
   if(pg)pg.classList.add('show');
   var tnb=document.querySelector('.tnb[data-tab="'+name+'"]');
   if(tnb)tnb.classList.add('active');
@@ -6504,11 +6504,15 @@ function callShow(mode){
 function callListen(){
   if(!fbEnabled)return;
   fbDB.ref('kh2027_call').on('value',function(snap){
-    var v=snap.val()||{};CALL={rows:v.rows||{},st:v.st||{}};callLoaded=true;
-    if(curTab==='vendors')callRender();
+    var v=snap.val()||{},old=CALL,first=!callLoaded;CALL={rows:v.rows||{},st:v.st||{}};callLoaded=true;
+    if(curTab!=='vendors'||callMode!=='call')return;
+    if(first||JSON.stringify(old.rows)!==JSON.stringify(CALL.rows)){callRender();return;}
+    var ch=[];Object.keys(Object.assign({},old.st,CALL.st)).forEach(function(k){if(JSON.stringify(old.st[k]||{})!==JSON.stringify(CALL.st[k]||{}))ch.push(k);});
+    if(ch.length)callRender({only:ch});
   });
 }
 function callSt(id){return CALL.st[id]||{};}
+document.addEventListener('focusout',function(e){var root=document.getElementById('call-root');if(!root||!root.contains(e.target))return;setTimeout(function(){var ae=document.activeElement;if(callPending&&!(ae&&root.contains(ae)&&/^(TEXTAREA|INPUT|SELECT)$/.test(ae.tagName)))callRender();},400);});
 // 「かけた」に数えるもの：かけた／不在でも留守電・メールで伝えた（11/26 森下さん）
 function callIsDone(s){return s.state==='done'||(s.state==='absent'&&(s.fu==='留守電'||s.fu==='メール'));}
 function callCaller(r){var s=callSt(r.id);return s.caller||r.caller||'';}
@@ -6523,11 +6527,12 @@ function callMark(id,kind){
   callSave(id,{state:kind,by:callMyName()||'（名前不明）',at:t});
 }
 function callTelLink(tel){return 'tel:'+String(tel||'').replace(/[^0-9+]/g,'');}
-function callRender(){
+function callRender(opt){
+  opt=opt||{};
   var root=document.getElementById('call-root');if(!root)return;
   if(curPeriod==='2026'){root.innerHTML='<div class="kd-empty">架電リストは2027年1月の発表会のときだけ使えます（右上で期を切りかえてください）</div>';return;}
   if(callMode!=='call')return;
-  var ae=document.activeElement;if(ae&&root.contains(ae)&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT')){callPending=true;return;}
+  var ae=document.activeElement;if(!opt.only&&ae&&root.contains(ae)&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT'||ae.tagName==='SELECT')){callPending=true;return;}
   callPending=false;
   if(!callLoaded){root.innerHTML='<div class="kd-empty">読み込み中…</div>';return;}
   var rows=Object.keys(CALL.rows).map(function(k){return CALL.rows[k];}).sort(function(a,b){return a.no-b.no;});
@@ -6588,7 +6593,17 @@ function callRender(){
       hd='<div class="kd-gh">'+(c===me?'⭐ ':'')+esc(c)+'さんの担当　<span>'+b.n+'人中 かけた '+b.d+'・不在 '+b.a+'・</span><span class="'+(left?'r':'g')+'">'+(left?'まだ '+left+'人':'全員かけ終わり')+'</span></div>';}
     return hd+callCard(r);
   }).join('');
-  root.innerHTML=head+(list.length?'<div class="kd-grid">'+cards+'</div>':'<div class="kd-empty">条件に合う人がいません</div>');
+  var html='<div id="kd-headwrap">'+head+'</div>'+(list.length?'<div class="kd-grid">'+cards+'</div>':'<div class="kd-empty">条件に合う人がいません</div>');
+  if(opt.only&&root.querySelector('.kd-grid')){
+    // 変わったカードと上の数字だけ差し替える（入力中の欄があるところは、入力が終わってから）
+    var tmp=document.createElement('div');tmp.innerHTML=html;var a2=document.activeElement;
+    var hw=root.querySelector('#kd-headwrap'),nh=tmp.querySelector('#kd-headwrap');
+    if(hw&&nh){if(a2&&hw.contains(a2))callPending=true;else hw.innerHTML=nh.innerHTML;}
+    opt.only.forEach(function(id){var o=root.querySelector('.kd-card[data-id="'+id+'"]'),n=tmp.querySelector('.kd-card[data-id="'+id+'"]');
+      if(!o||!n)return;if(a2&&o.contains(a2)){callPending=true;return;}o.replaceWith(n);});
+    return;
+  }
+  root.innerHTML=html;
 }
 function callCard(r){
   var me=callMyMember();
@@ -6604,7 +6619,7 @@ function callCard(r){
     var fuBtns='<div class="kd-fu">'+['留守電','メール','その他'].map(function(o){var lab=o==='留守電'?'📞 留守電':o==='メール'?'✉️ メール':'📝 その他';return '<button class="'+(s.fu===o?'on':'')+'" onclick="callSave(\''+r.id+'\',{fu:'+(s.fu===o?'\'\'':'\''+o+'\'')+'})">'+lab+'</button>';}).join('')+'</div>';
     var opt=function(cur){return CALL_ATT.map(function(o){return '<option value="'+esc(o)+'"'+((cur||'')===o?' selected':'')+'>'+(o||'（まだ）')+'</option>';}).join('');};
     var callerSel='<select onchange="callSave(\''+r.id+'\',{caller:this.value})">'+CALL_MEMBERS.map(function(m){return '<option'+(callCaller(r)===m?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>';
-    return '<div class="kd-card'+cls+(r.noCall?' nocall':'')+'">'+
+    return '<div class="kd-card'+cls+(r.noCall?' nocall':'')+'" data-id="'+r.id+'">'+
       '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state||r.noCall?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
       (r.noCall?'<div class="kd-nc">'+(/不動産/.test(r.caller)?'🏢 ':'🚫 ')+esc(r.ncNote||'かけなくて大丈夫です')+'</div>':'<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>')+
       '<div class="kd-per">'+esc(r.person)+(r.role?'　<span class="kd-sub">'+esc(r.role)+'</span>':'')+'</div>'+
