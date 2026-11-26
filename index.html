@@ -6509,6 +6509,8 @@ function callListen(){
   });
 }
 function callSt(id){return CALL.st[id]||{};}
+// 「かけた」に数えるもの：かけた／不在でも留守電・メールで伝えた（11/26 森下さん）
+function callIsDone(s){return s.state==='done'||(s.state==='absent'&&(s.fu==='留守電'||s.fu==='メール'));}
 function callCaller(r){var s=callSt(r.id);return s.caller||r.caller||'';}
 function callSave(id,data){
   if(!fbEnabled){alert('オフラインのため保存できません');return;}
@@ -6535,7 +6537,7 @@ function callRender(){
   var callRows=rows.filter(function(r){return !r.noCall;}), ncRows=rows.length-callRows.length;
   var by={};CALL_MEMBERS.forEach(function(m){by[m]={n:0,d:0,a:0};});
   var done=0,abs=0;
-  callRows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0,a:0};by[c].n++;if(s.state==='done'){by[c].d++;done++;}else if(s.state==='absent'){by[c].a++;abs++;}});
+  callRows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0,a:0};by[c].n++;if(callIsDone(s)){by[c].d++;done++;}else if(s.state==='absent'){by[c].a++;abs++;}});
   var pct=Math.round(done*100/callRows.length);
   var me=callMyMember();
   // 進み具合の表：だれが・何人まだかけていないかが、後から見てもひと目で分かるように（11/26 森下さん）
@@ -6556,14 +6558,14 @@ function callRender(){
     var s=callSt(r.id);
     if(callF.who&&callCaller(r)!==callF.who)return false;
     if(callF.state==='todo'&&s.state)return false;
-    if(callF.state==='notdone'&&s.state==='done')return false;
-    if(callF.state==='absent'&&s.state!=='absent')return false;
-    if(callF.state==='done'&&s.state!=='done')return false;
+    if(callF.state==='notdone'&&callIsDone(s))return false;
+    if(callF.state==='absent'&&(s.state!=='absent'||callIsDone(s)))return false;
+    if(callF.state==='done'&&!callIsDone(s))return false;
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）</h2>'+
-    '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
+    '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
     '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
     // 電話対応マニュアル（PDF）を開く・保存する（11/26 森下さん）
@@ -6591,13 +6593,13 @@ function callRender(){
 function callCard(r){
   var me=callMyMember();
   {
-    var s=callSt(r.id),cls=s.state==='done'?' done':s.state==='absent'?' absent':'';
+    var s=callSt(r.id),cls=callIsDone(s)?' done':s.state==='absent'?' absent':'';
     var unk=/未確認/.test(r.gyoshu);
     var tel=r.tel?'<a class="kd-tel" href="'+callTelLink(r.tel)+'">📞 '+esc(r.tel)+(r.telType?' <small>'+esc(r.telType)+'</small>':'')+'</a>':'<div class="kd-notel">電話番号がありません。当社担当（'+esc(r.staff||'不明')+'）に確かめてください</div>';
     // 固定電話しか分からない人は色を変え、相談先を出す（11/26 森下さん）
     if(r.tel&&r.telType==='固定'&&!r.noCall)tel=tel.replace('class="kd-tel"','class="kd-tel fixed"')+'<div class="kd-fixnote">☎ 固定電話の番号です。携帯は、管理職の人なら分かるかもしれません。固定にかけるのが気が引けるときは、<b>松下さんか山本さん</b>に相談してください。</div>';
     if(r.tel2)tel+='<a class="kd-tel2" href="'+callTelLink(r.tel2)+'">つながらないときは '+esc(r.tel2Type||'')+'：📞 '+esc(r.tel2)+'</a>';
-    var whoLine=s.state==='done'?'<div class="kd-who">✅ '+esc(s.at||'')+'　'+esc(s.by||'')+' がかけました</div>':s.state==='absent'?'<div class="kd-who abs">📵 '+esc(s.at||'')+'　'+esc(s.by||'')+'：不在・かけ直し</div>':'';
+    var whoLine=s.state==='done'?'<div class="kd-who">✅ '+esc(s.at||'')+'　'+esc(s.by||'')+' がかけました</div>':s.state==='absent'?(callIsDone(s)?'<div class="kd-who">✅ '+esc(s.at||'')+'　'+esc(s.by||'')+'：不在でしたが'+esc(s.fu)+'で伝えたので「かけた」扱い</div>':'<div class="kd-who abs">📵 '+esc(s.at||'')+'　'+esc(s.by||'')+'：不在・かけ直し</div>'):'';
     if(s.fu)whoLine+='<div class="kd-fuline">↪ つながらなかったとき：'+esc(s.fu)+(s.note?'（'+esc(s.note)+'）':'')+'</div>';
     var fuBtns='<div class="kd-fu">'+['留守電','メール','その他'].map(function(o){var lab=o==='留守電'?'📞 留守電':o==='メール'?'✉️ メール':'📝 その他';return '<button class="'+(s.fu===o?'on':'')+'" onclick="callSave(\''+r.id+'\',{fu:'+(s.fu===o?'\'\'':'\''+o+'\'')+'})">'+lab+'</button>';}).join('')+'</div>';
     var opt=function(cur){return CALL_ATT.map(function(o){return '<option value="'+esc(o)+'"'+((cur||'')===o?' selected':'')+'>'+(o||'（まだ）')+'</option>';}).join('');};
