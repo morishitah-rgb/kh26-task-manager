@@ -6467,6 +6467,9 @@ var callF={who:null,state:'',q:''};
 '.kd-prog tr:hover td{background:#fff6e5}.kd-prog tr.on td{background:#fff0d6}.kd-prog tr.on td.r{background:#d32f2f}.kd-prog tr.fin td.nm::after{content:" ✔";color:#2e7d32}.kd-prog tbody tr:last-child td{border-top:2px solid #1f2d4d;font-weight:700}'+
 '.kd-todo{display:inline-block;background:#d32f2f;color:#fff;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:4px}'+
 '.kd-att{font-size:.8rem;color:#777;background:#f4f4f4;border-radius:8px;padding:7px 8px}.kd-att b{color:#1f2d4d}'+
+'.kd-view{display:flex;gap:6px;margin:12px 0 6px}.kd-view button{flex:1;max-width:240px;padding:9px 10px;border:2px solid var(--line);background:#fff;border-radius:9px;font-weight:700;font-size:.88rem;cursor:pointer;color:#555}.kd-view button.on{border-color:#1f2d4d;background:#1f2d4d;color:#fff}'+
+'.kd-gh{grid-column:1/-1;margin:10px 0 0;padding:8px 12px;background:#1f2d4d;color:#fff;border-radius:9px;font-weight:700;font-size:.92rem}.kd-gh span{font-weight:400;font-size:.8rem;opacity:.9}.kd-gh span.r{background:#d32f2f;border-radius:5px;padding:1px 7px;font-weight:700;opacity:1}.kd-gh span.g{background:#2e7d32;border-radius:5px;padding:1px 7px;font-weight:700;opacity:1}'+
+'.kd-gh.nc{background:#78909c}.kd-nc{margin:8px 0 2px;padding:8px 10px;border-radius:8px;background:#eceff1;color:#455a64;font-size:.82rem;font-weight:700}.kd-card.nocall{border-left-color:#78909c;background:#fafafa}'+
 '.kd-mem{margin:10px 0 4px}.kd-chip{border:1px solid var(--line);background:#fff;border-radius:18px;padding:5px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}.kd-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.kd-chip small{opacity:.75;margin-left:3px}'+
 '.kd-ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.kd-ctl select,.kd-ctl input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;background:#fff}.kd-ctl input{flex:1;min-width:160px}'+
 '.kd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}'+
@@ -6524,11 +6527,13 @@ function callRender(){
   if(!callLoaded){root.innerHTML='<div class="kd-empty">読み込み中…</div>';return;}
   var rows=Object.keys(CALL.rows).map(function(k){return CALL.rows[k];}).sort(function(a,b){return a.no-b.no;});
   if(!rows.length){root.innerHTML='<div class="kd-empty">架電リストがまだありません</div>';return;}
-  if(callF.who===null){callF.who=callMyMember()||'';}
+  // 最初は全員を表示（ほかの人の担当も見られるように。11/26 森下さん）。自分の担当は先頭に並べる
+  if(callF.who===null){callF.who='';}
+  var callRows=rows.filter(function(r){return !r.noCall;}), ncRows=rows.length-callRows.length;
   var by={};CALL_MEMBERS.forEach(function(m){by[m]={n:0,d:0,a:0};});
   var done=0,abs=0;
-  rows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0,a:0};by[c].n++;if(s.state==='done'){by[c].d++;done++;}else if(s.state==='absent'){by[c].a++;abs++;}});
-  var pct=Math.round(done*100/rows.length);
+  callRows.forEach(function(r){var c=callCaller(r),s=callSt(r.id);if(!by[c])by[c]={n:0,d:0,a:0};by[c].n++;if(s.state==='done'){by[c].d++;done++;}else if(s.state==='absent'){by[c].a++;abs++;}});
+  var pct=Math.round(done*100/callRows.length);
   var me=callMyMember();
   // 進み具合の表：だれが・何人まだかけていないかが、後から見てもひと目で分かるように（11/26 森下さん）
   var prow=function(key,label,b){var left=b.n-b.d-b.a,p=b.n?Math.round(b.d*100/b.n):0;
@@ -6537,7 +6542,7 @@ function callRender(){
       '<td class="'+(left?'r':'g')+'">'+(left?left+' 人':'完了')+'</td><td class="pb"><div class="kd-bar"><i style="width:'+p+'%"></i></div></td></tr>';};
   var chips='<table class="kd-prog"><thead><tr><th>架電する人</th><th>担当</th><th>✅ かけた</th><th>📵 不在</th><th>⬜ まだ</th><th></th></tr></thead><tbody>'+
     CALL_MEMBERS.map(function(m){return prow(m,(m===me?'⭐ ':'')+esc(m),by[m]||{n:0,d:0,a:0});}).join('')+
-    prow('','全員',{n:rows.length,d:done,a:abs})+'</tbody></table>'+
+    prow('','全員',{n:callRows.length,d:done,a:abs})+'</tbody></table>'+
     '<div class="kd-sub">名前を押すと、その人の担当だけを表示します。「まだ」が赤の人は、かけていない相手が残っています。</div>';
   var q=callNorm(callF.q).toLowerCase();
   var list=rows.filter(function(r){
@@ -6551,15 +6556,32 @@ function callRender(){
     return true;
   });
   var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）</h2>'+
-    '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産の業者さんは各担当が連絡するので、このリストには入っていません。</p>'+
+    '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人は、不動産部が連絡済みです（リストのいちばん下に「連絡済み」として載せています）。</p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(rows.length-done-abs)+'</b></span><span>全 <b>'+rows.length+'</b> 人（'+pct+'%）</span></div>'+
+    '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不動産部で連絡済み '+ncRows+' 人</span></div>'+
+    '<div class="kd-view"><button class="'+(callF.who===''?'on':'')+'" onclick="callF.who=\'\';callRender()">👥 全員の担当を見る</button>'+
+      (me?'<button class="'+(callF.who===me?'on':'')+'" onclick="callF.who=\''+me+'\';callRender()">⭐ 自分の担当だけ</button>':'')+'</div>'+
     '<div class="kd-mem">'+chips+'</div>'+
     '<div class="kd-ctl"><select onchange="callF.state=this.value;callRender()">'+
       [['','すべての状態'],['notdone','⬜📵 まだ話せていない（まだ＋不在）'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
     '</select><input id="kd-q" placeholder="🔍 会社名・お名前・業種で探す" value="'+esc(callF.q)+'" oninput="callF.q=this.value;clearTimeout(window._clq);window._clq=setTimeout(function(){var p=document.getElementById(\'kd-q\');var pos=p?p.selectionStart:0;document.activeElement&&document.activeElement.blur();callRender();var n=document.getElementById(\'kd-q\');if(n){n.focus();n.setSelectionRange(pos,pos);}},350)"></div>'+
     '<div class="kd-sub" style="margin-top:6px">'+(me?'あなた（'+esc(me)+'）の担当は⭐。':'ログインの名前（'+esc(callMyName()||'不明')+'）が委員会メンバーと一致しないため、全員を表示しています。')+' 表示中 '+list.length+'人</div></div>';
+  // 架電する人ごとにまとめて並べる（自分 → メンバー表の順）。見出しに残りの人数を出す
+  var order=function(m){if(m===me)return -1;var i=CALL_MEMBERS.indexOf(m);return i<0?999:i;};
+  list.sort(function(a,b){return (order(callCaller(a))-order(callCaller(b)))||(a.no-b.no);});
+  var lastCaller=null;
   var cards=list.map(function(r){
+    var c=callCaller(r),hd='';
+    if(c!==lastCaller&&r.noCall){lastCaller=c;hd='<div class="kd-gh nc">🏢 不動産部のリスト（不動産部で連絡済み）　<span>'+ncRows+'人</span></div>';}
+    else if(c!==lastCaller){lastCaller=c;var b=by[c]||{n:0,d:0,a:0},left=b.n-b.d-b.a;
+      hd='<div class="kd-gh">'+(c===me?'⭐ ':'')+esc(c)+'さんの担当　<span>'+b.n+'人中 かけた '+b.d+'・不在 '+b.a+'・</span><span class="'+(left?'r':'g')+'">'+(left?'まだ '+left+'人':'全員かけ終わり')+'</span></div>';}
+    return hd+callCard(r);
+  }).join('');
+  root.innerHTML=head+(list.length?'<div class="kd-grid">'+cards+'</div>':'<div class="kd-empty">条件に合う人がいません</div>');
+}
+function callCard(r){
+  var me=callMyMember();
+  {
     var s=callSt(r.id),cls=s.state==='done'?' done':s.state==='absent'?' absent':'';
     var unk=/未確認/.test(r.gyoshu);
     var tel=r.tel?'<a class="kd-tel" href="'+callTelLink(r.tel)+'">📞 '+esc(r.tel)+(r.telType?' <small>'+esc(r.telType)+'</small>':'')+'</a>':'<div class="kd-notel">電話番号がありません。当社担当（'+esc(r.staff||'不明')+'）に確かめてください</div>';
@@ -6568,23 +6590,22 @@ function callRender(){
     var fuBtns='<div class="kd-fu">'+['留守電','メール','その他'].map(function(o){var lab=o==='留守電'?'📞 留守電':o==='メール'?'✉️ メール':'📝 その他';return '<button class="'+(s.fu===o?'on':'')+'" onclick="callSave(\''+r.id+'\',{fu:'+(s.fu===o?'\'\'':'\''+o+'\'')+'})">'+lab+'</button>';}).join('')+'</div>';
     var opt=function(cur){return CALL_ATT.map(function(o){return '<option value="'+esc(o)+'"'+((cur||'')===o?' selected':'')+'>'+(o||'（まだ）')+'</option>';}).join('');};
     var callerSel='<select onchange="callSave(\''+r.id+'\',{caller:this.value})">'+CALL_MEMBERS.map(function(m){return '<option'+(callCaller(r)===m?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>';
-    return '<div class="kd-card'+cls+'">'+
-      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
-      '<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>'+
+    return '<div class="kd-card'+cls+(r.noCall?' nocall':'')+'">'+
+      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state||r.noCall?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
+      (r.noCall?'<div class="kd-nc">🏢 不動産部で連絡済み（かけなくて大丈夫です）</div>':'<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>')+
       '<div class="kd-per">'+esc(r.person)+(r.role?'　<span class="kd-sub">'+esc(r.role)+'</span>':'')+'</div>'+
       '<div class="kd-sub">当社の担当：'+esc(r.staff||'不明')+'（'+esc(r.dept||'')+'）</div>'+
       tel+
-      '<div class="kd-btns"><button class="b-done'+(s.state==='done'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'done\')">✅ かけた</button><button class="b-abs'+(s.state==='absent'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'absent\')">📵 不在</button></div>'+
+      (r.noCall?'':'<div class="kd-btns"><button class="b-done'+(s.state==='done'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'done\')">✅ かけた</button><button class="b-abs'+(s.state==='absent'?' on':'')+'" onclick="callMark(\''+r.id+'\',\'absent\')">📵 不在</button></div>')+
       whoLine+
-      '<div class="kd-f"><label>架電する人</label>'+callerSel+
+      '<div class="kd-f">'+(r.noCall?'':'<label>架電する人</label>'+callerSel)+
       // 確定出欠はQRコード（Googleフォーム）の回答から自動で入れる予定。架電の段階では書かない（11/26 森下さん）
       '<label>確定出欠</label><div class="kd-att">'+(s.att?'<b>'+esc(s.att)+'</b>':'QRの回答から自動で入ります（準備中）')+'</div>'+
       '<label>変更出欠</label><select class="chg" onchange="callSave(\''+r.id+'\',{attChg:this.value})">'+opt(s.attChg)+'</select>'+
-      '<label>不在のとき</label>'+fuBtns+
+      (r.noCall?'':'<label>不在のとき</label>'+fuBtns)+
       '<label>備考</label><textarea placeholder="例：留守電に「招待状が届きます」と入れた／〇日に折り返し" onblur="if(this.value!==(callSt(\''+r.id+'\').note||\'\'))callSave(\''+r.id+'\',{note:this.value});setTimeout(function(){if(callPending)callRender();},300)">'+esc(s.note||'')+'</textarea></div>'+
       '</div>';
-  }).join('');
-  root.innerHTML=head+(list.length?'<div class="kd-grid">'+cards+'</div>':'<div class="kd-empty">条件に合う人がいません</div>');
+  }
 }
 
 // ===== Google OAuth 認証 =====
