@@ -3851,6 +3851,8 @@ function resolvePerson(key){
   return {key:key,name:e.name,sub:e.dept,role:(curPeriod!=='2026'?roles27(e):e.role),cat:e.cat,attendance:e.attendance,isVendor:false,party:!!e.party,no:e.no};
 }
 function getSeatablePeople(){
+  // 社員名簿の出欠・懇親会のチェックを、名簿の画面を開いていなくても読み込む（11/26 初期化したら社員が出なかったため）
+  if(typeof getEmployeeData==='function')getEmployeeData();
   var list=[];
   EMPLOYEES.forEach(function(e){if(e.party)list.push(resolvePerson('e'+e.no));});
   (D.vendors||[]).forEach(function(v){if(v.party)list.push(resolvePerson('v'+v.id));});
