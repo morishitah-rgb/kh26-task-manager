@@ -6544,7 +6544,11 @@ function callRender(){
       '<td class="'+(left?'r':'g')+'">'+(left?left+' 人':'完了')+'</td><td class="pb"><div class="kd-bar"><i style="width:'+p+'%"></i></div></td></tr>';};
   var chips='<table class="kd-prog"><thead><tr><th>架電する人</th><th>担当</th><th>✅ かけた</th><th>📵 不在</th><th>⬜ まだ</th><th></th></tr></thead><tbody>'+
     CALL_MEMBERS.map(function(m){return prow(m,(m===me?'⭐ ':'')+esc(m),by[m]||{n:0,d:0,a:0});}).join('')+
-    prow('','全員',{n:callRows.length,d:done,a:abs})+'</tbody></table>'+
+    // 不動産部のリストは「連絡済み」として表に入れ、合計（招待状の相手）が分かるようにする（11/26 森下さん）
+    (function(){var re=rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);});var rc=re.length?re[0].caller:'不動産部（連絡済み）';
+      return re.length?prow(rc,'🏢 不動産部（連絡済み）',{n:re.length,d:re.length,a:0}):'';})()+
+    prow('','合計（招待状の相手）',{n:callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length,d:done+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length,a:abs})+'</tbody></table>'+
+    '<div class="kd-sub">合計＝委員会でかける '+callRows.length+'人＋不動産部で連絡済み '+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length+'人。ほかに「不要」（案内状を別送）が '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+'人います。</div>'+
     '<div class="kd-sub">名前を押すと、その人の担当だけを表示します。「まだ」が赤の人は、かけていない相手が残っています。</div>';
   var q=callNorm(callF.q).toLowerCase();
   var list=rows.filter(function(r){
@@ -6560,7 +6564,7 @@ function callRender(){
   var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）</h2>'+
     '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人は、不動産部が連絡済みです（リストのいちばん下に「連絡済み」として載せています）。<br>☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="kd-tot"><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋かけなくてよい：不動産部で連絡済み '+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length+' 人・不要 '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
+    '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋かけなくてよい：不動産部で連絡済み '+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length+' 人・不要 '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
     '<div class="kd-view"><button class="'+(callF.who===''?'on':'')+'" onclick="callF.who=\'\';callRender()">👥 全員の担当を見る</button>'+
       (me?'<button class="'+(callF.who===me?'on':'')+'" onclick="callF.who=\''+me+'\';callRender()">⭐ 自分の担当だけ</button>':'')+'</div>'+
     '<div class="kd-mem">'+chips+'</div>'+
