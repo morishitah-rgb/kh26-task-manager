@@ -6476,7 +6476,7 @@ var callF={who:null,state:'',q:''};
 '.kd-mem{margin:10px 0 4px}.kd-chip{border:1px solid var(--line);background:#fff;border-radius:18px;padding:5px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}.kd-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.kd-chip small{opacity:.75;margin-left:3px}'+
 '.kd-ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.kd-ctl select,.kd-ctl input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;background:#fff}.kd-ctl input{flex:1;min-width:160px}'+
 '.kd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}'+
-'.kd-card{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;border-left:6px solid #b0bec5}.kd-card.done{border-left-color:#43a047;background:#f6fbf6}.kd-card.absent{border-left-color:#fb8c00;background:#fffaf2}'+
+'.kd-card{content-visibility:auto;contain-intrinsic-size:auto 560px;background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;border-left:6px solid #b0bec5}.kd-card.done{border-left-color:#43a047;background:#f6fbf6}.kd-card.absent{border-left-color:#fb8c00;background:#fffaf2}'+
 '.kd-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.kd-co{font-weight:700;font-size:1rem;line-height:1.35}.kd-no{font-size:.72rem;color:var(--sub)}'+
 '.kd-gyo{display:inline-block;background:#e8f0fe;color:#1a56b0;border-radius:6px;padding:2px 8px;font-size:.8rem;font-weight:700;margin:4px 0}.kd-gyo.unk{background:#f1f1f1;color:#777}'+
 '.kd-per{font-size:.95rem;margin:2px 0}.kd-sub{font-size:.78rem;color:var(--sub)}'+
@@ -6572,7 +6572,7 @@ function callRender(opt){
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
-  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 17:30</small></h2>'+
+  var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/26 18:00</small></h2>'+
     '<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
     '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
