@@ -1,5 +1,8 @@
 [build]
   publish = "."
+  # 2026-11-26：このアプリは GitHub Pages（morishitah-rgb.github.io/kh26-task-manager）で公開している。
+  # Netlify の無料枠（クレジット）を使い切らないよう、push しても Netlify ではビルド・公開しない。
+  ignore = "exit 0"
 
 [[headers]]
   for = "/*"
