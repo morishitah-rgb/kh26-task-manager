@@ -921,7 +921,7 @@ a{color:var(--red)}
   <div class="card" style="padding:0;overflow:hidden">
     <table style="width:100%;border-collapse:collapse;font-size:.85rem">
       <thead>
-        <tr style="background:var(--navy);color:#fff">
+        <tr style="background:var(--navy,#1F3A5F);color:#fff">
           <th style="padding:8px 12px;text-align:left;width:40px">#</th>
           <th style="padding:8px 12px;text-align:left">氏名</th>
           <th style="padding:8px 12px;text-align:center;width:120px">出席状況</th>
@@ -3683,11 +3683,14 @@ function getEmployeeData(){
   if(D.roster&&D.roster.length){
     D.roster.forEach(function(r){
       var emp=EMPLOYEES.find(function(e){return e.no===r.no;});
-      if(emp){emp.attendance=r.attendance;emp.party=!!r.party;}
+      if(emp){emp.attendance=r.attendance;emp.party=!!r.party;emp.partyAtt=r.partyAtt||'';}
     });
   }
+  // 懇親会の出欠（出席・欠席・未回答）。前のデータはチェックの有無から決める（11/28）
+  EMPLOYEES.forEach(function(e){if(!e.partyAtt)e.partyAtt=e.party?'出席':'欠席';e.party=e.partyAtt!=='欠席';});
   return EMPLOYEES;
 }
+function rosterSnap(){return EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party,partyAtt:e.partyAtt||(e.party?'出席':'欠席')};});}
 function printRosterPDF(){
   var emps=getEmployeeData().filter(function(e){return e.attendance==='出席';});
   var total=emps.length;
@@ -3775,7 +3778,11 @@ function renderRoster(){
   var attColors={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5','未回答':'#ffe0b2'};
   var catColors={'社員':'','AI業務委託':'#fff8e1','入社予定':'#fff8e1'};
   // 「未回答だけ表示」（アンケートの催促用。11/28）
-  if(window.__rosterNA)emps=emps.filter(function(e){return e.attendance==='未回答';});
+  if(window.__rosterNA)emps=emps.filter(function(e){return e.attendance==='未回答'||e.partyAtt==='未回答';});
+  var is27r=curPeriod!=='2026';
+  // 見出し：左＝本編の出欠、右＝懇親会の出欠（11/28 森下さん）
+  var _th=document.querySelectorAll('#page-roster thead th');
+  if(_th.length>=4){_th[2].textContent=is27r?'本編の出欠':'出席状況';_th[3].textContent=is27r?'懇親会の出欠':'懇親会出席';_th[3].style.width=is27r?'120px':'90px';}
   tbody.innerHTML=emps.map(function(e){
     var bg=catColors[e.cat]||'';
     var opts=(curPeriod!=='2026'?['未回答','出席','欠席','未定']:['出席','欠席','未定']).map(function(o){
@@ -3785,11 +3792,13 @@ function renderRoster(){
     var catBadge=e.cat!=='社員'?'<span style="font-size:.7rem;background:#f0c040;border-radius:4px;padding:1px 5px;margin-left:6px">'+e.cat+'</span>':'';
     return '<tr style="border-bottom:1px solid var(--line);background:'+bg+'">'+
       '<td style="padding:6px 12px;color:var(--sub);font-size:.8rem">'+e.no+'</td>'+
-      '<td style="padding:6px 12px">'+e.name+catBadge+(e.attendance==='未回答'?'<span class="na-pill">❓未回答</span>':'')+noteHtml+'</td>'+
+      '<td style="padding:6px 12px">'+e.name+catBadge+(e.attendance==='未回答'||(is27r&&e.partyAtt==='未回答')?'<span class="na-pill">❓未回答</span>':'')+noteHtml+'</td>'+
       '<td style="padding:4px 8px;text-align:center">'+
         '<select onchange="onRosterChange('+e.no+',this.value)" style="padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:'+attColors[e.attendance||'未定']+';font-size:.83rem">'+opts+'</select>'+
       '</td>'+
-      '<td style="padding:4px 8px;text-align:center"><input type="checkbox" '+(e.party?'checked':'')+' onchange="onRosterPartyChange('+e.no+',this.checked)"></td>'+
+      (is27r?'<td style="padding:4px 8px;text-align:center"><select onchange="onRosterPartyAttChange('+e.no+',this.value)" style="padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:'+attColors[e.partyAtt||'未定']+';font-size:.83rem">'+
+        ['未回答','出席','欠席'].map(function(o){return '<option value="'+o+'"'+(e.partyAtt===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select></td>'
+      :'<td style="padding:4px 8px;text-align:center"><input type="checkbox" '+(e.party?'checked':'')+' onchange="onRosterPartyChange('+e.no+',this.checked)"></td>')+
       '</tr>';
   }).join('');
   updateRosterStats();
@@ -3799,15 +3808,22 @@ function onRosterChange(no,val){
   if(emp){
     emp.attendance=val;
     updateRosterStats();
-    D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+    D.roster=rosterSnap();
     persist();showToast('✓ 名簿を保存しました');
   }
+}
+function onRosterPartyAttChange(no,val){
+  var emp=EMPLOYEES.find(function(e){return e.no===no;});
+  if(!emp)return;
+  emp.partyAtt=val;emp.party=val!=='欠席';
+  D.roster=rosterSnap();
+  persist();showToast('✓ 名簿を保存しました');renderRoster();
 }
 function onRosterPartyChange(no,checked){
   var emp=EMPLOYEES.find(function(e){return e.no===no;});
   if(emp){
-    emp.party=checked;
-    D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+    emp.party=checked;emp.partyAtt=checked?'出席':'欠席';
+    D.roster=rosterSnap();
     persist();showToast('✓ 名簿を保存しました');
     if(curTab==='seating')renderSeating();
     if(curTab==='banquet')renderBanquetSeating();
@@ -3818,23 +3834,26 @@ function updateRosterStats(){
   var cnt={出席:0,欠席:0,未定:0,未回答:0};
   emps.forEach(function(e){cnt[e.attendance]=(cnt[e.attendance]||0)+1;});
   var naAll=EMPLOYEES.filter(function(e){return e.attendance==='未回答';}).length;
+  var naP=EMPLOYEES.filter(function(e){return e.partyAtt==='未回答';}).length;
+  var pc={出席:0,欠席:0};emps.forEach(function(e){pc[e.partyAtt]=(pc[e.partyAtt]||0)+1;});
   var el=document.getElementById('roster-stats');
   if(el){
     var is27=curPeriod!=='2026';
-    el.innerHTML=(is27?'<span style="color:#e65100;font-weight:800">❓ 未回答 '+naAll+'名</span> ／ ':'')+'出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名 ／ 未定 '+(cnt['未定']||0)+'名（社員のみ）｜名簿更新日 '+ROSTER_UPDATED+'（2027年1月最新版 社員名簿一覧より）'+
+    el.innerHTML=(is27?'<b>本編</b> <span style="color:#e65100;font-weight:800">❓未回答 '+naAll+'名</span> ／ ':'')+'出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名'+(cnt['未定']?' ／ 未定 '+cnt['未定']+'名':'')+
+      (is27?'　<b>懇親会</b> <span style="color:#e65100;font-weight:800">❓未回答 '+naP+'名</span> ／ 出席 '+(pc['出席']||0)+'名 ／ 欠席 '+(pc['欠席']||0)+'名':'')+'（社員のみ）｜名簿更新日 '+ROSTER_UPDATED+'（2027年1月最新版 社員名簿一覧より）'+
       (is27?' <button class="btn btn-gray" style="padding:3px 10px;font-size:.75rem;margin-left:6px" onclick="window.__rosterNA=!window.__rosterNA;renderRoster()">'+(window.__rosterNA?'全員を表示':'❓ 未回答だけ表示（催促用）')+'</button>'+
        ' <button class="btn btn-gray" style="padding:3px 10px;font-size:.75rem" onclick="rosterStartSurvey()">📝 アンケート開始：全員を未回答にする</button>':'');
   }
 }
 // 社員の出欠アンケートを始めるとき：全員を「未回答」にする（回答が来た人から「出席」「欠席」に変える）（11/28）
 function rosterStartSurvey(){
-  if(!confirm('社員全員の出席状況を「未回答」にします。\n（アンケートの回答が来た人から「出席」「欠席」に変えてください。未回答の人は座席表・名簿に「❓未回答」の印が付きます）\nよいですか？'))return;
-  EMPLOYEES.forEach(function(e){e.attendance='未回答';});
-  D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+  if(!confirm('社員全員の「本編の出欠」と「懇親会の出欠」を「未回答」にします。\n（アンケートの回答が来た人から「出席」「欠席」に変えてください。未回答の人は座席表・名簿に「❓未回答」の印が付きます）\nよいですか？'))return;
+  EMPLOYEES.forEach(function(e){e.attendance='未回答';e.partyAtt='未回答';e.party=true;});
+  D.roster=rosterSnap();
   persist();renderRoster();showToast('✓ 全員を未回答にしました');
 }
 function saveRoster(){
-  D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+  D.roster=rosterSnap();
   persist();showToast('✓ 名簿を保存しました');
 }
 
@@ -6080,7 +6099,7 @@ function mainVisible27(key){
 function partyVisible27(key){
   if(curPeriod==='2026')return true;
   var v=keyVendor27(key);if(v)return vendorInParty27(v);
-  var e=keyEmp27(key);if(e)return !!e.party&&e.attendance!=='欠席';
+  var e=keyEmp27(key);if(e)return e.partyAtt?e.partyAtt!=='欠席':!!e.party;
   return true;
 }
 // 名札に「未回答」の印を付けるため、resolvePerson の結果に noAns を足す
@@ -6090,7 +6109,8 @@ function partyVisible27(key){
   if(curPeriod==='2026')return _gs();
   if(typeof getEmployeeData==='function')getEmployeeData();
   var list=[];
-  EMPLOYEES.forEach(function(e){if(e.party&&e.attendance!=='欠席')list.push(resolvePerson('e'+e.no));});
+  // 社員は社員名簿の「懇親会の出欠」で決める（欠席は出さない。未回答は印を付けて出す）（11/28）
+  EMPLOYEES.forEach(function(e){if(e.partyAtt!=='欠席'&&e.party){var p=resolvePerson('e'+e.no);if(p){p.noAns=e.partyAtt==='未回答';list.push(p);}}});
   (D.vendors||[]).forEach(function(v){if(vendorInParty27(v))list.push(resolvePerson('v'+v.id));});
   return list.filter(Boolean);
 };})();
