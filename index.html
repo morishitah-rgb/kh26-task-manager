@@ -3840,6 +3840,9 @@ function saveRoster(){
 
 // ===== 座席表 =====
 var SEAT_ROWS=12,SEAT_COLS=20;
+// 2027期は後ろにM・N列を足して14列（11/28 森下さん「席増やして」。228席→268席）
+var SEAT_ROWS27=14;
+function seatRowsNow(){SEAT_ROWS=(curPeriod==='2026'||SEAT_LAYOUT27_ON)?12:SEAT_ROWS27;return SEAT_ROWS;}
 // 座席表レイアウト切替：false＝標準グリッド（A〜L×1〜20）／true＝雲海図面ベース（SEAT_LAYOUT27）
 var SEAT_LAYOUT27_ON=false;
 // 2027期：席を置かない所（11/1 森下さんのオレンジの線）。A1・A2・A19・A20と、9〜12列のA・B列
@@ -3986,7 +3989,7 @@ function renderSeating(){
 
   var validSeat27=useL27?new Set(seatList27().concat(FRONT27_KEYS)):null;
   var placedKeys=new Set(Object.keys(saved.seats||{}).filter(function(sk){return !validSeat27||validSeat27.has(sk);}).map(function(sk){var k=saved.seats[sk];return typeof k==='number'?'e'+k:k;}));
-  var ROW_LABELS='ABCDEFGHIJKL'.split('');
+  seatRowsNow();var ROW_LABELS='ABCDEFGHIJKLMN'.split('');
 
   for(var r=0;r<SEAT_ROWS;r++){
     // 出入口ラベル（左端・A〜C付近＝r===1／J〜L付近＝r===10に表示／2027期以降のみ）
@@ -4355,7 +4358,7 @@ function resetSeating(){
 function printSeating(){
   var is26=curPeriod==='2026';
   var useL27=!is26&&SEAT_LAYOUT27_ON;
-  var ROW_LABELS='ABCDEFGHIJKL'.split('');
+  seatRowsNow();var ROW_LABELS='ABCDEFGHIJKLMN'.split('');
   var saved=(D.seating&&D.seating.seats)||{};
   var SEAT_W=66, SEAT_H=42, GAP=3, AISLE=12, LABEL_W=22;
 
@@ -4916,7 +4919,7 @@ function autoArrangeSeating(){
   if(SEAT_LAYOUT27_ON&&curPeriod!=='2026'){
     seatList27().forEach(function(sid){if(idx<attending.length){seats[sid]=attending[idx].key;idx++;}});
   }else{
-  for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
+  seatRowsNow();for(var r=0;r<SEAT_ROWS&&idx<attending.length;r++){
     for(var c=0;c<SEAT_COLS&&idx<attending.length;c++){
       if(curPeriod!=='2026'&&SKIP27['r'+r+'c'+c])continue;  // 2027期：席を置かない所には入れない
       seats['r'+r+'c'+c]=attending[idx].key;
@@ -6104,7 +6107,7 @@ function autoArrange27(){
   if(!confirm('本編の座席を自動で並べ直します（今の配置はリセットされます）。\n・業者さん（社長来賓・管理本部が前の真ん中）→ 社員の順\n・社長は社員の真ん中、発表者は右寄り\n・委員会メンバーと森美香さんは最後尾\n欠席の人は入れません。よいですか？'))return;
   var nm=function(s){return String(s||'').replace(/[\s　]/g,'');};
   var people=getMainSeatablePeople();
-  var seats=[];for(var r=0;r<SEAT_ROWS;r++)for(var c=0;c<SEAT_COLS;c++){if(!SKIP27['r'+r+'c'+c])seats.push({r:r,c:c,id:'r'+r+'c'+c});}
+  seatRowsNow();var seats=[];for(var r=0;r<SEAT_ROWS;r++)for(var c=0;c<SEAT_COLS;c++){if(!SKIP27['r'+r+'c'+c])seats.push({r:r,c:c,id:'r'+r+'c'+c});}
   var dist=function(s){return Math.abs(s.c-(SEAT_COLS-1)/2);};
   var used={},out={},left=[];
   var take=function(list,p){for(var i=0;i<list.length;i++){if(!used[list[i].id]){used[list[i].id]=1;out[list[i].id]=p.key;return list[i];}}left.push(p);return null;};
