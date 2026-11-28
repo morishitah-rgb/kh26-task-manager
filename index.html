@@ -5693,7 +5693,7 @@ function vrCss(){
   '.vr-no{color:#999;font-size:.75rem;text-align:right;white-space:nowrap}'+
   '.vr-rank{display:inline-block;width:24px;height:24px;line-height:24px;border-radius:50%;text-align:center;font-weight:800;font-size:.8rem;color:#fff;background:#C8232A}.vr-rank.B{background:#8a94a6}'+
   '.vr-co{font-weight:700;color:#1f2d4d;line-height:1.35}.vr-gyo{display:inline-block;margin-top:3px;background:#e8f0fe;color:#1a56b0;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:700}'+
-  '.vr-per{font-weight:700}.vr-sub{font-size:.75rem;color:var(--sub);line-height:1.35}'+
+  '.vr-kana{font-size:.7rem;color:#888;letter-spacing:.04em;line-height:1.2}.vr-per{font-weight:700}.vr-sub{font-size:.75rem;color:var(--sub);line-height:1.35}'+
   '.vr-tel{display:inline-block;color:#1565c0;font-weight:700;text-decoration:none;white-space:nowrap}.vr-tel:hover{text-decoration:underline}.vr-mail{font-size:.75rem;color:#555;word-break:break-all}'+
   '.vr-note{font-size:.76rem;color:#555;max-width:260px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}'+
   '.vr-adr{font-size:.76rem;color:#555;min-width:150px;max-width:210px}.vr-t td.vr-stf{white-space:nowrap;font-size:.8rem}'+
@@ -5747,7 +5747,7 @@ function renderVendors(){
       '<td class="vr-no">'+(v.no?esc(v.no):'')+'</td>'+
       '<td class="vr-rk">'+(v.rank?'<span class="vr-rank '+esc(v.rank)+'">'+esc(v.rank)+'</span>':'')+'</td>'+
       '<td><div class="vr-co">'+esc(v.company||'')+'</div>'+(gy?'<span class="vr-gyo">'+esc(gy)+'</span>':'')+'</td>'+
-      '<td><div class="vr-per">'+esc(v.person||'')+(v.person&&!/様$/.test(v.person)?' 様':'')+'</div>'+(v.role&&v.role!=='ー'?'<div class="vr-sub">'+esc(v.role)+'</div>':'')+'</td>'+
+      '<td>'+(v.kana?'<div class="vr-kana">'+esc(v.kana)+'</div>':'')+'<div class="vr-per">'+esc(v.person||'')+(v.person&&!/様$/.test(v.person)?' 様':'')+'</div>'+(v.role&&v.role!=='ー'?'<div class="vr-sub">'+esc(v.role)+'</div>':'')+'</td>'+
       '<td class="vr-stf">'+esc(v.staff||'―')+'</td>'+
       '<td>'+(v.tel?'<a class="vr-tel" href="'+vrTel(v.tel)+'">📞 '+esc(v.tel)+'</a>':'<span class="vr-sub">電話なし</span>')+(v.email?'<div class="vr-mail">✉️ '+esc(v.email)+'</div>':'')+'</td>'+
       '<td><div class="vr-adr">'+esc(v.address||'')+'</div></td>'+
