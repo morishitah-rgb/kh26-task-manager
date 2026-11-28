@@ -4111,10 +4111,13 @@ function vendorDeptColor27(dept){
 function shortCompany27(s){
   return String(s||'').replace(/株式会社|有限会社|合同会社|一般社団法人|社会保険労務士法人|監査法人|[（(]株[)）]|[（(]有[)）]|㈱|㈲/g,'').replace(/[\s　]+/g,' ').trim();
 }
+// 社員の名札の色（本編の座席表と同じ。AI業務委託＝オレンジ、入社予定＝紫、社員＝緑）（11/28 森下さん）
+function empColor27(p){return p&&p.cat==='AI業務委託'?'#f39c12':p&&p.cat==='入社予定'?'#8e44ad':'#27ae60';}
 function vendorLegendHtml27(){
   return '<div style="font-weight:800;color:#1F3A5F;margin-right:4px">社外の方の色（当社の担当部署）：</div>'+
     VENDOR_DEPT27.map(function(x){return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:'+x[2]+';display:inline-block"></span>'+esc(x[1])+'</span>';}).join('')+
-    '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:#27ae60;display:inline-block"></span>社員（出席）</span>';
+    '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:#27ae60;display:inline-block"></span>社員（出席）</span>'+
+    '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="width:14px;height:14px;border-radius:4px;background:#f39c12;display:inline-block"></span>AI事業（AI業務委託）</span>';
 }
 function makeNameTag(person,seatId){
   // 背景色・文字色（カテゴリ優先、次に出席状況／業者は専用色）
@@ -6328,7 +6331,7 @@ function makeBq27Tag(p){
   tag.draggable=true;
   tag.dataset.personKey=p.key;
   // 本編の座席表と同じ色：社外の方は当社の担当部署の色、社員は緑（11/2 森下さん）
-  tag.style.background=p.isVendor?vendorDeptColor27(p.dept):'#27ae60';
+  tag.style.background=p.isVendor?vendorDeptColor27(p.dept):empColor27(p);
   tag.title=(p.sub||'')+(p.isVendor?'（社外）':'')+'｜ダブルクリックで未配置に戻す';
   // 社外の方は、会社名を名前の上に小さく（本編と同じ）
   tag.innerHTML=(p.isVendor&&p.sub&&p.sub!==p.name?'<small>'+esc(shortCompany27(p.sub))+'</small>'+esc(p.name):esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':''))+
@@ -6454,7 +6457,7 @@ function printBanquet27(){
   var b=bq27Init();
   // 画面と同じく、社外の方は会社名を上に・担当部署の色（薄く）、社員は薄い緑
   var name=function(k){var p=resolvePerson(k);return p?(p.isVendor&&p.sub?'<span class="co">'+esc(shortCompany27(p.sub))+'</span>':'')+esc(p.name):'';};
-  var bgOf=function(k){var p=resolvePerson(k);return p?(p.isVendor?vendorDeptColor27(p.dept)+'33':'#d9f0df'):'';};
+  var bgOf=function(k){var p=resolvePerson(k);return p?(p.isVendor?vendorDeptColor27(p.dept)+'33':empColor27(p)+'33'):'';};
   var box=function(title,list,cls){
     list=list.filter(partyVisible27);  // 欠席の人は印刷にも出さない（11/28）
     return '<div class="isl'+(cls||'')+'"><div class="hd"><b>'+title+'</b><span>'+list.length+'名</span></div><div class="bd">'+
