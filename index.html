@@ -945,7 +945,7 @@ a{color:var(--red)}
     <div class="vr-title"><h2>📋 業者名簿</h2><span id="vendor-stats" class="vr-stats"></span></div>
     <div class="vr-tools">
       <input id="vendor-search" class="vr-search" placeholder="🔍 会社名・お名前・業種・電話で探す" oninput="renderVendors()">
-      <select id="vendor-rank" class="vr-sel" onchange="renderVendors()"><option value="">すべてのランク</option><option value="A">Aランク（招待状）</option><option value="B">Bランク（候補）</option></select>
+      <select id="vendor-rank" class="vr-sel" onchange="renderVendors()"><option value="">すべてのランク</option><option value="A">Aランク（招待状）</option><option value="B">Bランク（候補）</option><option value="NA">❓ 出欠の回答がまだ（催促する人）</option></select>
       <select id="vendor-dept" class="vr-sel" onchange="renderVendors()"><option value="">すべての区分</option></select>
       <button class="btn btn-r" onclick="openVendorModal()">＋ 業者追加</button>
       <button class="btn btn-ol" id="vendor-import-btn" onclick="openVendorImportModal()">📥 招待者リストを取り込む</button>
@@ -3772,18 +3772,20 @@ function printRosterPDF(){
 function renderRoster(){
   var emps=getEmployeeData();
   var tbody=document.getElementById('roster-tbody');
-  var attColors={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5'};
+  var attColors={'出席':'#d4edda','欠席':'#f8d7da','未定':'#e2e3e5','未回答':'#ffe0b2'};
   var catColors={'社員':'','AI業務委託':'#fff8e1','入社予定':'#fff8e1'};
+  // 「未回答だけ表示」（アンケートの催促用。11/28）
+  if(window.__rosterNA)emps=emps.filter(function(e){return e.attendance==='未回答';});
   tbody.innerHTML=emps.map(function(e){
     var bg=catColors[e.cat]||'';
-    var opts=['出席','欠席','未定'].map(function(o){
+    var opts=(curPeriod!=='2026'?['未回答','出席','欠席','未定']:['出席','欠席','未定']).map(function(o){
       return '<option value="'+o+'"'+(e.attendance===o?' selected':'')+'>'+o+'</option>';
     }).join('');
     var noteHtml=e.note?'<span style="font-size:.75rem;color:#888;margin-left:4px">（'+e.note+'）</span>':'';
     var catBadge=e.cat!=='社員'?'<span style="font-size:.7rem;background:#f0c040;border-radius:4px;padding:1px 5px;margin-left:6px">'+e.cat+'</span>':'';
     return '<tr style="border-bottom:1px solid var(--line);background:'+bg+'">'+
       '<td style="padding:6px 12px;color:var(--sub);font-size:.8rem">'+e.no+'</td>'+
-      '<td style="padding:6px 12px">'+e.name+catBadge+noteHtml+'</td>'+
+      '<td style="padding:6px 12px">'+e.name+catBadge+(e.attendance==='未回答'?'<span class="na-pill">❓未回答</span>':'')+noteHtml+'</td>'+
       '<td style="padding:4px 8px;text-align:center">'+
         '<select onchange="onRosterChange('+e.no+',this.value)" style="padding:3px 6px;border-radius:6px;border:1px solid #ccc;background:'+attColors[e.attendance||'未定']+';font-size:.83rem">'+opts+'</select>'+
       '</td>'+
@@ -3813,10 +3815,23 @@ function onRosterPartyChange(no,checked){
 }
 function updateRosterStats(){
   var emps=EMPLOYEES.filter(function(e){return e.cat==='社員';});
-  var cnt={出席:0,欠席:0,未定:0};
+  var cnt={出席:0,欠席:0,未定:0,未回答:0};
   emps.forEach(function(e){cnt[e.attendance]=(cnt[e.attendance]||0)+1;});
+  var naAll=EMPLOYEES.filter(function(e){return e.attendance==='未回答';}).length;
   var el=document.getElementById('roster-stats');
-  if(el)el.textContent='出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名 ／ 未定 '+(cnt['未定']||0)+'名（社員のみ）｜名簿更新日 '+ROSTER_UPDATED+'（2027年1月最新版 社員名簿一覧より）';
+  if(el){
+    var is27=curPeriod!=='2026';
+    el.innerHTML=(is27?'<span style="color:#e65100;font-weight:800">❓ 未回答 '+naAll+'名</span> ／ ':'')+'出席 '+cnt['出席']+'名 ／ 欠席 '+cnt['欠席']+'名 ／ 未定 '+(cnt['未定']||0)+'名（社員のみ）｜名簿更新日 '+ROSTER_UPDATED+'（2027年1月最新版 社員名簿一覧より）'+
+      (is27?' <button class="btn btn-gray" style="padding:3px 10px;font-size:.75rem;margin-left:6px" onclick="window.__rosterNA=!window.__rosterNA;renderRoster()">'+(window.__rosterNA?'全員を表示':'❓ 未回答だけ表示（催促用）')+'</button>'+
+       ' <button class="btn btn-gray" style="padding:3px 10px;font-size:.75rem" onclick="rosterStartSurvey()">📝 アンケート開始：全員を未回答にする</button>':'');
+  }
+}
+// 社員の出欠アンケートを始めるとき：全員を「未回答」にする（回答が来た人から「出席」「欠席」に変える）（11/28）
+function rosterStartSurvey(){
+  if(!confirm('社員全員の出席状況を「未回答」にします。\n（アンケートの回答が来た人から「出席」「欠席」に変えてください。未回答の人は座席表・名簿に「❓未回答」の印が付きます）\nよいですか？'))return;
+  EMPLOYEES.forEach(function(e){e.attendance='未回答';});
+  D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
+  persist();renderRoster();showToast('✓ 全員を未回答にしました');
 }
 function saveRoster(){
   D.roster=EMPLOYEES.map(function(e){return {no:e.no,attendance:e.attendance,party:!!e.party};});
@@ -4022,7 +4037,7 @@ function renderSeating(){
         cell.addEventListener('drop',onSeatDrop);
         var occupiedKey=(saved.seats||{})[seatId];
         if(occupiedKey){
-          var person=resolvePerson(occupiedKey);
+          var person=mainVisible27(occupiedKey)?resolvePerson(occupiedKey):null;  // 欠席の人は座席表に出さない（11/28）
           if(person){cell.style.background='';cell.style.border='2px solid rgba(0,0,0,.1)';cell.appendChild(makeNameTag(person,seatId));}
         }
         wrap.appendChild(cell);
@@ -4143,6 +4158,12 @@ function makeNameTag(person,seatId){
   }
 
   tag.title=person.isVendor?(person.sub||''):(person.sub||'');
+  // 出欠の回答がまだの人は、催促できるように印を付ける（11/28 森下さん）
+  if(curPeriod!=='2026'&&person.noAns){
+    var naEl=document.createElement('div');naEl.className='noans-badge';naEl.textContent='❓未回答';tag.appendChild(naEl);
+    tag.style.outline='2px dashed #ff9800';tag.style.outlineOffset='-1px';
+    tag.title+=(tag.title?'　':'')+'出欠の回答がまだです（催促してください）';
+  }
   if(curPeriod!=='2026'&&window.__seatF&&Math.abs(window.__seatF-1)>0.02&&seatId)tag.style.zoom=window.__seatF;  // 席の大きさに合わせて名札も大きく（スマホは小さく）
   tag.addEventListener('dragstart',function(e){seatingDragSrc=this;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){seatingDragSrc=null;document.querySelectorAll('[id^="seat-"]').forEach(function(c){if(!c.querySelector('[data-person-key]')){c.style.background='#e9ecef';c.style.borderColor='#adb5bd';}});});
@@ -4369,7 +4390,7 @@ function printSeating(){
         if(useL27){var l27=SEAT_LAYOUT27[r][bi],_k=slots27(l27[0],l27[1]).indexOf(c%5);if(_k<0){cells+='<td class="seat" style="border:none;background:none"></td>';return;}cc=bi*5+_k;}
         var sid='r'+r+'c'+cc;
         var key=saved[sid];
-        var person=key?resolvePerson(key):null;
+        var person=key&&mainVisible27(key)?resolvePerson(key):null;
         var bg='#efefef';
         var nameStr='';
         if(person){
@@ -4432,7 +4453,7 @@ function printSeating(){
     (useL27
       // 2027期：画面と同じく、座席の右に前方テーブル4席（B〜C列の横）
       ?'<div class="wrap27"><table><tbody>'+headerRow+rows+'</tbody></table>'+
-        '<div class="front27"><div class="t">前方テーブル 4席（B〜C列の横）</div>'+FRONT27_KEYS.map(function(sid,i){var p=saved[sid]?resolvePerson(saved[sid]):null;
+        '<div class="front27"><div class="t">前方テーブル 4席（B〜C列の横）</div>'+FRONT27_KEYS.map(function(sid,i){var p=saved[sid]&&mainVisible27(saved[sid])?resolvePerson(saved[sid]):null;
           var bg=p?(p.isVendor?vendorDeptColor27(p.dept)+'33':'#d9f0df'):'#efefef';
           var nm=p?((p.isVendor&&p.sub&&p.sub!==p.name?'<div style="font-size:5px;font-weight:400;color:#444">'+esc(shortCompany27(p.sub))+'</div>':'')+esc(p.name)):'<span style="color:#aaa;font-weight:400">前-'+(i+1)+'</span>';
           return '<div class="s" style="background:'+bg+'"><div>'+nm+'</div></div>';}).join('')+'</div></div>'+
@@ -4886,6 +4907,7 @@ function addRosterPerson(){
 }
 
 function autoArrangeSeating(){
+  if(curPeriod!=='2026'&&!SEAT_LAYOUT27_ON){autoArrange27();return;}  // 2027：業者→社員の順に前から（11/28）
   var _l27=curPeriod!=='2026';
   if(!confirm(_l27?'本編の対象（社員名簿「出席」・業者名簿「本編出席」）を自動配置します。現在の配置（前方テーブルを含む）はリセットされます。よいですか？':'懇親会出席チェック済みの社員・業者を自動配置します。現在の配置はリセットされます。よいですか？'))return;
   var attending=_l27?getMainSeatablePeople():getSeatablePeople();
@@ -5719,7 +5741,8 @@ function renderVendors(){
   if(dsel){var depts=[];D.vendors.forEach(function(v){if(v.dept&&depts.indexOf(v.dept)<0)depts.push(v.dept);});
     dsel.innerHTML='<option value="">すべての区分</option>'+depts.map(function(d){return '<option'+(d===dp?' selected':'')+'>'+esc(d)+'</option>';}).join('');}
   var list=D.vendors.filter(function(v){
-    if(rk&&v.rank!==rk)return false;
+    if(rk==='NA'){if(!vendorNoAns27(v))return false;}
+    else if(rk&&v.rank!==rk)return false;
     if(dp&&v.dept!==dp)return false;
     if(!kw)return true;
     return [v.company,v.person,v.role,v.tel,v.email,v.note,v.rank,v.dept,v.staff,v.address].some(function(f){return String(f||'').toLowerCase().indexOf(kw)>-1;});
@@ -5728,9 +5751,10 @@ function renderVendors(){
   if(stats)stats.textContent='全'+D.vendors.length+'件中 '+list.length+'件を表示';
   var kpi=document.getElementById('vendor-kpi');
   if(kpi){var A=D.vendors.filter(function(v){return v.rank==='A';}).length,B=D.vendors.filter(function(v){return v.rank==='B';}).length;
-    var mn=D.vendors.filter(function(v){return v.main;}).length,pt=D.vendors.filter(function(v){return v.party;}).length;
+    var mn=D.vendors.filter(vendorInMain27).length,pt=D.vendors.filter(vendorInParty27).length,na=D.vendors.filter(vendorNoAns27).length;
     kpi.innerHTML=(A||B?'<div class="vr-k"><small>Aランク（招待状）</small><b>'+A+'</b> 人</div><div class="vr-k"><small>Bランク（候補）</small><b>'+B+'</b> 人</div>':'')+
-      '<div class="vr-k"><small>本編 出席</small><b>'+mn+'</b> 人</div><div class="vr-k"><small>懇親会 出席</small><b>'+pt+'</b> 人</div>';}
+      '<div class="vr-k"><small>本編 出席（見込み）</small><b>'+mn+'</b> 人</div><div class="vr-k"><small>懇親会 出席（見込み）</small><b>'+pt+'</b> 人</div>'+
+      (curPeriod!=='2026'?'<div class="vr-k" style="border-color:#ff9800"><small style="color:#e65100">❓ 出欠の回答がまだ</small><b style="color:#e65100">'+na+'</b> 人</div>':'');}
   var box=document.getElementById('vendor-list');if(!box)return;
   if(!list.length){box.innerHTML='<div class="vr-empty">条件に合う業者がいません</div>';return;}
   // 並び：ランク → 区分 → No
@@ -5747,13 +5771,15 @@ function renderVendors(){
       '<td class="vr-no">'+(v.no?esc(v.no):'')+'</td>'+
       '<td class="vr-rk">'+(v.rank?'<span class="vr-rank '+esc(v.rank)+'">'+esc(v.rank)+'</span>':'')+'</td>'+
       '<td><div class="vr-co">'+esc(v.company||'')+'</div>'+(gy?'<span class="vr-gyo">'+esc(gy)+'</span>':'')+'</td>'+
-      '<td>'+(v.kana?'<div class="vr-kana">'+esc(v.kana)+'</div>':'')+'<div class="vr-per">'+esc(v.person||'')+(v.person&&!/様$/.test(v.person)?' 様':'')+'</div>'+(v.role&&v.role!=='ー'?'<div class="vr-sub">'+esc(v.role)+'</div>':'')+'</td>'+
+      '<td>'+(v.kana?'<div class="vr-kana">'+esc(v.kana)+'</div>':'')+'<div class="vr-per">'+esc(v.person||'')+(v.person&&!/様$/.test(v.person)?' 様':'')+(vendorNoAns27(v)?'<span class="na-pill">❓未回答</span>':'')+'</div>'+(v.role&&v.role!=='ー'?'<div class="vr-sub">'+esc(v.role)+'</div>':'')+'</td>'+
       '<td class="vr-stf">'+esc(v.staff||'―')+'</td>'+
       '<td>'+(v.tel?'<a class="vr-tel" href="'+vrTel(v.tel)+'">📞 '+esc(v.tel)+'</a>':'<span class="vr-sub">電話なし</span>')+(v.email?'<div class="vr-mail">✉️ '+esc(v.email)+'</div>':'')+'</td>'+
       '<td><div class="vr-adr">'+esc(v.address||'')+'</div></td>'+
       '<td><div class="vr-note" title="'+esc(v.note||'')+'">'+esc(v.note||'')+'</div></td>'+
       '<td class="vr-cks"><label class="vr-chk"><input type="checkbox" '+(v.main?'checked':'')+' onchange="toggleVendorMain(\''+v.id+'\',this.checked)">本編</label>'+
-        '<label class="vr-chk"><input type="checkbox" '+(v.party?'checked':'')+' onchange="toggleVendorParty(\''+v.id+'\',this.checked)">懇親会</label></td>'+
+        '<label class="vr-chk"><input type="checkbox" '+(v.party?'checked':'')+' onchange="toggleVendorParty(\''+v.id+'\',this.checked)">懇親会</label>'+
+        // 架電リストの回答があれば、そちらで座席が決まる（11/28）
+        (function(){var a=curPeriod!=='2026'?vendorAns27(v):null;return a?'<div style="font-size:.7rem;font-weight:700;color:'+(/欠席/.test(a)?'#c62828':'#2e7d32')+';margin-top:3px;white-space:nowrap">回答：'+esc(a)+'</div>':'';})()+'</td>'+
       '<td class="vr-act"><button onclick="openVendorModal(\''+v.id+'\')">編集</button> <button class="del" onclick="delVendor(\''+v.id+'\')">削除</button></td>'+
     '</tr>';
   });
@@ -6020,11 +6046,133 @@ function keepScroll_(pageId,fn){
 renderSeating=keepScroll_('page-seating',renderSeating);
 renderBanquetSeating=keepScroll_('page-banquet',renderBanquetSeating);
 // 本編の座席の対象：社員名簿で「出席」の人＋業者名簿で「本編出席」にチェックした人（2027期）
+// 11/28：業者は架電リストの「確定出欠」「変更出欠」から自動で決める（欠席・懇親会のみは本編に出さない。未回答は出して印を付ける）
+//        社員は社員名簿の「出席」「未回答」の人
 function getMainSeatablePeople(){
+  if(typeof getEmployeeData==='function')getEmployeeData();
   var list=[];
-  EMPLOYEES.forEach(function(e){if(e.attendance==='出席')list.push(resolvePerson('e'+e.no));});
-  (D.vendors||[]).forEach(function(v){if(v.main)list.push(resolvePerson('v'+v.id));});
+  EMPLOYEES.forEach(function(e){if(e.attendance==='出席'||e.attendance==='未回答')list.push(resolvePerson('e'+e.no));});
+  (D.vendors||[]).forEach(function(v){if(vendorInMain27(v))list.push(resolvePerson('v'+v.id));});
   return list.filter(Boolean);
+}
+
+// ===== 出欠の連動（架電リスト → 座席表・名簿）11/28 森下さん =====
+// 業者名簿の No「A19」＝架電リストの c019（招待者リストの番号でつながる）
+function vendorCallId27(v){var m=String(v&&v.no||'').match(/^A(\d+)$/);if(!m)return null;var id='c'+('00'+m[1]).slice(-3);return (typeof CALL!=='undefined'&&CALL.rows[id])?id:null;}
+// 回答：null＝架電リストにいない人／''＝まだ回答がない／それ以外＝回答（変更出欠があればそちらを使う）
+function vendorAns27(v){var id=vendorCallId27(v);if(!id)return null;var s=CALL.st[id]||{};return s.attChg||s.att||'';}
+function vendorInMain27(v){if(curPeriod==='2026')return !!v.main;var a=vendorAns27(v);if(!a)return !!v.main;return /本編/.test(a);}
+function vendorInParty27(v){if(curPeriod==='2026')return !!v.party;var a=vendorAns27(v);if(!a)return !!v.party;return /懇親会/.test(a);}
+function vendorNoAns27(v){return curPeriod!=='2026'&&vendorAns27(v)===''&&!!(v.main||v.party);}
+function empNoAns27(e){return curPeriod!=='2026'&&e&&e.attendance==='未回答';}
+function keyVendor27(key){key=String(key);if(key.charAt(0)!=='v')return null;var id=key.slice(1);return (D.vendors||[]).find(function(x){return x.id===id;})||null;}
+function keyEmp27(key){if(typeof key==='number')key='e'+key;key=String(key);if(key.charAt(0)!=='e')return null;var no=parseInt(key.slice(1),10);return EMPLOYEES.find(function(x){return x.no===no;})||null;}
+// 座席表に出すか（欠席の人は出さない）
+function mainVisible27(key){
+  if(curPeriod==='2026')return true;
+  var v=keyVendor27(key);if(v)return vendorInMain27(v);
+  var e=keyEmp27(key);if(e)return e.attendance!=='欠席';
+  return true;
+}
+function partyVisible27(key){
+  if(curPeriod==='2026')return true;
+  var v=keyVendor27(key);if(v)return vendorInParty27(v);
+  var e=keyEmp27(key);if(e)return !!e.party&&e.attendance!=='欠席';
+  return true;
+}
+// 名札に「未回答」の印を付けるため、resolvePerson の結果に noAns を足す
+(function(){var _rp=resolvePerson;resolvePerson=function(key){var p=_rp(key);if(p&&curPeriod!=='2026'){var v=keyVendor27(p.key),e=v?null:keyEmp27(p.key);p.noAns=v?vendorNoAns27(v):empNoAns27(e);}return p;};})();
+// 懇親会の対象（2027）：業者は回答から、社員は懇親会チェック（欠席の人は除く）
+(function(){var _gs=getSeatablePeople;getSeatablePeople=function(){
+  if(curPeriod==='2026')return _gs();
+  if(typeof getEmployeeData==='function')getEmployeeData();
+  var list=[];
+  EMPLOYEES.forEach(function(e){if(e.party&&e.attendance!=='欠席')list.push(resolvePerson('e'+e.no));});
+  (D.vendors||[]).forEach(function(v){if(vendorInParty27(v))list.push(resolvePerson('v'+v.id));});
+  return list.filter(Boolean);
+};})();
+(function(){var s=document.createElement('style');s.textContent='.noans-badge{display:block;margin-top:1px;font-size:.5rem;font-weight:800;background:#fff3e0;color:#e65100;border-radius:3px;padding:0 3px;line-height:1.35;text-shadow:none}'+
+  '.bq27-tag .noans-badge{display:inline-block;margin-left:4px;vertical-align:middle}'+
+  '.na-pill{display:inline-block;background:#ff9800;color:#fff;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:800;margin-left:6px;white-space:nowrap}'+
+  '.kd-att.noans{background:#fff3e0;color:#e65100;font-weight:700;border:1px dashed #ff9800}';document.head.appendChild(s);})();
+
+// ===== 本編の自動配置（2027・標準の並び A〜L×1〜20）11/28 森下さん =====
+// ・業者は社員より前。社長来賓→管理本部（金融機関・士業）を前の真ん中から、そのあと他の業者
+// ・社員は業者の最後の列より後ろ。社長は社員の先頭の列の真ん中、発表者・司会は右寄り（壇上に上がりやすいように）
+// ・委員会メンバーと森美香さんは最後尾（発表者を兼ねる人は最後尾の右端）
+function autoArrange27(){
+  if(!confirm('本編の座席を自動で並べ直します（今の配置はリセットされます）。\n・業者さん（社長来賓・管理本部が前の真ん中）→ 社員の順\n・社長は社員の真ん中、発表者は右寄り\n・委員会メンバーと森美香さんは最後尾\n欠席の人は入れません。よいですか？'))return;
+  var nm=function(s){return String(s||'').replace(/[\s　]/g,'');};
+  var people=getMainSeatablePeople();
+  var seats=[];for(var r=0;r<SEAT_ROWS;r++)for(var c=0;c<SEAT_COLS;c++){if(!SKIP27['r'+r+'c'+c])seats.push({r:r,c:c,id:'r'+r+'c'+c});}
+  var dist=function(s){return Math.abs(s.c-(SEAT_COLS-1)/2);};
+  var used={},out={},left=[];
+  var take=function(list,p){for(var i=0;i<list.length;i++){if(!used[list[i].id]){used[list[i].id]=1;out[list[i].id]=p.key;return list[i];}}left.push(p);return null;};
+  var vend=people.filter(function(p){return p.isVendor;}),emp=people.filter(function(p){return !p.isVendor;});
+  var vno=function(p){var v=keyVendor27(p.key),m=String(v&&v.no||'').match(/\d+/);return m?+m[0]:9999;};
+  var vRank=function(p){var d=String(p.dept||'');return d.indexOf('社長')===0?0:d.indexOf('管理本部')===0?1:2;};
+  vend.sort(function(a,b){return vRank(a)-vRank(b)||vno(a)-vno(b);});
+  // 業者：前の列から、真ん中に近い席から
+  var vOrder=seats.slice().sort(function(a,b){return a.r-b.r||dist(a)-dist(b)||a.c-b.c;});
+  var lastVR=-1;vend.forEach(function(p){var s=take(vOrder,p);if(s&&s.r>lastVR)lastVR=s.r;});
+  // 社員：業者の最後の列より後ろだけ
+  var eSeats=seats.filter(function(s){return s.r>lastVR;});
+  var roleOf=function(p){return String(p.role||'');};
+  var isBack=function(p){return /委員会/.test(roleOf(p))||nm(p.name)==='森美香';};
+  var isPres=function(p){return /発表者|司会/.test(roleOf(p));};
+  var boss=emp.find(function(p){return nm(p.name)==='白都卓磨';});
+  var back=emp.filter(function(p){return p!==boss&&isBack(p);}).sort(function(a,b){return (isPres(b)?1:0)-(isPres(a)?1:0);});
+  var pres=emp.filter(function(p){return p!==boss&&!isBack(p)&&isPres(p);});
+  var rest=emp.filter(function(p){return p!==boss&&!isBack(p)&&!isPres(p);});
+  rest.sort(function(a,b){return (a.cat==='社員'?0:1)-(b.cat==='社員'?0:1);});  // AI業務委託・入社予定は社員の後ろ
+  // 最後尾：後ろの列の右から（発表者を兼ねる人が右端）
+  var backSeats=eSeats.slice().sort(function(a,b){return b.r-a.r||b.c-a.c;});
+  back.forEach(function(p){take(backSeats,p);});
+  // 社長：社員の先頭の列の真ん中
+  var frontC=eSeats.slice().sort(function(a,b){return a.r-b.r||dist(a)-dist(b)||a.c-b.c;});
+  if(boss)take(frontC,boss);
+  // 発表者・司会：社員の前の方の右寄り
+  var rightF=eSeats.slice().sort(function(a,b){return a.r-b.r||b.c-a.c;});
+  pres.forEach(function(p){take(rightF,p);});
+  // ほかの社員：前の列から左→右（部署ごとにまとまる）
+  var rowMaj=eSeats.slice().sort(function(a,b){return a.r-b.r||a.c-b.c;});
+  rest.forEach(function(p){take(rowMaj,p);});
+  // 席が足りないときだけ：業者の最後の列の空いた席（端）に、残った社員を入れる（空席を作らないため）
+  var lastRow=left.filter(function(p){return !p.isVendor;});
+  if(lastRow.length){left=left.filter(function(p){return p.isVendor;});
+    var spare=seats.slice().sort(function(a,b){return b.r-a.r||dist(b)-dist(a);});
+    lastRow.forEach(function(p){take(spare,p);});}
+  if(!D.seating)D.seating={};
+  D.seating.seats=out;
+  persist();renderSeating();
+  var msg='✓ 自動配置しました（'+Object.keys(out).length+'人）';
+  if(left.length){alert('席が足りず、'+left.length+'人が「未配置」に残りました。\n（業者さんの欠席の回答が増えると席が空きます。必要なら前方テーブルや手で調整してください）\n\n'+left.map(function(p){return p.name;}).join('、'));}
+  showToast(msg);
+}
+
+// ===== 懇親会の自動配置（2027・島27）11/28 森下さん =====
+// 業者さんは業種がかたまらないよう、業種ごとに並べて島へ順番に配る。社員は人数の少ない島へ順に入れて人数をそろえる
+function bq27AutoArrange(){
+  if(!confirm('懇親会の島テーブルを自動で並べ直します（島の配置はリセットされます。メインテーブルはそのまま）。\n業者さんは業種がかたまらないように、社員は各島に均等に分けます。欠席の人は入れません。よいですか？'))return;
+  var b=bq27Init();
+  var onMain={};b.main.members.forEach(function(k){onMain[k]=1;});
+  var ppl=getSeatablePeople().filter(function(p){return !onMain[p.key];});
+  b.islands.forEach(function(t){t.members=[];});
+  var N=b.islands.length;
+  var gyo=function(p){var v=keyVendor27(p.key);if(!v)return '';var id=vendorCallId27(v);return String((id&&CALL.rows[id].gyoshu)||v.dept||'');};
+  var vend=ppl.filter(function(p){return p.isVendor;}).sort(function(a,b){return gyo(a).localeCompare(gyo(b),'ja')||String(a.sub||'').localeCompare(String(b.sub||''),'ja');});
+  // 島の順：左・中・右を交互に（隣どうしの島に同じ業種が集まりにくいように）
+  var ord=[];for(var k=0;k<9;k++){ord.push(k,9+k,18+k);}
+  vend.forEach(function(p,i){b.islands[ord[i%N]].members.push(p.key);});
+  var emp=ppl.filter(function(p){return !p.isVendor;}).sort(function(a,b){return String(a.sub||'').localeCompare(String(b.sub||''),'ja');});
+  var rot=0;
+  emp.forEach(function(p){
+    var min=Infinity,pick=0;
+    for(var j=0;j<N;j++){var t=b.islands[ord[(rot+j)%N]];if(t.members.length<min){min=t.members.length;pick=ord[(rot+j)%N];}}
+    b.islands[pick].members.push(p.key);rot++;
+  });
+  persist();renderBanquetSeating();
+  showToast('✓ 懇親会を自動配置しました（'+ppl.length+'人）');
 }
 // 本編の席（前方テーブル用。通常の席と同じ見た目・同じドロップ処理）
 function makeSeatCell27(seatId,label,saved){
@@ -6038,7 +6186,7 @@ function makeSeatCell27(seatId,label,saved){
   cell.addEventListener('dragleave',function(){this.style.borderColor='#adb5bd';this.style.background='#e9ecef';var t=this.querySelector('[data-person-key]');if(t)this.style.background='';});
   cell.addEventListener('drop',onSeatDrop);
   var k=(saved.seats||{})[seatId];
-  if(k){var p=resolvePerson(k);if(p){cell.style.background='';cell.style.border='2px solid rgba(0,0,0,.1)';cell.appendChild(makeNameTag(p,seatId));}}
+  if(k&&mainVisible27(k)){var p=resolvePerson(k);if(p){cell.style.background='';cell.style.border='2px solid rgba(0,0,0,.1)';cell.appendChild(makeNameTag(p,seatId));}}
   return cell;
 }
 
@@ -6160,7 +6308,9 @@ function makeBq27Tag(p){
   tag.style.background=p.isVendor?vendorDeptColor27(p.dept):'#27ae60';
   tag.title=(p.sub||'')+(p.isVendor?'（社外）':'')+'｜ダブルクリックで未配置に戻す';
   // 社外の方は、会社名を名前の上に小さく（本編と同じ）
-  tag.innerHTML=(p.isVendor&&p.sub&&p.sub!==p.name?'<small>'+esc(shortCompany27(p.sub))+'</small>'+esc(p.name):esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':''));
+  tag.innerHTML=(p.isVendor&&p.sub&&p.sub!==p.name?'<small>'+esc(shortCompany27(p.sub))+'</small>'+esc(p.name):esc(p.name)+(p.sub&&p.sub!==p.name?'<small>'+esc(p.sub)+'</small>':''))+
+    (p.noAns?'<span class="noans-badge">❓未回答</span>':'');
+  if(p.noAns){tag.style.outline='2px dashed #ff9800';tag.style.outlineOffset='-1px';tag.title='出欠の回答がまだです（催促してください）｜'+tag.title;}
   tag.addEventListener('dragstart',function(e){bq27DragKey=this.dataset.personKey;e.dataTransfer.effectAllowed='move';});
   tag.addEventListener('dragend',function(){bq27DragKey=null;});
   tag.addEventListener('dblclick',function(){bq27Move(this.dataset.personKey,null);});
@@ -6188,6 +6338,8 @@ function renderBanquet27(){
   var people=getSeatablePeople();
   var map={};people.forEach(function(p){map[p.key]=p;});
   var unplaced=document.getElementById('banquet-unplaced-area');
+  // 未配置は島テーブルの下に置く（11/28 森下さん）
+  if(unplaced){var _uc=unplaced.parentNode,_bt=document.getElementById('banquet-tables');if(_bt&&_uc&&_bt.nextElementSibling!==_uc){_bt.after(_uc);_uc.style.marginTop='16px';}}
   var q=((document.getElementById('bq27-q')||{}).value||'').trim().toLowerCase();
   var nUn=0;
   if(unplaced){
@@ -6215,7 +6367,8 @@ function renderBanquet27(){
   bar.innerHTML='<input id="bq27-q" placeholder="🔍 未配置から名前・会社で探す" value="'+esc(q)+'" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:.82rem;min-width:220px">'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fff8e6;border:2px solid #f39c12;display:inline-block"></span>'+(BQ27_TARGET+1)+'〜'+BQ27_MAX+'名</span>'+
     '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fdecea;border:2px solid #e74c3c;display:inline-block"></span>'+BQ27_MAX+'名を超えた</span>'+
-    '<button class="btn btn-gray" style="margin-left:auto" onclick="bq27ResetAll()">🔄 座席を初期化</button>'+
+    '<button class="btn btn-gray" style="margin-left:auto" onclick="bq27AutoArrange()">✨ 自動配置</button>'+
+    '<button class="btn btn-gray" onclick="bq27ResetAll()">🔄 座席を初期化</button>'+
     '<button class="btn btn-r" onclick="printBanquet27()">🖨 印刷（A3横）</button>';
   wrap.appendChild(bar);
   var qi=bar.querySelector('#bq27-q');
@@ -6232,8 +6385,8 @@ function renderBanquet27(){
   var mainEl=document.createElement('div');mainEl.className='bq27-main';
   mainEl.innerHTML='<div class="bq27-hd" style="border-bottom-color:#ecd9a3"><span>⭐ メインテーブル（前方）</span><span class="bq27-cnt">'+b.main.members.length+'名</span></div>';
   var mb=document.createElement('div');mb.className='bq27-body';
-  b.main.members.forEach(function(k){var p=map[k]||resolvePerson(k);if(p)mb.appendChild(makeBq27Tag(p));});
-  if(!b.main.members.length)mb.innerHTML='<span class="bq27-empty">ここへドラッグ（座る人は後で決めます）</span>';
+  b.main.members.forEach(function(k){var p=map[k];if(p)mb.appendChild(makeBq27Tag(p));});  // 欠席の人は出さない（11/28）
+  if(!mb.children.length)mb.innerHTML='<span class="bq27-empty">ここへドラッグ（座る人は後で決めます）</span>';
   mainEl.appendChild(mb);bq27Drop(mainEl,'main');
   top.appendChild(podium);top.appendChild(mainEl);
   var spacer=document.createElement('div');spacer.style.cssText='width:70px';top.appendChild(spacer);
@@ -6243,11 +6396,11 @@ function renderBanquet27(){
   ['左','中','右'].forEach(function(z){
     var zd=document.createElement('div');zd.className='bq27-zone';
     b.islands.filter(function(t){return t.zone===z;}).forEach(function(t){
-      var n=t.members.length;
+      var n=t.members.filter(function(k){return !!map[k];}).length;
       var el=document.createElement('div');el.className='bq27-isl'+(n>BQ27_MAX?' full':n>BQ27_TARGET?' warn':'');
       el.innerHTML='<div class="bq27-hd"><span>テーブル '+t.no+'</span><span class="bq27-cnt">'+n+'名</span></div>';
       var bd=document.createElement('div');bd.className='bq27-body';
-      t.members.forEach(function(k){var p=map[k]||resolvePerson(k);if(p)bd.appendChild(makeBq27Tag(p));});
+      t.members.forEach(function(k){var p=map[k];if(p)bd.appendChild(makeBq27Tag(p));});
       if(!n)bd.innerHTML='<span class="bq27-empty">空き</span>';
       el.appendChild(bd);bq27Drop(el,t.id);
       zd.appendChild(el);
@@ -6280,7 +6433,8 @@ function printBanquet27(){
   var name=function(k){var p=resolvePerson(k);return p?(p.isVendor&&p.sub?'<span class="co">'+esc(shortCompany27(p.sub))+'</span>':'')+esc(p.name):'';};
   var bgOf=function(k){var p=resolvePerson(k);return p?(p.isVendor?vendorDeptColor27(p.dept)+'33':'#d9f0df'):'';};
   var box=function(title,list,cls){
-    return '<div class="isl '+(cls||'')+'"><div class="hd"><b>'+title+'</b><span>'+list.length+'名</span></div><div class="bd">'+
+    list=list.filter(partyVisible27);  // 欠席の人は印刷にも出さない（11/28）
+    return '<div class="isl'+(cls||'')+'"><div class="hd"><b>'+title+'</b><span>'+list.length+'名</span></div><div class="bd">'+
       list.map(function(k){return '<div class="nm" style="background:'+bgOf(k)+'">'+name(k)+'</div>';}).join('')+'</div></div>';
   };
   var legend=VENDOR_DEPT27.map(function(x){return '<span class="lbox" style="background:'+x[2]+'33">'+esc(x[1])+'</span>';}).join('')+'<span class="lbox" style="background:#d9f0df">社員</span>';
@@ -6526,6 +6680,13 @@ function callListen(){
   if(!fbEnabled)return;
   fbDB.ref('kh2027_call').on('value',function(snap){
     var v=snap.val()||{},old=CALL,first=!callLoaded;CALL={rows:v.rows||{},st:v.st||{}};callLoaded=true;
+    // 確定出欠・変更出欠が変わったら、座席表・業者名簿にもすぐ反映する（11/28）
+    var attSig=function(st){return Object.keys(st).sort().map(function(k){return k+':'+(st[k].att||'')+'/'+(st[k].attChg||'');}).join('|');};
+    if(first||attSig(old.st)!==attSig(CALL.st)){
+      if(curTab==='seating')renderSeating();
+      else if(curTab==='banquet')renderBanquetSeating();
+      else if(curTab==='vendors'&&callMode==='roster')renderVendors();
+    }
     if(curTab!=='vendors'||callMode!=='call')return;
     if(!first&&callTypingNow()){callPending=true;return;}
     if(first||JSON.stringify(old.rows)!==JSON.stringify(CALL.rows)){callRender();return;}
@@ -6598,20 +6759,21 @@ function callRender(opt){
     if(callF.state==='notdone'&&callIsDone(s))return false;
     if(callF.state==='absent'&&(s.state!=='absent'||callIsDone(s)))return false;
     if(callF.state==='done'&&!callIsDone(s))return false;
+    if(callF.state==='noans'&&(s.att||s.attChg))return false;
     if(q){var hay=callNorm([r.company,r.person,r.gyoshu,r.role,r.tel,r.staff,s.note].join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   var head='<div class="kd-head"><h2>📞 招待状の事前連絡（架電リスト）<small style="font-size:.65rem;color:#999;font-weight:400;margin-left:8px">画面の版 11/28</small></h2>'+
     '<details class="kd-help"'+(callF.helpOpen?' open':'')+' ontoggle="callF.helpOpen=this.open"><summary>📖 使い方・注意（押して開く）</summary>'+'<p class="kd-lead">招待状は11/30（月）投函・回答期限12/11（金）。<b>11/27（金）までに</b>全員へ電話します。電話番号を押すとそのまま電話がかかります。かけたら「✅ かけた」を押してください（押した人の名前と時刻が自動で入ります）。不動産部で作ったリストの人も、漏れがないよう委員会でもう一度かけます（不動産と銀行は山本さん・清水さんの担当です）。<br>不在でも、留守電かメールで伝えたら「かけた」に数えます。☎ 灰色のボタンは固定電話です。固定にかけるのが気が引けるときは、松下さんか山本さんに相談してください（携帯が分かるかもしれません）。<b>ほかにもイレギュラーがあれば、森下にも相談してください。</b></p>'+'</details>'+
     '<div class="kd-bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
+    '<div class="kd-tot"><span>📨 招待状の相手 合計 <b>'+(callRows.length+rows.filter(function(x){return x.noCall&&/不動産/.test(x.caller);}).length)+'</b> 人</span><span>✅ かけた <b>'+done+'</b></span><span>📵 不在・かけ直し <b>'+abs+'</b></span><span>⬜ まだ <b>'+(callRows.length-done-abs)+'</b></span><span>かける相手 <b>'+callRows.length+'</b> 人（'+pct+'%）</span><span style="color:#e65100">❓ 出欠の回答がまだ <b>'+rows.filter(function(x){var t=callSt(x.id);return !(t.att||t.attChg);}).length+'</b> 人</span><span style="color:#777">＋不要（案内状を別送） '+rows.filter(function(x){return x.noCall&&!/不動産/.test(x.caller);}).length+' 人</span></div>'+
     // 電話対応マニュアル（PDF）を開く・保存する（11/26 森下さん）
     '<a class="kd-manual" href="261126_招待状の事前連絡_電話対応マニュアル.pdf" target="_blank" rel="noopener" download>📄 電話対応マニュアル（PDF）を開く・ダウンロード</a>'+
     '<div class="kd-view"><button class="'+(callF.who===''?'on':'')+'" onclick="callF.who=\'\';callRender()">👥 全員の担当を見る</button>'+
       (me?'<button class="'+(callF.who===me?'on':'')+'" onclick="callF.who=\''+me+'\';callRender()">⭐ 自分の担当だけ</button>':'')+'</div>'+
     '<details class="kd-progwrap"'+((callF.progOpen===undefined?innerWidth>700:callF.progOpen)?' open':'')+' ontoggle="callF.progOpen=this.open"><summary>👥 みんなの進み具合（押して開く）</summary><div class="kd-mem">'+chips+'</div></details>'+
     '<div class="kd-ctl"><select onchange="callF.state=this.value;callRender()">'+
-      [['','すべての状態'],['notdone','⬜📵 まだ話せていない（まだ＋不在）'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
+      [['','すべての状態'],['notdone','⬜📵 まだ話せていない（まだ＋不在）'],['todo','⬜ まだかけていない'],['absent','📵 不在・かけ直し'],['done','✅ かけた'],['noans','❓ 出欠の回答がまだ（催促する人）']].map(function(o){return '<option value="'+o[0]+'"'+(callF.state===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+
     '</select><input id="kd-q" placeholder="🔍 会社名・お名前・業種で探す" value="'+esc(callF.q)+'" oninput="callF.q=this.value;clearTimeout(window._clq);window._clq=setTimeout(function(){var p=document.getElementById(\'kd-q\');var pos=p?p.selectionStart:0;document.activeElement&&document.activeElement.blur();callRender();var n=document.getElementById(\'kd-q\');if(n){n.focus();n.setSelectionRange(pos,pos);}},350)"></div>'+
     '<div class="kd-sub" style="margin-top:6px">'+(me?'あなた（'+esc(me)+'）の担当は⭐。':'ログインの名前（'+esc(callMyName()||'不明')+'）が委員会メンバーと一致しないため、全員を表示しています。')+' 表示中 '+list.length+'人</div></div>';
   // 架電する人ごとにまとめて並べる（自分 → メンバー表の順）。見出しに残りの人数を出す
@@ -6652,7 +6814,7 @@ function callCard(r){
     var opt=function(cur){return CALL_ATT.map(function(o){return '<option value="'+esc(o)+'"'+((cur||'')===o?' selected':'')+'>'+(o||'（まだ）')+'</option>';}).join('');};
     var callerSel='<select onchange="callSave(\''+r.id+'\',{caller:this.value})">'+CALL_MEMBERS.map(function(m){return '<option'+(callCaller(r)===m?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>';
     return '<div class="kd-card'+cls+(r.noCall?' nocall':'')+'" data-id="'+r.id+'">'+
-      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state||r.noCall?'':'<br><span class="kd-todo">まだ</span>')+'</div></div>'+
+      '<div class="kd-top"><div><div class="kd-co">'+esc(r.company)+'</div><span class="kd-gyo'+(unk?' unk':'')+'">'+esc(r.gyoshu)+'</span></div><div class="kd-no">No.'+r.no+(s.state||r.noCall?'':'<br><span class="kd-todo">まだ</span>')+(s.att||s.attChg?'':'<br><span class="na-pill" style="margin:3px 0 0">❓未回答</span>')+'</div></div>'+
       (r.noCall?'<div class="kd-nc">'+(/不動産/.test(r.caller)?'🏢 ':'🚫 ')+esc(r.ncNote||'かけなくて大丈夫です')+'</div>':'<div class="kd-sub">架電する人：<b>'+esc(callCaller(r))+'</b></div>')+
       (r.kana?'<div class="kd-kana">'+esc(r.kana)+'</div>':'')+
       '<div class="kd-per">'+esc(r.person)+(r.role?'　<span class="kd-sub">'+esc(r.role)+'</span>':'')+'</div>'+
@@ -6662,7 +6824,8 @@ function callCard(r){
       whoLine+
       '<div class="kd-f">'+(r.noCall?'':'<label>架電する人</label>'+callerSel)+
       // 確定出欠はQRコード（Googleフォーム）の回答から自動で入れる予定。架電の段階では書かない（11/26 森下さん）
-      '<label>確定出欠</label><div class="kd-att">'+(s.att?'<b>'+esc(s.att)+'</b>':'QRの回答から自動で入ります（準備中）')+'</div>'+
+      // 回答がまだの人は目立たせて、QRコードからの回答をお願いできるように（11/28）
+      '<label>確定出欠</label>'+(s.att||s.attChg?'<div class="kd-att"><b>'+esc(s.att||'（QRの回答はまだ）')+'</b></div>':'<div class="kd-att noans">❓ 出欠の回答がまだです。招待状のQRコードから回答をお願いしてください（QRの回答はここに自動で入ります・準備中）</div>')+
       '<label>変更出欠</label><select class="chg" onchange="callSave(\''+r.id+'\',{attChg:this.value})">'+opt(s.attChg)+'</select>'+
       (r.noCall?'':'<label>不在のとき</label>'+fuBtns)+
       // 備考は小窓で書いて保存する（カードの中で入力すると固まることがあったため。11/26）
