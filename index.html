@@ -6123,7 +6123,7 @@ function partyVisible27(key){
   '.kd-att.noans{background:#fff3e0;color:#e65100;font-weight:700;border:1px dashed #ff9800}';document.head.appendChild(s);})();
 
 // ===== 本編の自動配置（2027・標準の並び A〜L×1〜20）11/28 森下さん =====
-// ・業者は社員より前。社長来賓→管理本部（金融機関・士業）を前の真ん中から、そのあと他の業者
+// ・業者は社員より前。社長来賓→管理本部（金融機関・士業）を前の真ん中から（5〜16番の席の中）、そのあと他の業者
 // ・社員は業者の最後の列より後ろ。社長は社員の先頭の列の真ん中、発表者・司会は右寄り（壇上に上がりやすいように）
 // ・委員会メンバーと森美香さんは最後尾（発表者を兼ねる人は最後尾の右端）
 function autoArrange27(){
@@ -6140,7 +6140,9 @@ function autoArrange27(){
   vend.sort(function(a,b){return vRank(a)-vRank(b)||vno(a)-vno(b);});
   // 業者：前の列から、真ん中に近い席から
   var vOrder=seats.slice().sort(function(a,b){return a.r-b.r||dist(a)-dist(b)||a.c-b.c;});
-  var lastVR=-1;vend.forEach(function(p){var s=take(vOrder,p);if(s&&s.r>lastVR)lastVR=s.r;});
+  // 社長来賓・管理本部は5〜16番の席の中に収める（11/28 森下さん）
+  var vipOrder=vOrder.filter(function(s){return s.c>=4&&s.c<=15;});
+  var lastVR=-1;vend.forEach(function(p){var s=take(vRank(p)<2?vipOrder:vOrder,p);if(s&&s.r>lastVR)lastVR=s.r;});
   // 社員：業者の最後の列より後ろだけ
   var eSeats=seats.filter(function(s){return s.r>lastVR;});
   var roleOf=function(p){return String(p.role||'');};
