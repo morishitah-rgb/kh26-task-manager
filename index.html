@@ -6181,23 +6181,26 @@ function autoArrange27(){
 // ===== 懇親会の自動配置（2027・島27）11/28 森下さん =====
 // 業者さんは業種がかたまらないよう、業種ごとに並べて島へ順番に配る。社員は人数の少ない島へ順に入れて人数をそろえる
 function bq27AutoArrange(){
-  if(!confirm('懇親会の島テーブルを自動で並べ直します（島の配置はリセットされます。メインテーブルはそのまま）。\n業者さんは業種がかたまらないように、社員は各島に均等に分けます。欠席の人は入れません。よいですか？'))return;
+  if(!confirm('懇親会の島テーブルを自動で並べ直します（島の配置はリセットされます。メインテーブルはそのまま）。\n業者さんは業種がかたまらないように、社員は各島に均等に分けます。欠席の人は入れません。\n押すたびに違う並びになります。よいですか？'))return;
   var b=bq27Init();
   var onMain={};b.main.members.forEach(function(k){onMain[k]=1;});
   var ppl=getSeatablePeople().filter(function(p){return !onMain[p.key];});
   b.islands.forEach(function(t){t.members=[];});
   var N=b.islands.length;
   var gyo=function(p){var v=keyVendor27(p.key);if(!v)return '';var id=vendorCallId27(v);return String((id&&CALL.rows[id].gyoshu)||v.dept||'');};
-  var vend=ppl.filter(function(p){return p.isVendor;}).sort(function(a,b){return gyo(a).localeCompare(gyo(b),'ja')||String(a.sub||'').localeCompare(String(b.sub||''),'ja');});
-  // 島の順：左・中・右を交互に（隣どうしの島に同じ業種が集まりにくいように）
-  var ord=[];for(var k=0;k<9;k++){ord.push(k,9+k,18+k);}
+  // 押すたびに違う並びにする（11/28 森下さん）。決まり（業種をばらす・社員を均等に）はそのまま
+  var shuffle=function(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;};
+  // 業者：業種ごとにまとめ、業種の順も中の順もランダムにしてから、島へ1人ずつ順に配る（同じ業種が同じ島に集まらない）
+  var groups={};ppl.filter(function(p){return p.isVendor;}).forEach(function(p){var g=gyo(p);(groups[g]=groups[g]||[]).push(p);});
+  var vend=[];shuffle(Object.keys(groups)).forEach(function(g){vend=vend.concat(shuffle(groups[g]));});
+  var ord=shuffle(b.islands.map(function(t,i){return i;}));
   vend.forEach(function(p,i){b.islands[ord[i%N]].members.push(p.key);});
-  var emp=ppl.filter(function(p){return !p.isVendor;}).sort(function(a,b){return String(a.sub||'').localeCompare(String(b.sub||''),'ja');});
-  var rot=0;
+  // 社員：ランダムな順で、そのとき人数がいちばん少ない島へ（同じ数なら島もランダム）
+  var emp=shuffle(ppl.filter(function(p){return !p.isVendor;}));
   emp.forEach(function(p){
-    var min=Infinity,pick=0;
-    for(var j=0;j<N;j++){var t=b.islands[ord[(rot+j)%N]];if(t.members.length<min){min=t.members.length;pick=ord[(rot+j)%N];}}
-    b.islands[pick].members.push(p.key);rot++;
+    var min=Infinity,cand=[];
+    b.islands.forEach(function(t,i){var n=t.members.length;if(n<min){min=n;cand=[i];}else if(n===min)cand.push(i);});
+    b.islands[cand[Math.floor(Math.random()*cand.length)]].members.push(p.key);
   });
   persist();renderBanquetSeating();
   showToast('✓ 懇親会を自動配置しました（'+ppl.length+'人）');
